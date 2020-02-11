@@ -17,6 +17,8 @@ class LEXER {
   public static final int YYINITIAL = 0;
   public static final int COMMENTPAR = 2;
   public static final int COMMENTLINE = 4;
+  public static final int CONSTSTR = 6;
+  public static final int PRINTF = 8;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -25,18 +27,20 @@ class LEXER {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = { 
-     0,  0,  1,  1,  2, 2
+     0,  0,  1,  1,  2,  2,  3,  3,  4, 4
   };
 
   /** 
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\11\0\1\6\1\5\1\25\1\25\1\24\22\0\1\6\1\22\10\0"+
-    "\1\4\1\20\1\0\1\20\1\0\1\3\12\2\2\0\1\23\1\21"+
-    "\1\23\2\0\22\1\1\16\7\1\4\0\1\1\1\0\1\14\1\1"+
-    "\1\12\3\1\1\17\1\13\1\7\4\1\1\10\3\1\1\15\1\1"+
-    "\1\11\6\1\12\0\1\25\u1fa2\0\1\25\1\25\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
+    "\11\0\1\13\1\12\1\31\1\31\1\30\22\0\1\13\1\26\1\3"+
+    "\2\0\1\5\2\0\1\0\1\0\1\11\1\24\1\0\1\24\1\0"+
+    "\1\10\12\2\2\0\1\27\1\25\1\27\2\0\22\1\1\22\7\1"+
+    "\1\0\1\4\2\0\1\1\1\0\1\20\1\1\1\7\1\6\2\1"+
+    "\1\23\1\17\1\14\4\1\1\15\3\1\1\21\1\1\1\16\6\1"+
+    "\12\0\1\31\32\0\1\0\u15df\0\1\0\u097f\0\13\0\35\0\1\31"+
+    "\1\31\5\0\1\0\57\0\1\0\u0fa0\0\1\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\ud00f\0";
 
   /** 
    * Translates characters to character classes
@@ -49,12 +53,14 @@ class LEXER {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\3\0\1\1\1\2\1\3\2\4\1\5\3\2\2\4"+
-    "\1\1\1\6\3\7\1\10\1\1\1\11\1\12\3\2"+
-    "\1\13\2\2\1\14\1\15\1\2\1\16\1\2\1\17";
+    "\5\0\1\1\1\2\1\3\1\4\1\2\2\5\1\6"+
+    "\2\2\2\5\1\1\1\7\3\10\1\11\1\12\1\13"+
+    "\2\12\1\1\1\2\1\14\1\15\2\2\1\16\1\17"+
+    "\1\20\1\2\1\21\1\2\1\22\1\23\1\2\1\24"+
+    "\1\2\1\25";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[35];
+    int [] result = new int[45];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -79,14 +85,15 @@ class LEXER {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\26\0\54\0\102\0\130\0\156\0\204\0\232"+
-    "\0\102\0\260\0\306\0\334\0\102\0\362\0\362\0\102"+
-    "\0\102\0\u0108\0\u011e\0\102\0\u0134\0\102\0\102\0\u014a"+
-    "\0\u0160\0\u0176\0\u018c\0\u01a2\0\u01b8\0\102\0\u01ce\0\u01e4"+
-    "\0\102\0\u01fa\0\130";
+    "\0\0\0\32\0\64\0\116\0\150\0\202\0\234\0\266"+
+    "\0\202\0\320\0\352\0\u0104\0\202\0\u011e\0\u0138\0\202"+
+    "\0\u0152\0\u0152\0\202\0\202\0\u016c\0\u0186\0\202\0\202"+
+    "\0\202\0\u01a0\0\u01ba\0\u01d4\0\u01ee\0\202\0\202\0\u0208"+
+    "\0\u0222\0\202\0\202\0\202\0\u023c\0\u0256\0\u0270\0\u028a"+
+    "\0\202\0\u02a4\0\202\0\u02be\0\234";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[35];
+    int [] result = new int[45];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -109,25 +116,30 @@ class LEXER {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\4\1\5\1\6\1\7\1\10\2\11\1\12\2\5"+
-    "\1\13\3\5\1\14\1\5\1\15\1\16\1\17\1\16"+
-    "\1\11\1\20\3\21\1\22\1\23\1\20\16\21\2\20"+
-    "\5\21\1\24\16\21\2\20\27\0\2\5\4\0\11\5"+
-    "\7\0\1\25\1\6\4\0\11\25\11\0\1\26\1\27"+
-    "\24\0\1\4\23\0\2\5\4\0\1\5\1\30\7\5"+
-    "\7\0\2\5\4\0\4\5\1\31\4\5\7\0\2\5"+
-    "\4\0\2\5\1\32\6\5\27\0\1\15\10\0\1\4"+
-    "\24\0\1\24\23\0\2\25\4\0\11\25\7\0\2\5"+
-    "\4\0\2\5\1\33\6\5\7\0\2\5\4\0\5\5"+
-    "\1\34\3\5\7\0\2\5\4\0\6\5\1\35\2\5"+
-    "\7\0\2\5\1\0\1\36\2\0\11\5\7\0\2\5"+
-    "\4\0\6\5\1\37\2\5\7\0\2\5\4\0\1\40"+
-    "\10\5\7\0\2\5\1\0\1\41\2\0\11\5\7\0"+
-    "\2\5\4\0\1\5\1\42\7\5\7\0\2\5\4\0"+
-    "\10\5\1\43\6\0";
+    "\1\6\1\7\1\10\1\11\2\6\1\7\1\12\1\13"+
+    "\1\14\2\15\1\16\5\7\1\17\1\7\1\20\1\21"+
+    "\1\22\1\21\1\15\1\23\10\24\1\25\1\26\1\23"+
+    "\15\24\2\23\12\24\1\27\15\24\2\23\3\30\1\31"+
+    "\1\32\1\33\4\30\1\23\15\30\34\23\33\0\2\7"+
+    "\3\0\2\7\4\0\10\7\7\0\1\34\1\10\3\0"+
+    "\2\34\4\0\10\34\7\0\2\7\3\0\2\7\4\0"+
+    "\3\7\1\35\4\7\16\0\1\36\1\37\30\0\1\6"+
+    "\22\0\2\7\3\0\2\7\4\0\1\7\1\40\6\7"+
+    "\7\0\2\7\3\0\2\7\4\0\2\7\1\41\5\7"+
+    "\33\0\1\20\15\0\1\6\30\0\1\27\24\0\1\42"+
+    "\34\0\1\43\1\44\23\0\2\34\3\0\2\34\4\0"+
+    "\10\34\7\0\2\7\3\0\2\7\4\0\4\7\1\45"+
+    "\3\7\7\0\2\7\3\0\2\7\4\0\2\7\1\46"+
+    "\5\7\7\0\2\7\3\0\2\7\4\0\5\7\1\47"+
+    "\2\7\7\0\2\7\3\0\2\7\4\0\5\7\1\50"+
+    "\2\7\7\0\2\7\3\0\2\7\1\0\1\51\2\0"+
+    "\10\7\7\0\2\7\3\0\2\7\4\0\1\52\7\7"+
+    "\7\0\2\7\3\0\2\7\1\0\1\53\2\0\10\7"+
+    "\7\0\2\7\3\0\2\7\4\0\1\7\1\54\6\7"+
+    "\7\0\2\7\3\0\2\7\4\0\7\7\1\55\6\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[528];
+    int [] result = new int[728];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -165,12 +177,12 @@ class LEXER {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\3\0\1\11\4\1\1\11\3\1\1\11\2\1\2\11"+
-    "\2\1\1\11\1\1\2\11\6\1\1\11\2\1\1\11"+
-    "\2\1";
+    "\5\0\1\11\2\1\1\11\3\1\1\11\2\1\1\11"+
+    "\2\1\2\11\2\1\3\11\4\1\2\11\2\1\3\11"+
+    "\4\1\1\11\1\1\1\11\2\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[35];
+    int [] result = new int[45];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -245,6 +257,9 @@ class LEXER {
    */
   private int zzFinalHighSurrogate = 0;
 
+  /* user code: */
+    String str = "";
+
 
   /**
    * Creates a new scanner
@@ -266,7 +281,7 @@ class LEXER {
     char [] map = new char[0x110000];
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
-    while (i < 128) {
+    while (i < 168) {
       int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);
@@ -620,77 +635,107 @@ class LEXER {
             { System.out.println("ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);
             } 
             // fall through
-          case 16: break;
+          case 22: break;
           case 2: 
             { System.out.println("Id " + yytext());
             } 
             // fall through
-          case 17: break;
+          case 23: break;
           case 3: 
             { System.out.println("Number "+yytext());
             } 
             // fall through
-          case 18: break;
-          case 4: 
-            { System.out.println("operador " + yytext());
-            } 
-            // fall through
-          case 19: break;
-          case 5: 
-            { 
-            } 
-            // fall through
-          case 20: break;
-          case 6: 
-            { System.out.print(yytext());
-            } 
-            // fall through
-          case 21: break;
-          case 7: 
-            { System.out.println(yytext());
-            } 
-            // fall through
-          case 22: break;
-          case 8: 
-            { yybegin(1);
-            } 
-            // fall through
-          case 23: break;
-          case 9: 
-            { System.out.println("linecomment");yybegin(COMMENTLINE);
-            } 
-            // fall through
           case 24: break;
-          case 10: 
-            { System.out.println("initcomment");yybegin(COMMENTPAR);
+          case 4: 
+            { yybegin(CONSTSTR);
             } 
             // fall through
           case 25: break;
-          case 11: 
-            { System.out.println("Entero "+yytext());
+          case 5: 
+            { System.out.println("operador " + yytext());
             } 
             // fall through
           case 26: break;
-          case 12: 
-            { System.out.println("Pointer integer "+yytext());
+          case 6: 
+            { 
             } 
             // fall through
           case 27: break;
-          case 13: 
-            { System.out.println("Caracter "+yytext());
+          case 7: 
+            { System.out.print(yytext());
             } 
             // fall through
           case 28: break;
-          case 14: 
-            { System.out.println("Pointer character "+yytext());
+          case 8: 
+            { System.out.println(yytext());
             } 
             // fall through
           case 29: break;
-          case 15: 
-            { System.out.println("String "+yytext());
+          case 9: 
+            { yybegin(1);
             } 
             // fall through
           case 30: break;
+          case 10: 
+            { str += yytext();
+            } 
+            // fall through
+          case 31: break;
+          case 11: 
+            { System.out.println("str = "+str);str = "";yybegin(1);
+            } 
+            // fall through
+          case 32: break;
+          case 12: 
+            { System.out.println("linecomment");yybegin(COMMENTLINE);
+            } 
+            // fall through
+          case 33: break;
+          case 13: 
+            { System.out.println("initcomment");yybegin(COMMENTPAR);
+            } 
+            // fall through
+          case 34: break;
+          case 14: 
+            { str += yytext().charAt(1);
+            } 
+            // fall through
+          case 35: break;
+          case 15: 
+            { System.out.println("%d");str += yytext();
+            } 
+            // fall through
+          case 36: break;
+          case 16: 
+            { System.out.println("%c");str += yytext();
+            } 
+            // fall through
+          case 37: break;
+          case 17: 
+            { System.out.println("Entero "+yytext());
+            } 
+            // fall through
+          case 38: break;
+          case 18: 
+            { System.out.println("Caracter "+yytext());
+            } 
+            // fall through
+          case 39: break;
+          case 19: 
+            { System.out.println("Pointer integer "+yytext());
+            } 
+            // fall through
+          case 40: break;
+          case 20: 
+            { System.out.println("Pointer character "+yytext());
+            } 
+            // fall through
+          case 41: break;
+          case 21: 
+            { System.out.println("String "+yytext());
+            } 
+            // fall through
+          case 42: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }

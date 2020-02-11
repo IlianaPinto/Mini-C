@@ -8,12 +8,25 @@
 %standalone
 %state COMMENTPAR
 %state COMMENTLINE
+%state CONSTSTR
+%state PRINTF
+
+%{
+    String str = "";
+%}
 
 letter = [a-zA-Z]|"_"
 number = [0-9]
 id = {letter}({letter}|{number})*
 numbers = {number}+
 n = {numbers}{id}
+conststr = "\"" 
+marks = "\\""\""
+pfint = "%d"
+pfchar = "%c"
+
+toro = [\s]|[\S]
+
 
 //comments
 initcomment = "/*"
@@ -43,7 +56,10 @@ opless = "<"
 oplesseq = "<="
 opgraeq = ">="
 
-
+//commands
+parinit = "("
+parfin = ")"
+//printf = "printf"{spaces}*{parinit}{toro}*{parfin}
 
 %%
 <YYINITIAL>
@@ -57,6 +73,7 @@ opgraeq = ">="
     {pinteger}      {System.out.println("Pointer integer "+yytext());}
     {pcharacter}    {System.out.println("Pointer character "+yytext());}
     {numbers}       {System.out.println("Number "+yytext());}
+    //{printf}        {System.out.println(yytext());}
     {spaces}        {}
     {id}            {System.out.println("Id " + yytext());}
     {n}             {System.out.println("ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);}
@@ -70,6 +87,7 @@ opgraeq = ">="
     {opless}        {System.out.println("operador " + yytext());}
     {oplesseq}      {System.out.println("operador " + yytext());}
     {opgraeq}       {System.out.println("operador " + yytext());}
+    {conststr}      {yybegin(CONSTSTR);}
     .               {System.out.println("ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);}
 }
 
@@ -84,4 +102,13 @@ opgraeq = ">="
 {
     {newline}   {yybegin(1);}
     .           {System.out.println(yytext());}
+}
+
+<CONSTSTR>
+{
+    {conststr}      {System.out.println("str = "+str);str = "";yybegin(1);}
+    {marks}         {str += yytext().charAt(1);}
+    {pfint}         {System.out.println("%d");str += yytext();}
+    {pfchar}        {System.out.println("%c");str += yytext();}   
+    .               {str += yytext();}
 }
