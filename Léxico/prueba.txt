@@ -1,3 +1,9 @@
-printf "Pues aqui va una string! %c" 
-a = 4 "sanjnjdnfjdf)sfdsfds"
+printf ("Pues aqui va una string! %c",'y');
+a = 'a';
+for(int i = 0; i < 100; i++){
+    if(a == 0){
+        b = b +1;
+    }
+}
+
 
