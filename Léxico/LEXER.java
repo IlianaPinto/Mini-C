@@ -36,12 +36,13 @@ class LEXER {
   private static final String ZZ_CMAP_PACKED = 
     "\11\0\1\14\1\13\1\42\1\42\1\41\22\0\1\14\1\36\1\3"+
     "\2\0\1\6\1\0\1\4\1\40\1\40\1\12\1\34\1\40\1\34"+
-    "\1\0\1\11\12\2\1\0\1\40\1\37\1\35\1\37\2\0\22\1"+
-    "\1\23\7\1\1\0\1\5\2\0\1\1\1\0\1\21\1\1\1\10"+
-    "\1\7\1\30\1\25\1\24\1\20\1\15\2\1\1\27\1\1\1\16"+
-    "\1\31\1\32\1\1\1\22\1\33\1\17\2\1\1\26\3\1\1\40"+
-    "\1\0\1\40\7\0\1\42\32\0\1\0\u15df\0\1\0\u097f\0\13\0"+
-    "\35\0\1\42\1\42\5\0\1\0\57\0\1\0\u0fa0\0\1\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\ud00f\0";
+    "\1\0\1\11\12\2\1\40\1\40\1\37\1\35\1\37\1\34\1\0"+
+    "\22\1\1\23\7\1\1\0\1\5\2\0\1\1\1\0\1\21\1\1"+
+    "\1\10\1\7\1\30\1\25\1\24\1\20\1\15\2\1\1\27\1\1"+
+    "\1\16\1\31\1\32\1\1\1\22\1\33\1\17\2\1\1\26\3\1"+
+    "\1\40\1\0\1\40\7\0\1\42\32\0\1\0\u15df\0\1\0\u097f\0"+
+    "\13\0\35\0\1\42\1\42\5\0\1\0\57\0\1\0\u0fa0\0\1\0"+
+    "\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\ud00f\0";
 
   /** 
    * Translates characters to character classes
@@ -298,7 +299,7 @@ class LEXER {
     char [] map = new char[0x110000];
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
-    while (i < 192) {
+    while (i < 194) {
       int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);

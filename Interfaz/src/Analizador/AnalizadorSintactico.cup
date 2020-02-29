@@ -1,0 +1,50 @@
+package Analizador;
+import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+
+//***************Codigo del parser*******************
+parser code 
+{:
+    ArrayList<String> errores = new ArrayList();
+    
+    public void syntax_error(Symbol s){
+        String lex = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        String err = "Error sintáctico: " + lex + " fila: " + fila + " columna: " + columna;
+
+        System.out.println(err);
+        errores.add(err);
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
+        String lex = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        String err = "Error sintáctico, pánico: " + lex + " fila: " + fila + " columna: " + columna;
+
+        System.out.println(err);
+        errores.add(err);
+    }
+:}
+
+//**************Acciones gramaticales************
+action code 
+{:
+
+:}
+
+//***************Declaraciones*****************
+//terminales
+terminal        INTEGER, CHARACTER, STRING, FOR, WHILE, IF, PRINTF, SCANF, KEYINIT,
+                KEYFIN, PARINIT, PARFIN, COMMA, SEMICOLON, COLON, NUMBERS, IDE, CONSTCHAR,
+                CONSTSTR, OPMULT, OPDIV, OPSUM, OPASIG, OPCOMP, OPDIF, OPGRA, OPLESS,OPGRAEP,
+                OPLESSEQ, OPCOND;
+
+non terminal    INICIO, for, while, if, printf, scanf, boolexp, aritmeticexp;
+
+start with INICIO;
+
+INICIO::= for:f OPASIG | OPCOND;
+
+for::= IDE;

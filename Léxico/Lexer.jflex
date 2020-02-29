@@ -60,6 +60,7 @@ opgra = ">"
 opless = "<"
 oplesseq = "<="
 opgraeq = ">="
+opcond = "?"
 
 //delimiters
 keyinit = "{"
@@ -68,6 +69,7 @@ parinit = "("
 parfin = ")"
 comma = ","
 semicolon = ";"
+colon = ":"
 
 %%
 <YYINITIAL>
@@ -92,6 +94,7 @@ semicolon = ";"
     {parfin}        {System.out.println("Delimeter: " + yytext());}
     {comma}         {System.out.println("Delimeter: " + yytext());}
     {semicolon}     {System.out.println("Delimeter: " + yytext());}
+    {colon}         {System.out.println("Delimeter: " + yytext());}
     //variables
     {numbers}       {System.out.println("Number: "+yytext());}
     {id}            {System.out.println("Id: " + yytext());}
@@ -110,6 +113,7 @@ semicolon = ";"
     {opless}        {System.out.println("operador: " + yytext());}
     {oplesseq}      {System.out.println("operador: " + yytext());}
     {opgraeq}       {System.out.println("operador: " + yytext());}
+    {opcond}        {System.out.println("operador: " + yytext());}
 
     .               {System.out.println("ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);}
 }
