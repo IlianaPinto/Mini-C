@@ -32,8 +32,13 @@ public class ASintactico extends java_cup.runtime.lr_parser {
   /** Production table. */
   protected static final short _production_table[][] = 
     unpackFromStrings(new String[] {
-    "\000\004\000\002\002\004\000\002\002\004\000\002\002" +
-    "\003\000\002\003\003" });
+    "\000\024\000\002\002\004\000\002\002\011\000\002\003" +
+    "\003\000\002\003\002\000\002\011\012\000\002\006\004" +
+    "\000\002\006\006\000\002\006\002\000\002\004\003\000" +
+    "\002\015\004\000\002\016\005\000\002\016\005\000\002" +
+    "\016\002\000\002\017\004\000\002\020\005\000\002\020" +
+    "\005\000\002\020\002\000\002\021\003\000\002\021\003" +
+    "\000\002\021\005" });
 
   /** Access to production table. */
   public short[][] production_table() {return _production_table;}
@@ -41,9 +46,35 @@ public class ASintactico extends java_cup.runtime.lr_parser {
   /** Parse-action table. */
   protected static final short[][] _action_table = 
     unpackFromStrings(new String[] {
-    "\000\007\000\006\024\004\041\005\001\002\000\004\032" +
-    "\ufffe\001\002\000\004\002\uffff\001\002\000\004\032\011" +
-    "\001\002\000\004\002\010\001\002\000\004\002\001\001" +
+    "\000\056\000\004\004\004\001\002\000\004\007\007\001" +
+    "\002\000\004\002\006\001\002\000\004\002\001\001\002" +
+    "\000\004\020\010\001\002\000\004\021\011\001\002\000" +
+    "\004\016\012\001\002\000\006\012\015\017\ufffe\001\002" +
+    "\000\004\017\060\001\002\000\004\017\uffff\001\002\000" +
+    "\004\020\016\001\002\000\010\020\024\025\017\026\022" +
+    "\001\002\000\014\021\uffef\031\uffef\032\uffef\033\uffef\040" +
+    "\uffef\001\002\000\010\021\ufff5\033\053\040\052\001\002" +
+    "\000\004\021\ufff9\001\002\000\014\021\ufff0\031\ufff0\032" +
+    "\ufff0\033\ufff0\040\ufff0\001\002\000\014\021\ufff1\031\043" +
+    "\032\044\033\ufff1\040\ufff1\001\002\000\010\020\024\025" +
+    "\017\026\022\001\002\000\004\021\026\001\002\000\004" +
+    "\016\027\001\002\000\006\012\015\017\ufffe\001\002\000" +
+    "\004\017\031\001\002\000\006\013\032\017\ufffa\001\002" +
+    "\000\006\012\015\016\035\001\002\000\004\017\ufffd\001" +
+    "\002\000\004\017\ufffc\001\002\000\006\012\015\017\ufffe" +
+    "\001\002\000\004\017\037\001\002\000\004\017\ufffb\001" +
+    "\002\000\004\021\041\001\002\000\014\021\uffee\031\uffee" +
+    "\032\uffee\033\uffee\040\uffee\001\002\000\010\021\ufff4\033" +
+    "\ufff4\040\ufff4\001\002\000\010\020\024\025\017\026\022" +
+    "\001\002\000\010\020\024\025\017\026\022\001\002\000" +
+    "\014\021\ufff1\031\043\032\044\033\ufff1\040\ufff1\001\002" +
+    "\000\010\021\ufff2\033\ufff2\040\ufff2\001\002\000\014\021" +
+    "\ufff1\031\043\032\044\033\ufff1\040\ufff1\001\002\000\010" +
+    "\021\ufff3\033\ufff3\040\ufff3\001\002\000\004\021\ufff8\001" +
+    "\002\000\010\020\024\025\017\026\022\001\002\000\010" +
+    "\020\024\025\017\026\022\001\002\000\010\021\ufff5\033" +
+    "\053\040\052\001\002\000\004\021\ufff7\001\002\000\010" +
+    "\021\ufff5\033\053\040\052\001\002\000\004\021\ufff6\001" +
     "\002\000\004\002\000\001\002" });
 
   /** Access to parse-action table. */
@@ -52,8 +83,24 @@ public class ASintactico extends java_cup.runtime.lr_parser {
   /** <code>reduce_goto</code> table. */
   protected static final short[][] _reduce_table = 
     unpackFromStrings(new String[] {
-    "\000\007\000\006\002\006\003\005\001\001\000\002\001" +
+    "\000\056\000\004\002\004\001\001\000\002\001\001\000" +
+    "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
+    "\001\001\000\002\001\001\000\006\003\012\011\013\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
+    "\000\012\004\024\015\020\017\017\021\022\001\001\000" +
+    "\002\001\001\000\004\016\050\001\001\000\002\001\001" +
+    "\000\002\001\001\000\004\020\041\001\001\000\010\015" +
+    "\037\017\017\021\022\001\001\000\002\001\001\000\002" +
+    "\001\001\000\006\003\027\011\013\001\001\000\002\001" +
+    "\001\000\004\006\032\001\001\000\004\011\033\001\001" +
+    "\000\002\001\001\000\002\001\001\000\006\003\035\011" +
+    "\013\001\001\000\002\001\001\000\002\001\001\000\002" +
+    "\001\001\000\002\001\001\000\002\001\001\000\004\021" +
+    "\046\001\001\000\004\021\044\001\001\000\004\020\045" +
+    "\001\001\000\002\001\001\000\004\020\047\001\001\000" +
+    "\002\001\001\000\002\001\001\000\006\017\055\021\022" +
+    "\001\001\000\006\017\053\021\022\001\001\000\004\016" +
+    "\054\001\001\000\002\001\001\000\004\016\056\001\001" +
     "\000\002\001\001\000\002\001\001" });
 
   /** Access to <code>reduce_goto</code> table. */
@@ -159,32 +206,173 @@ class CUP$ASintactico$actions {
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 1: // INICIO ::= for OPASIG 
+          case 1: // INICIO ::= INTEGER MAIN PARINIT PARFIN KEYINIT statement KEYFIN 
             {
               Object RESULT =null;
-		int fleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)).left;
-		int fright = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)).right;
-		Object f = (Object)((java_cup.runtime.Symbol) CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)).value;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("INICIO",0, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("INICIO",0, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-6)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 2: // INICIO ::= OPCOND 
+          case 2: // statement ::= if 
             {
               Object RESULT =null;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("INICIO",0, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("statement",1, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 3: // for ::= IDE 
+          case 3: // statement ::= 
             {
               Object RESULT =null;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("for",1, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("statement",1, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 4: // if ::= IF PARINIT exp PARFIN KEYINIT statement KEYFIN t 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("if",7, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-7)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 5: // t ::= ELSE if 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("t",4, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 6: // t ::= ELSE KEYINIT statement KEYFIN 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("t",4, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-3)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 7: // t ::= 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("t",4, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 8: // exp ::= aritmeticexp 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("exp",2, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 9: // aritmeticexp ::= ta arp 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("aritmeticexp",11, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 10: // arp ::= OPSUM ta arp 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("arp",12, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-2)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 11: // arp ::= OPLESS ta arp 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("arp",12, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-2)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 12: // arp ::= 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("arp",12, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 13: // ta ::= fa tap 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("ta",13, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 14: // tap ::= OPMULT fa tap 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("tap",14, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-2)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 15: // tap ::= OPDIV fa tap 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("tap",14, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-2)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 16: // tap ::= 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("tap",14, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 17: // fa ::= IDE 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("fa",15, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 18: // fa ::= NUM 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("fa",15, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+            }
+          return CUP$ASintactico$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 19: // fa ::= PARINIT aritmeticexp PARFIN 
+            {
+              Object RESULT =null;
+
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("fa",15, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-2)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 

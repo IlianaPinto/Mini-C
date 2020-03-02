@@ -1,1 +1,11 @@
-if a = b;
+
+
+int main () {
+	if( a + b ){
+	
+	} else if(4 * 5 / 2){
+		if(a){}
+	} else {
+
+	}
+}

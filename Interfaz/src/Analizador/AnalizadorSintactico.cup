@@ -36,15 +36,33 @@ action code
 
 //***************Declaraciones*****************
 //terminales
-terminal        INTEGER, CHARACTER, STRING, FOR, WHILE, IF, PRINTF, SCANF, KEYINIT,
-                KEYFIN, PARINIT, PARFIN, COMMA, SEMICOLON, COLON, NUMBERS, IDE, CONSTCHAR,
+terminal        INTEGER, CHARACTER, STRING, MAIN, FOR, WHILE, IF, ELSE, PRINTF, SCANF, KEYINIT,
+                KEYFIN, PARINIT, PARFIN, COMMA, SEMICOLON, COLON, NUM, IDE, CONSTCHAR,
                 CONSTSTR, OPMULT, OPDIV, OPSUM, OPASIG, OPCOMP, OPDIF, OPGRA, OPLESS,OPGRAEP,
                 OPLESSEQ, OPCOND;
 
-non terminal    INICIO, for, while, if, printf, scanf, boolexp, aritmeticexp;
+non terminal    INICIO, statement, exp, sp, t, for, while, if, printf, scanf, boolexp, aritmeticexp, arp, ta, tap, fa;
 
 start with INICIO;
 
-INICIO::= for:f OPASIG | OPCOND;
+INICIO::= INTEGER MAIN PARINIT PARFIN KEYINIT statement KEYFIN;
 
-for::= IDE;
+statement::= if | ;
+
+if::= IF PARINIT exp PARFIN KEYINIT statement KEYFIN t;
+
+t::= ELSE if | ELSE KEYINIT statement KEYFIN | ;
+
+exp::= aritmeticexp;
+
+aritmeticexp::= ta arp;
+
+arp::= OPSUM ta arp | OPLESS ta arp | ;
+
+ta::= fa tap;
+
+tap::= OPMULT fa tap | OPDIV fa tap | ;
+
+fa::= IDE | NUM | PARINIT aritmeticexp PARFIN;
+
+

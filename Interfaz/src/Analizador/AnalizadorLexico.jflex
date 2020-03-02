@@ -46,8 +46,10 @@ integer = "int"
 character = "char"
 string = "String" 
 cif = "if"
+celse = "else"
 cwhile = "while"
 cfor = "for"
+cmain = "main"
     //commands
 printf = "printf"
 scanf = "scanf"
@@ -89,8 +91,10 @@ colon = ":"
     {cfor}          {System.out.println("cicle: "+yytext());return new Symbol(Sym.FOR, yycolumn, yyline, yytext());}
     {cwhile}        {System.out.println("cicle: "+yytext());return new Symbol(Sym.WHILE, yycolumn, yyline, yytext());}
     {cif}           {System.out.println("condition: "+yytext());return new Symbol(Sym.IF, yycolumn, yyline, yytext());}
+    {celse}         {System.out.println("condition: "+yytext());return new Symbol(Sym.ELSE, yycolumn, yyline, yytext());}
     {printf}        {System.out.println(yytext());return new Symbol(Sym.PRINTF, yycolumn, yyline, yytext());}
     {scanf}         {System.out.println(yytext());return new Symbol(Sym.SCANF, yycolumn, yyline, yytext());}
+    {cmain}         {System.out.println(yytext());return new Symbol(Sym.MAIN, yycolumn, yyline, yytext());}
     //delimiters
     {keyinit}       {System.out.println("Delimeter: " + yytext());return new Symbol(Sym.KEYINIT, yycolumn, yyline, yytext());}
     {keyfin}        {System.out.println("Delimeter: " + yytext());return new Symbol(Sym.KEYFIN, yycolumn, yyline, yytext());}
@@ -100,7 +104,7 @@ colon = ":"
     {semicolon}     {System.out.println("Delimeter: " + yytext());return new Symbol(Sym.SEMICOLON, yycolumn, yyline, yytext());}
     {colon}         {System.out.println("Delimeter: " + yytext());return new Symbol(Sym.COLON, yycolumn, yyline, yytext());}
     //variables
-    {numbers}       {System.out.println("Number: "+yytext());return new Symbol(Sym.NUMBERS, yycolumn, yyline, yytext());}
+    {numbers}       {System.out.println("Number: "+yytext());return new Symbol(Sym.NUM, yycolumn, yyline, yytext());}
     {id}            {System.out.println("Id: " + yytext());return new Symbol(Sym.IDE, yycolumn, yyline, yytext());}
     {n}             {System.out.println("ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);}
     {constchar}     {System.out.println("constchar: "+yytext());return new Symbol(Sym.CONSTCHAR, yycolumn, yyline, yytext());}
