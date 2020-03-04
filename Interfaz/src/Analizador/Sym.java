@@ -8,40 +8,42 @@ package Analizador;
 /** CUP generated class containing symbol constants. */
 public class Sym {
   /* terminals */
-  public static final int OPLESSEQ = 32;
-  public static final int IDE = 20;
-  public static final int OPCOMP = 27;
-  public static final int SEMICOLON = 17;
-  public static final int ELSE = 9;
-  public static final int CHARACTER = 3;
-  public static final int WHILE = 7;
-  public static final int SCANF = 11;
-  public static final int CONSTSTR = 22;
-  public static final int OPDIV = 24;
-  public static final int PARINIT = 14;
-  public static final int OPGRAEP = 31;
-  public static final int IF = 8;
-  public static final int COLON = 18;
-  public static final int PRINTF = 10;
-  public static final int NUM = 19;
-  public static final int OPGRA = 29;
-  public static final int OPMULT = 23;
-  public static final int KEYINIT = 12;
-  public static final int STRING = 4;
-  public static final int COMMA = 16;
-  public static final int EOF = 0;
-  public static final int MAIN = 5;
-  public static final int OPDIF = 28;
-  public static final int OPCOND = 33;
-  public static final int CONSTCHAR = 21;
-  public static final int error = 1;
-  public static final int KEYFIN = 13;
-  public static final int OPASIG = 26;
-  public static final int INTEGER = 2;
-  public static final int OPLESS = 30;
   public static final int OPSUM = 25;
+  public static final int OPCOND = 33;
+  public static final int SCANF = 11;
+  public static final int OPLESS = 30;
+  public static final int INTEGER = 2;
   public static final int FOR = 6;
+  public static final int OPCOMP = 27;
+  public static final int CHARACTER = 3;
+  public static final int SEMICOLON = 17;
+  public static final int AND = 34;
+  public static final int OR = 35;
+  public static final int COMMA = 16;
+  public static final int OPASIG = 26;
   public static final int PARFIN = 15;
+  public static final int NUM = 19;
+  public static final int MAIN = 5;
+  public static final int IF = 8;
+  public static final int EOF = 0;
+  public static final int PARINIT = 14;
+  public static final int error = 1;
+  public static final int OPGRA = 29;
+  public static final int CONSTSTR = 22;
+  public static final int KEYFIN = 13;
+  public static final int OPDIV = 24;
+  public static final int IDE = 20;
+  public static final int PRINTF = 10;
+  public static final int KEYINIT = 12;
+  public static final int COLON = 18;
+  public static final int ELSE = 9;
+  public static final int WHILE = 7;
+  public static final int OPDIF = 28;
+  public static final int OPGRAEP = 31;
+  public static final int OPLESSEQ = 32;
+  public static final int STRING = 4;
+  public static final int CONSTCHAR = 21;
+  public static final int OPMULT = 23;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -76,7 +78,9 @@ public class Sym {
   "OPLESS",
   "OPGRAEP",
   "OPLESSEQ",
-  "OPCOND"
+  "OPCOND",
+  "AND",
+  "OR"
   };
 }
 

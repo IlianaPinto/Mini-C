@@ -67,6 +67,8 @@ opless = "<"
 oplesseq = "<="
 opgraeq = ">="
 opcond = "?"
+opand = "&&"
+opor = "||"
 
 //delimiters
 keyinit = "{"
@@ -122,6 +124,8 @@ colon = ":"
     {oplesseq}      {System.out.println("operador: " + yytext());return new Symbol(Sym.OPLESSEQ, yycolumn, yyline, yytext());}
     {opgraeq}       {System.out.println("operador: " + yytext());return new Symbol(Sym.OPGRAEP, yycolumn, yyline, yytext());}
     {opcond}        {System.out.println("operador: " + yytext());return new Symbol(Sym.OPCOND, yycolumn, yyline, yytext());}
+    {opand}         {System.out.println("operador: " + yytext());return new Symbol(Sym.AND, yycolumn, yyline, yytext());}
+    {opor}          {System.out.println("operador: " + yytext());return new Symbol(Sym.OR, yycolumn, yyline, yytext());}
 
     .               {System.out.println("ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);}
 }

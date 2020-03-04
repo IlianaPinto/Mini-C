@@ -39,30 +39,66 @@ action code
 terminal        INTEGER, CHARACTER, STRING, MAIN, FOR, WHILE, IF, ELSE, PRINTF, SCANF, KEYINIT,
                 KEYFIN, PARINIT, PARFIN, COMMA, SEMICOLON, COLON, NUM, IDE, CONSTCHAR,
                 CONSTSTR, OPMULT, OPDIV, OPSUM, OPASIG, OPCOMP, OPDIF, OPGRA, OPLESS,OPGRAEP,
-                OPLESSEQ, OPCOND;
+                OPLESSEQ, OPCOND, AND, OR;
 
-non terminal    INICIO, statement, exp, sp, t, for, while, if, printf, scanf, boolexp, aritmeticexp, arp, ta, tap, fa;
+non terminal    INICIO, statement, exp, sp, t, for, forid, expfor, while, if, printf, scanf,
+                finalexpression, arp, ta, tap, fa, oprel, asig, type, declaration,
+                dectype, decid, decasig, decright, decrightp;
 
 start with INICIO;
 
 INICIO::= INTEGER MAIN PARINIT PARFIN KEYINIT statement KEYFIN;
 
-statement::= if | ;
+//sentencias
+statement::= if statement |
+             while statement |
+             exp statement | 
+             declaration statement |
+             for statement |
+             asig statement | ;
 
-if::= IF PARINIT exp PARFIN KEYINIT statement KEYFIN t;
+//if
+if::= IF PARINIT finalexpression PARFIN KEYINIT statement KEYFIN t;
 
 t::= ELSE if | ELSE KEYINIT statement KEYFIN | ;
 
-exp::= aritmeticexp;
+//while
+while::= WHILE PARINIT finalexpression PARFIN KEYINIT statement KEYFIN;
 
-aritmeticexp::= ta arp;
+//for
+for::= FOR PARINIT forid  exp finalexpression PARFIN KEYINIT statement KEYFIN;
 
-arp::= OPSUM ta arp | OPLESS ta arp | ;
+forid::=   IDE SEMICOLON | declaration;
+
+//expresiones aritméticas
+exp::= finalexpression SEMICOLON;
+
+finalexpression::= ta arp;
+
+arp::= OPSUM ta arp | ;
 
 ta::= fa tap;
 
-tap::= OPMULT fa tap | OPDIV fa tap | ;
+tap::= OPMULT fa tap | OPDIV fa tap | oprel fa tap | ;
 
-fa::= IDE | NUM | PARINIT aritmeticexp PARFIN;
+fa::= IDE | NUM | CONSTCHAR | PARINIT finalexpression PARFIN;
+
+oprel::= OPGRA | OPGRAEP | OPLESS | OPLESSEQ | OPASIG | OPCOMP | AND | OR;
+
+
+//Asignaciones 
+
+type::= INTEGER | CHARACTER;
+
+//Declaraciones
+declaration::= type decid SEMICOLON ;
+
+decid::= IDE decasig | IDE;
+
+decasig::= COMMA decid | OPASIG decright;
+
+decright::= finalexpression COMMA decid| finalexpression;
+
+
 
 
