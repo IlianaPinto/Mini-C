@@ -15,12 +15,12 @@ public class GeneradorSintactico {
         String opciones[] = new String[7];
 
         opciones[0] = "-destdir";
-        opciones[1] = "C:\\Users\\HP\\Desktop\\Periodo actual\\Compi\\Mini-C\\Interfaz\\src\\Analizador";
+        opciones[1] = "src/Analizador";
         opciones[2] = "-symbols";
         opciones[3] = "Sym";
         opciones[4] = "-parser";
         opciones[5] = "ASintactico";
-        opciones[6] = "C:\\Users\\HP\\Desktop\\Periodo actual\\Compi\\Mini-C\\Interfaz\\src\\Analizador\\AnalizadorSintactico.cup";
+        opciones[6] = "src/Analizador/AnalizadorSintactico.cup";
         
         try {
             java_cup.Main.main(opciones);
