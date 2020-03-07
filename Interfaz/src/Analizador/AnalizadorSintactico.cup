@@ -43,7 +43,7 @@ terminal        INTEGER, CHARACTER, STRING, MAIN, FOR, WHILE, IF, ELSE, PRINTF, 
 
 non terminal    INICIO, statement, exp, sp, t, for, forid, expfor, while, if, printf, scanf,
                 finalexpression, arp, ta, tap, fa, oprel, asig, type, declaration,
-                dectype, decid, decasig, decright, decrightp;
+                dectype, decid, decasig, decright, decrightp, params, paramsb;
 
 start with INICIO;
 
@@ -55,7 +55,8 @@ statement::= if statement |
              exp statement | 
              declaration statement |
              for statement |
-             asig statement | ;
+             asig statement |
+             printf statement | ;
 
 //if
 if::= IF PARINIT finalexpression PARFIN KEYINIT statement KEYFIN t;
@@ -69,6 +70,9 @@ while::= WHILE PARINIT finalexpression PARFIN KEYINIT statement KEYFIN;
 for::= FOR PARINIT forid  exp finalexpression PARFIN KEYINIT statement KEYFIN;
 
 forid::=   IDE SEMICOLON | declaration;
+
+//printf
+printf::= PRINTF PARINIT CONSTSTR COMMA params PARFIN SEMICOLON;
 
 //expresiones aritméticas
 exp::= finalexpression SEMICOLON;
@@ -98,6 +102,11 @@ decid::= IDE decasig | IDE;
 decasig::= COMMA decid | OPASIG decright;
 
 decright::= finalexpression COMMA decid| finalexpression;
+
+//Parámetros
+params::= IDE paramsb;
+
+paramsb::= COMMA params | ;
 
 
 
