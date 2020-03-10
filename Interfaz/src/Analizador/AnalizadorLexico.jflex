@@ -44,15 +44,16 @@ spaces = [ \n\t\r]
 //reserved word
 integer = "int"
 character = "char"
-string = "String" 
 cif = "if"
 celse = "else"
 cwhile = "while"
 cfor = "for"
 cmain = "main"
-    //commands
+creturn = "return"
+//commands
 printf = "printf"
 scanf = "scanf"
+cvoid = "void"
 
 //arithmetic operators
 opsum = "+"|"-"
@@ -89,14 +90,15 @@ colon = ":"
     //reserved
     {integer}       {System.out.println("Entero: "+yytext()); return new Symbol(Sym.INTEGER, yycolumn, yyline, yytext());}
     {character}     {System.out.println("Caracter: "+yytext());return new Symbol(Sym.CHARACTER, yycolumn, yyline, yytext());}
-    {string}        {System.out.println("String: "+yytext());return new Symbol(Sym.STRING, yycolumn, yyline, yytext());}
     {cfor}          {System.out.println("cicle: "+yytext());return new Symbol(Sym.FOR, yycolumn, yyline, yytext());}
     {cwhile}        {System.out.println("cicle: "+yytext());return new Symbol(Sym.WHILE, yycolumn, yyline, yytext());}
     {cif}           {System.out.println("condition: "+yytext());return new Symbol(Sym.IF, yycolumn, yyline, yytext());}
     {celse}         {System.out.println("condition: "+yytext());return new Symbol(Sym.ELSE, yycolumn, yyline, yytext());}
-    {printf}        {System.out.println(yytext());return new Symbol(Sym.PRINTF, yycolumn, yyline, yytext());}
-    {scanf}         {System.out.println(yytext());return new Symbol(Sym.SCANF, yycolumn, yyline, yytext());}
-    {cmain}         {System.out.println(yytext());return new Symbol(Sym.MAIN, yycolumn, yyline, yytext());}
+    {printf}        {System.out.println("comando: "+yytext());return new Symbol(Sym.PRINTF, yycolumn, yyline, yytext());}
+    {scanf}         {System.out.println("comando: "+yytext());return new Symbol(Sym.SCANF, yycolumn, yyline, yytext());}
+    {cmain}         {System.out.println("reservada: "+yytext());return new Symbol(Sym.MAIN, yycolumn, yyline, yytext());}
+    {cvoid}         {System.out.println("reservada: "+yytext());return new Symbol(Sym.VOID, yycolumn, yyline, yytext());}
+    {creturn}       {System.out.println("reservada: "+yytext());return new Symbol(Sym.RETURN, yycolumn, yyline, yytext());}
     //delimiters
     {keyinit}       {System.out.println("Delimeter: " + yytext());return new Symbol(Sym.KEYINIT, yycolumn, yyline, yytext());}
     {keyfin}        {System.out.println("Delimeter: " + yytext());return new Symbol(Sym.KEYFIN, yycolumn, yyline, yytext());}

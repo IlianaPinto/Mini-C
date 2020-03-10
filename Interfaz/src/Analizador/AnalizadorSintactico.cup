@@ -36,18 +36,19 @@ action code
 
 //***************Declaraciones*****************
 //terminales
-terminal        INTEGER, CHARACTER, STRING, MAIN, FOR, WHILE, IF, ELSE, PRINTF, SCANF, KEYINIT,
-                KEYFIN, PARINIT, PARFIN, COMMA, SEMICOLON, COLON, NUM, IDE, CONSTCHAR,
+terminal        INTEGER, CHARACTER, MAIN, VOID, RETURN, FOR, WHILE, IF, ELSE, PRINTF, SCANF,
+                KEYINIT, KEYFIN, PARINIT, PARFIN, COMMA, SEMICOLON, COLON, NUM, IDE, CONSTCHAR,
                 CONSTSTR, OPMULT, OPDIV, OPSUM, OPASIG, OPCOMP, OPDIF, OPGRA, OPLESS,OPGRAEP,
                 OPLESSEQ, OPCOND, AND, OR;
 
-non terminal    INICIO, statement, exp, sp, t, for, forid, expfor, while, if, printf, scanf,
-                finalexpression, arp, ta, tap, fa, oprel, asig, type, declaration,
-                dectype, decid, decasig, decright, decrightp, params, paramsb;
+non terminal    INICIO, statement, exp, t, for, forid, while, if, printf, scanf,
+                finalexpression, arp, ta, tap, fa, oprel, asig, type, typeap, declaration,
+                decid, decasig, decright, params, paramsb, par, paramst, paramst2, typev,
+                func, funcs, funcb;
 
 start with INICIO;
 
-INICIO::= INTEGER MAIN PARINIT PARFIN KEYINIT statement KEYFIN;
+INICIO::= funcs INTEGER MAIN PARINIT PARFIN KEYINIT statement KEYFIN funcs;
 
 //sentencias
 statement::= if statement |
@@ -56,7 +57,8 @@ statement::= if statement |
              declaration statement |
              for statement |
              asig statement |
-             printf statement | ;
+             printf statement | 
+             RETURN | ;
 
 //if
 if::= IF PARINIT finalexpression PARFIN KEYINIT statement KEYFIN t;
@@ -87,15 +89,15 @@ tap::= OPMULT fa tap | OPDIV fa tap | oprel fa tap | ;
 
 fa::= IDE | NUM | CONSTCHAR | PARINIT finalexpression PARFIN;
 
-oprel::= OPGRA | OPGRAEP | OPLESS | OPLESSEQ | OPASIG | OPCOMP | AND | OR;
-
+oprel::= OPGRA | OPGRAEP | OPLESS | OPLESSEQ | OPASIG | OPDIF | OPCOMP | AND | OR;
 
 //Asignaciones 
+type::= INTEGER typeap| CHARACTER typeap;
 
-type::= INTEGER | CHARACTER;
+typeap::= OPMULT | ;
 
 //Declaraciones
-declaration::= type decid SEMICOLON ;
+declaration::= type decid SEMICOLON;
 
 decid::= IDE decasig | IDE;
 
@@ -104,10 +106,24 @@ decasig::= COMMA decid | OPASIG decright;
 decright::= finalexpression COMMA decid| finalexpression;
 
 //Parámetros
+typev::= VOID | CHARACTER typeap;
+
+par::= paramst | ;
+
+paramst::= type paramst2;
+
+paramst2::= COMMA paramst | IDE COMMA paramst | IDE | ;
+
 params::= IDE paramsb;
 
 paramsb::= COMMA params | ;
 
+//Funciones
+funcs::= func funcs | ;
+
+func::= typev IDE PARINIT par PARFIN funcb; 
+
+funcb::= KEYINIT statement KEYFIN | SEMICOLON;
 
 
 
