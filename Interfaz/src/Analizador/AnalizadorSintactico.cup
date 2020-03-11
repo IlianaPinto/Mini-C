@@ -36,19 +36,19 @@ action code
 
 //***************Declaraciones*****************
 //terminales
-terminal        INTEGER, CHARACTER, MAIN, VOID, RETURN, FOR, WHILE, IF, ELSE, PRINTF, SCANF,
+terminal        INTEGER, CHARACTER, VOID, RETURN, FOR, WHILE, IF, ELSE, PRINTF, SCANF,
                 KEYINIT, KEYFIN, PARINIT, PARFIN, COMMA, SEMICOLON, COLON, NUM, IDE, CONSTCHAR,
-                CONSTSTR, OPMULT, OPDIV, OPSUM, OPASIG, OPCOMP, OPDIF, OPGRA, OPLESS,OPGRAEP,
-                OPLESSEQ, OPCOND, AND, OR;
+                CONSTSTR, OPMULT, OPDIV, OPSUM, OPINC, OPASIG, OPCOMP, OPDIF, OPGRA, OPLESS,OPGRAEP,
+                OPLESSEQ, OPCOND, AND, OR, AMP;
 
-non terminal    INICIO, statement, exp, t, for, forid, while, if, printf, scanf,
+non terminal    INICIO, statement, exp, t, for, forid, while, if, printf, scanf, amp,
                 finalexpression, arp, ta, tap, fa, oprel, asig, type, typeap, declaration,
-                decid, decasig, decright, params, paramsb, par, paramst, paramst2, typev,
-                func, funcs, funcb;
+                decid, decasig, params, paramsb, par, paramst, paramst2, typev,
+                func, funcs, funcb, funccall, increment;
 
 start with INICIO;
 
-INICIO::= funcs INTEGER MAIN PARINIT PARFIN KEYINIT statement KEYFIN funcs;
+INICIO::= funcs;
 
 //sentencias
 statement::= if statement |
@@ -57,8 +57,10 @@ statement::= if statement |
              declaration statement |
              for statement |
              asig statement |
-             printf statement | 
-             RETURN | ;
+             printf statement |
+             scanf | 
+             RETURN exp |
+             funccall statement | ;
 
 //if
 if::= IF PARINIT finalexpression PARFIN KEYINIT statement KEYFIN t;
@@ -71,12 +73,17 @@ while::= WHILE PARINIT finalexpression PARFIN KEYINIT statement KEYFIN;
 //for
 for::= FOR PARINIT forid  exp finalexpression PARFIN KEYINIT statement KEYFIN;
 
-forid::=   IDE SEMICOLON | declaration;
+forid::= IDE SEMICOLON | declaration;
 
 //printf
 printf::= PRINTF PARINIT CONSTSTR COMMA params PARFIN SEMICOLON;
 
-//expresiones aritméticas
+//scanf
+scanf::= SCANF PARINIT CONSTSTR COMMA amp IDE PARFIN SEMICOLON;
+
+amp::= AMP | ;
+
+//expresiones aritméticas y booleanas
 exp::= finalexpression SEMICOLON;
 
 finalexpression::= ta arp;
@@ -85,28 +92,35 @@ arp::= OPSUM ta arp | ;
 
 ta::= fa tap;
 
-tap::= OPMULT fa tap | OPDIV fa tap | oprel fa tap | ;
+tap::= OPMULT fa tap | OPDIV fa tap | oprel fa tap | OPCOND fa tap COLON fa tap | ;
 
-fa::= IDE | NUM | CONSTCHAR | PARINIT finalexpression PARFIN;
+fa::= IDE increment| OPINC IDE| NUM | CONSTCHAR | PARINIT finalexpression PARFIN;
+
+increment::= OPINC | ;
 
 oprel::= OPGRA | OPGRAEP | OPLESS | OPLESSEQ | OPASIG | OPDIF | OPCOMP | AND | OR;
 
 //Asignaciones 
-type::= INTEGER typeap| CHARACTER typeap;
+type::= INTEGER typeap | CHARACTER typeap;
 
 typeap::= OPMULT | ;
 
 //Declaraciones
-declaration::= type decid SEMICOLON;
+/*declaration::= type decid SEMICOLON;
 
 decid::= IDE decasig | IDE;
 
 decasig::= COMMA decid | OPASIG decright;
 
-decright::= finalexpression COMMA decid| finalexpression;
+decright::= finalexpression COMMA decid| finalexpression;*/
+declaration::= decid SEMICOLON;
+
+decid::= decid COMMA IDE decasig | type IDE decasig;
+
+decasig::= OPASIG finalexpression | ;
 
 //Parámetros
-typev::= VOID | CHARACTER typeap;
+typev::= VOID | type ;
 
 par::= paramst | ;
 
@@ -114,7 +128,7 @@ paramst::= type paramst2;
 
 paramst2::= COMMA paramst | IDE COMMA paramst | IDE | ;
 
-params::= IDE paramsb;
+params::= finalexpression paramsb;
 
 paramsb::= COMMA params | ;
 
@@ -124,6 +138,9 @@ funcs::= func funcs | ;
 func::= typev IDE PARINIT par PARFIN funcb; 
 
 funcb::= KEYINIT statement KEYFIN | SEMICOLON;
+
+//Funccall
+funccall::= IDE PARINIT params PARFIN SEMICOLON;
 
 
 

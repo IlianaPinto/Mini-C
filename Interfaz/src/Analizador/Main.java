@@ -131,7 +131,9 @@ public class Main extends javax.swing.JFrame {
             //File file = new File("C:\\Users\\HP\\Desktop\\Periodo actual\\Compi\\Mini-C\\Interfaz\\src\\Analizador\\prb.txt");
             Lexer lexer = new Lexer(new FileReader(fichero));
             ASintactico p = new ASintactico(lexer);
+            System.out.println("**************************************************");
             p.parse();
+            System.out.println("**************************************************");
         } catch (Exception e) {
             System.out.println("ERROR");
             e.printStackTrace();

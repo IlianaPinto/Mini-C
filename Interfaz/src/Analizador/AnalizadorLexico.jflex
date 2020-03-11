@@ -48,7 +48,7 @@ cif = "if"
 celse = "else"
 cwhile = "while"
 cfor = "for"
-cmain = "main"
+//cmain = "main"
 creturn = "return"
 //commands
 printf = "printf"
@@ -57,9 +57,11 @@ cvoid = "void"
 
 //arithmetic operators
 opsum = "+"|"-"
+opinc = "++"|"--"
 opmult = "*"
 opdiv = "/"
 opasig = "="
+opamp = "&"
 //boolean operators
 opcomp = "=="
 opdif = "!="
@@ -96,7 +98,7 @@ colon = ":"
     {celse}         {System.out.println("condition: "+yytext());return new Symbol(Sym.ELSE, yycolumn, yyline, yytext());}
     {printf}        {System.out.println("comando: "+yytext());return new Symbol(Sym.PRINTF, yycolumn, yyline, yytext());}
     {scanf}         {System.out.println("comando: "+yytext());return new Symbol(Sym.SCANF, yycolumn, yyline, yytext());}
-    {cmain}         {System.out.println("reservada: "+yytext());return new Symbol(Sym.MAIN, yycolumn, yyline, yytext());}
+   //{cmain}         {System.out.println("reservada: "+yytext());return new Symbol(Sym.MAIN, yycolumn, yyline, yytext());}
     {cvoid}         {System.out.println("reservada: "+yytext());return new Symbol(Sym.VOID, yycolumn, yyline, yytext());}
     {creturn}       {System.out.println("reservada: "+yytext());return new Symbol(Sym.RETURN, yycolumn, yyline, yytext());}
     //delimiters
@@ -118,6 +120,7 @@ colon = ":"
     {opmult}        {System.out.println("operador: " + yytext());return new Symbol(Sym.OPMULT, yycolumn, yyline, yytext());}
     {opdiv}         {System.out.println("operador: " + yytext());return new Symbol(Sym.OPDIV, yycolumn, yyline, yytext());}
     {opsum}         {System.out.println("operador: " + yytext());return new Symbol(Sym.OPSUM, yycolumn, yyline, yytext());}
+    {opinc}         {System.out.println("operador: " + yytext());return new Symbol(Sym.OPINC, yycolumn, yyline, yytext());}
     {opasig}        {System.out.println("operador: " + yytext());return new Symbol(Sym.OPASIG, yycolumn, yyline, yytext());}
     {opcomp}        {System.out.println("operador: " + yytext());return new Symbol(Sym.OPCOMP, yycolumn, yyline, yytext());}
     {opdif}         {System.out.println("operador: " + yytext());return new Symbol(Sym.OPDIF, yycolumn, yyline, yytext());}
@@ -128,8 +131,9 @@ colon = ":"
     {opcond}        {System.out.println("operador: " + yytext());return new Symbol(Sym.OPCOND, yycolumn, yyline, yytext());}
     {opand}         {System.out.println("operador: " + yytext());return new Symbol(Sym.AND, yycolumn, yyline, yytext());}
     {opor}          {System.out.println("operador: " + yytext());return new Symbol(Sym.OR, yycolumn, yyline, yytext());}
+    {opamp}          {System.out.println("operador: " + yytext());return new Symbol(Sym.AMP, yycolumn, yyline, yytext());}
 
-    .               {System.out.println("ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);}
+    .               {System.out.println("ERROR LEXICO "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);}
 }
 
 <COMMENTPAR>
