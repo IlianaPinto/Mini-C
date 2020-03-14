@@ -7,6 +7,7 @@ parser code
 {:
     ArrayList<String> errores = new ArrayList();
     
+    @Override
     public void syntax_error(Symbol s){
         String lex = s.value.toString();
         int fila = s.right;
@@ -17,6 +18,7 @@ parser code
         errores.add(err);
     }
 
+    @Override
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
         String lex = s.value.toString();
         int fila = s.right;
