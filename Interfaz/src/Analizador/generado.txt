@@ -1,0 +1,74 @@
+digraph G{
+"1_Tipo"-> "2_void";
+
+"4_par"-> "5_Tipo";
+
+"5_Tipo" -> "3_int";
+
+4_par"null;
+
+"Inicio" -> "7_Funcion";
+
+"7_Funcion" -> "1_Tipo";
+
+"7_Funcion"-> "8_ID";
+
+"8_ID"-> "9_main";
+
+"7_Funcion" -> "10_(";
+
+"7_Funcion" -> "4_par";
+
+"12_Tipo"-> "11_int";
+
+"15_par"-> "16_Tipo";
+
+"16_Tipo" -> "14_char";
+
+15_par"null;
+
+"17_par"-> "18_Tipo";
+
+"18_Tipo" -> "13_int";
+
+17_par"null;
+
+"Inicio" -> "19_Funcion";
+
+"19_Funcion" -> "12_Tipo";
+
+"19_Funcion"-> "20_ID";
+
+"20_ID"-> "21_a";
+
+"19_Funcion" -> "22_(";
+
+"19_Funcion" -> "17_par";
+
+"24_Tipo"-> "23_char";
+
+"27_par"-> "28_Tipo";
+
+"28_Tipo" -> "26_int";
+
+27_par"null;
+
+"29_par"-> "30_Tipo";
+
+"30_Tipo" -> "25_int";
+
+29_par"null;
+
+"Inicio" -> "31_Funcion";
+
+"31_Funcion" -> "24_Tipo";
+
+"31_Funcion"-> "32_ID";
+
+"32_ID"-> "33_b";
+
+"31_Funcion" -> "34_(";
+
+"31_Funcion" -> "29_par";
+
+}

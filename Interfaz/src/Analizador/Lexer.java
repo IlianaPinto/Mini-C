@@ -698,7 +698,7 @@ class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 52: break;
           case 4: 
-            { str = "";yybegin(CONSTSTR);return new Symbol(Sym.CONSTSTR, yycolumn, yyline, str);
+            { str = "";yybegin(CONSTSTR);/*System.out.println("ESTR: "+str);return new Symbol(Sym.CONSTSTR, yycolumn, yyline, str);*/
             } 
             // fall through
           case 53: break;
@@ -803,7 +803,7 @@ class Lexer implements java_cup.runtime.Scanner {
             // fall through
           case 73: break;
           case 25: 
-            { System.out.println("str = "+str);yybegin(1);
+            { System.out.println("str = "+str);yybegin(1);return new Symbol(Sym.CONSTSTR, yycolumn, yyline, str);
             } 
             // fall through
           case 74: break;

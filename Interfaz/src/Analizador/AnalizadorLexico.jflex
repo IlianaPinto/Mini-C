@@ -114,7 +114,7 @@ colon = ":"
     {id}            {System.out.println("Id: " + yytext());return new Symbol(Sym.IDE, yycolumn, yyline, yytext());}
     {n}             {System.out.println("ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);}
     {constchar}     {System.out.println("constchar: "+yytext());return new Symbol(Sym.CONSTCHAR, yycolumn, yyline, yytext());}
-    {conststr}      { str = "";yybegin(CONSTSTR);return new Symbol(Sym.CONSTSTR, yycolumn, yyline, str);}
+    {conststr}      {str = "";yybegin(CONSTSTR);/*System.out.println("ESTR: "+str);return new Symbol(Sym.CONSTSTR, yycolumn, yyline, str);*/}
     {spaces}        {}
     //operators
     {opmult}        {System.out.println("operador: " + yytext());return new Symbol(Sym.OPMULT, yycolumn, yyline, yytext());}
@@ -151,7 +151,7 @@ colon = ":"
 
 <CONSTSTR>
 {
-    {conststr}      {System.out.println("str = "+str);yybegin(1);}
+    {conststr}      {System.out.println("str = "+str);yybegin(1);return new Symbol(Sym.CONSTSTR, yycolumn, yyline, str);}
     {marks}         {str += yytext().charAt(1);}
     {pfint}         {System.out.println("%d");str += yytext();}
     {pfchar}        {System.out.println("%c");str += yytext();}   
