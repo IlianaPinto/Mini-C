@@ -1,5 +1,5 @@
 package Analizador;
-import java_cup.runtime.Symbol;
+import java_cup.runtime.*;
 import java.util.ArrayList;
 
 //***************Codigo del parser*******************
@@ -14,7 +14,7 @@ parser code
         int columna = s.left;
         String err = "Error sintáctico: " + lex + " fila: " + fila + " columna: " + columna;
 
-        System.out.println(err);
+        System.err.println(err);
         errores.add(err);
     }
 
@@ -25,7 +25,7 @@ parser code
         int columna = s.left;
         String err = "Error sintáctico, pánico: " + lex + " fila: " + fila + " columna: " + columna;
 
-        System.out.println(err);
+        System.err.println(err);
         errores.add(err);
     }
 :}
@@ -59,8 +59,8 @@ INICIO::= funcs:f
         token++;
         TreeNode tn = new TreeNode("Inicio", null, token);
         tn.agregarHijo(f);
-        tn.fix();
-        tn.print();
+        //tn.fix();
+        //tn.print();
         RESULT = tn;
     :};
 
@@ -145,7 +145,17 @@ funccall:f statement:st
     tn.agregarHijo(f);
     tn.agregarHijo(st);
     RESULT = tn;
-:} | 
+:} |
+error 
+{:
+    token++;
+    TreeNode tn = new TreeNode("Statement",null,token);
+    tn.agregarHijo("Error",token);
+    RESULT = tn;
+    System.err.println("No se esperaba ese token");
+    System.err.println(RESULT);
+:}
+| 
 {:
     token++;
     RESULT = new TreeNode("#", null, token);
@@ -435,12 +445,16 @@ typev::= VOID:v
 par::= paramst:p
 {: 
     parNum++;
-    TreeNode tn = new TreeNode("Parametros", null , parNum);
-    tn.agregarHijo(p); 
+    /*TreeNode tn = new TreeNode("Parametros", null , parNum);
+    tn.agregarHijo(p);*/    
     RESULT = p;
 
 :} 
-|  ;
+|  
+{:
+    token++;
+    RESULT = new TreeNode("#", null, token);
+:};
 
 paramst::= type:t paramst2:p
 {:  
