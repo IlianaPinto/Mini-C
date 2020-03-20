@@ -5,6 +5,8 @@
  */
 package Analizador;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
@@ -63,9 +65,30 @@ public class TreeNode {
         }else{
             pad = "null";
         }
+        if(!this.val.equals("#"))
         System.out.println("\""+pad+"\" -> \""+this.id+"_"+this.val+"\";");
         for (TreeNode hijo : hijos) {
             hijo.print();
+        }
+    }
+    
+    public void escribirArchivo(String v){
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            fichero = new FileWriter("src/Analizador/generado.txt");
+            pw = new PrintWriter(fichero);
+            pw.print(v);
+        } catch (Exception e) {
+            //e.printStackTrace();
+        } finally {
+            try {
+                if (null != fichero) {
+                    fichero.close();
+                }
+            } catch (Exception e2) {
+                //e2.printStackTrace();
+            }
         }
     }
 }

@@ -46,10 +46,12 @@ terminal String         INTEGER, CHARACTER, VOID, RETURN, FOR, WHILE, IF, ELSE, 
                         CONSTSTR, OPMULT, OPDIV, OPSUM, OPINC, OPASIG, OPCOMP, OPDIF, OPGRA, OPLESS,OPGRAEP,
                         OPLESSEQ, OPCOND, AND, OR, AMP;
 
-non terminal TreeNode   INICIO, statement, exp, t, for, forid, while, if, printf, scanf, amp,
+non terminal TreeNode   INICIO, statement, exp, t, for, forid, while, if, printf, printfp, scanf, amp,
                         finalexpression, arp, ta, tap, fa, oprel, asig, type, typeap, declaration,
                         decid, decasig, params, paramsb, par, paramst, paramst2, typev,
-                        func, funcs, funcb, funccall, increment;
+                        func, funcs, funcb, funccall, increment, paramsI;
+
+precedence nonassoc ELSE;
 
 start with INICIO;
 
@@ -59,8 +61,10 @@ INICIO::= funcs:f
         token++;
         TreeNode tn = new TreeNode("Inicio", null, token);
         tn.agregarHijo(f);
-        //tn.fix();
-        //tn.print();
+        tn.print();
+        for(int i = 0; i < errores.size(); i++){
+            System.out.println("Error: " + errores.get(i));
+        }
         RESULT = tn;
     :};
 
@@ -145,12 +149,14 @@ funccall:f statement:st
     tn.agregarHijo(f);
     tn.agregarHijo(st);
     RESULT = tn;
-:} |
-error 
+:}
+| error statement:st 
 {:
     token++;
     TreeNode tn = new TreeNode("Statement",null,token);
+    token++;
     tn.agregarHijo("Error",token);
+    tn.agregarHijo(st);
     RESULT = tn;
     System.err.println("No se esperaba ese token");
     System.err.println(RESULT);
@@ -163,9 +169,35 @@ error
 ;
 
 //if
-if::= IF PARINIT finalexpression PARFIN KEYINIT statement KEYFIN t;
+if::= IF PARINIT finalexpression:f PARFIN KEYINIT statement:s KEYFIN t:t1 
+{:
+    token++;
+    TreeNode tn = new TreeNode("IF", null, token);
+    tn.agregarHijo(f);
+    tn.agregarHijo(s);
+    tn.agregarHijo(t1);
+    RESULT = tn;
+:};
 
-t::= ELSE if | ELSE KEYINIT statement KEYFIN | ;
+t::= ELSE if:i
+{:
+    token++;
+    TreeNode tn = new TreeNode("Else", null, token);
+    tn.agregarHijo(i);
+    RESULT = tn;
+:}
+| ELSE KEYINIT statement:st KEYFIN 
+{:
+    token++;
+    TreeNode tn = new TreeNode("Else", null, token);
+    tn.agregarHijo(st);
+    RESULT = tn;
+:} 
+| 
+{:
+    token++;
+    RESULT = new TreeNode("#", null, token);
+:};
 
 //while
 while::= WHILE PARINIT finalexpression:f PARFIN KEYINIT statement:st KEYFIN
@@ -178,12 +210,50 @@ while::= WHILE PARINIT finalexpression:f PARFIN KEYINIT statement:st KEYFIN
 :};
 
 //for
-for::= FOR PARINIT forid  exp finalexpression PARFIN KEYINIT statement KEYFIN;
+for::= FOR PARINIT forid:f exp:e finalexpression:fe PARFIN KEYINIT statement:st KEYFIN 
+{:
+    token++;
+    TreeNode tn = new TreeNode("For", null, token);
+    tn.agregarHijo(f);
+    tn.agregarHijo(e);
+    tn.agregarHijo(fe);
+    tn.agregarHijo(st);
+    RESULT = tn;
+:};
 
-forid::= IDE SEMICOLON | declaration;
+forid::= IDE:i SEMICOLON 
+{:
+    token++;
+    TreeNode tn = new TreeNode("ID", null, token);
+    token++;
+    tn.agregarHijo(i, token);
+    RESULT = tn;
+:} 
+| declaration:d
+{:
+    RESULT = d;
+:};
 
 //printf
-printf::= PRINTF PARINIT CONSTSTR COMMA params PARFIN SEMICOLON;
+printf::= PRINTF PARINIT CONSTSTR:c printfp:pf PARFIN SEMICOLON
+{:
+    token++;
+    TreeNode tn = new TreeNode("Printf", null, token);
+    token++;
+    tn.agregarHijo(c, token);
+    tn.agregarHijo(pf);
+    RESULT = tn;
+:};
+
+printfp::= COMMA finalexpression:f
+{:
+    RESULT = f;
+:} 
+| 
+{:
+    token++;
+    RESULT = new TreeNode("#", null, token);
+:} ;
 
 //scanf
 scanf::= SCANF PARINIT CONSTSTR:cs COMMA amp:a IDE:i PARFIN SEMICOLON 
@@ -230,7 +300,9 @@ finalexpression::= ta:t arp:ar
 arp::= OPSUM:s ta:t arp:ar 
 {:
     token++;
-    TreeNode tn = new TreeNode(s, null, token);
+    TreeNode tn = new TreeNode("OPSUM", null, token);
+    token++;
+    tn.agregarHijo(s, token);
     tn.agregarHijo(t);
     tn.agregarHijo(ar);
     RESULT = tn;
@@ -253,7 +325,9 @@ ta::= fa:f tap:t
 tap::= OPMULT:o fa:f tap:t 
 {:
     token++;
-    TreeNode tn = new TreeNode(o, null, token);
+    TreeNode tn = new TreeNode("Mult", null, token);
+    token++;
+    tn.agregarHijo(o, token);
     tn.agregarHijo(f);
     tn.agregarHijo(t);
     RESULT = tn;
@@ -261,7 +335,9 @@ tap::= OPMULT:o fa:f tap:t
 | OPDIV:o fa:f tap:t 
 {:
     token++;
-    TreeNode tn = new TreeNode(o, null, token);
+    TreeNode tn = new TreeNode("Div", null, token);
+    token++;
+    tn.agregarHijo(o, token);
     tn.agregarHijo(f);
     tn.agregarHijo(t);
     RESULT = tn;
@@ -269,8 +345,8 @@ tap::= OPMULT:o fa:f tap:t
 | oprel:o fa:f tap:t 
 {:
     token++;
-    TreeNode tn = new TreeNode(o.getVal(), null, token);
-    //tn.agregarHijo(o);
+    TreeNode tn = new TreeNode("oprel", null, token);
+    tn.agregarHijo(o);
     tn.agregarHijo(f);
     tn.agregarHijo(t);
     RESULT = tn;
@@ -421,11 +497,55 @@ typeap::= OPMULT:o
     RESULT = new TreeNode("#", null, token);
 :} ;
 
-declaration::= decid SEMICOLON;
+declaration::= decid:d SEMICOLON 
+{:
+    token++;
+    TreeNode tn = new TreeNode("Declaracion", null, token);
+    tn.agregarHijo(d);
+    RESULT = tn;
+:};
 
-decid::= decid COMMA IDE decasig | type IDE decasig;
+decid::= decid:d COMMA IDE:i decasig:de
+{:
+    token++;
+    TreeNode tn = new TreeNode("Dec", null, token);
+    tn.agregarHijo(d);
+    token++;
+    TreeNode id = new TreeNode("ID", null, token);
+    token++;
+    id.agregarHijo(i, token);
+    tn.agregarHijo(id);
+    tn.agregarHijo(de);
+    RESULT = tn;
+:} 
+| type:t IDE:i decasig:d 
+{:
+    token++;
+    TreeNode tn = new TreeNode("D", null, token);
+    tn.agregarHijo(t);
+    token++;
+    TreeNode id = new TreeNode("ID", null, token);
+    token++;
+    id.agregarHijo(i, token);
+    tn.agregarHijo(id);
+    tn.agregarHijo(d);
+    RESULT = tn;
+:};
 
-decasig::= OPASIG finalexpression | ;
+decasig::= OPASIG:o finalexpression:f 
+{:
+    token++;
+    TreeNode tn = new TreeNode("oprel", null, token);
+    token++;
+    tn.agregarHijo(o, token);
+    tn.agregarHijo(f);
+    RESULT = tn;
+:} 
+| 
+{: 
+    token++;
+    RESULT = new TreeNode("#", null, token);
+:} ;
 
 //Parámetros
 typev::= VOID:v
@@ -445,8 +565,6 @@ typev::= VOID:v
 par::= paramst:p
 {: 
     parNum++;
-    /*TreeNode tn = new TreeNode("Parametros", null , parNum);
-    tn.agregarHijo(p);*/    
     RESULT = p;
 
 :} 
@@ -495,9 +613,35 @@ paramst2::= COMMA paramst:p
 :}
 ;
 
-params::= finalexpression paramsb;
+paramsI::= params:p
+{:
+    parNum++;
+    RESULT = p;
+:} 
+| 
+{:
+    token++;
+    RESULT = new TreeNode("#", null, token);
+:};
 
-paramsb::= COMMA params | ;
+params::= finalexpression:f paramsb:p 
+{:
+    token++;
+    TreeNode tn = new TreeNode("par", null, parNum);
+    tn.agregarHijo(f);
+    tn.agregarHijo(p);
+    RESULT = tn;
+:};
+
+paramsb::= COMMA params:p 
+{:
+    RESULT = p;
+:} 
+| 
+{:
+    token++;
+    RESULT = new TreeNode("#", null, token);
+:};
 
 //Funciones
 funcs::= func:f
@@ -530,6 +674,16 @@ func::= typev:t IDE:i PARINIT:pi par:p PARFIN:pf funcb:fb
     tn.agregarHijo(p);
     tn.agregarHijo(fb);
     RESULT = tn;
+:}
+|error
+{:
+    token++;
+    TreeNode tn = new TreeNode("Statement",null,token);
+    token++;
+    tn.agregarHijo("Error",token);
+    RESULT = tn;
+    System.err.println("No se esperaba ese token");
+    System.err.println(RESULT);
 :}; 
 
 funcb::= KEYINIT statement:st KEYFIN
@@ -543,4 +697,15 @@ funcb::= KEYINIT statement:st KEYFIN
 :};
 
 //Funccall
-funccall::= IDE PARINIT params PARFIN SEMICOLON;
+funccall::= IDE:i PARINIT paramsI:p PARFIN SEMICOLON 
+{:
+    token++;
+    TreeNode tn = new TreeNode("Funccall", null, token);
+    token++;
+    TreeNode id = new TreeNode("ID", null, token);
+    token++;
+    id.agregarHijo(i, token);
+    tn.agregarHijo(id);
+    tn.agregarHijo(p);
+    RESULT = tn;
+:};
