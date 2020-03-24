@@ -65,7 +65,7 @@ public class TreeNode {
         }else{
             pad = "null";
         }
-        if(!this.val.equals("#"))
+        if(!this.val.equals("#") && !this.val.equals("Inicio"))
         System.out.println("\""+pad+"\" -> \""+this.id+"_"+this.val+"\";");
         for (TreeNode hijo : hijos) {
             hijo.print();

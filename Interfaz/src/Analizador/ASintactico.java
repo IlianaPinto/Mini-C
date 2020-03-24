@@ -413,10 +413,15 @@ public class ASintactico extends java_cup.runtime.lr_parser {
     
     @Override
     public void syntax_error(Symbol s){
-        String lex = s.value.toString();
+        String lex = s.value != null ? s.value.toString() : getToken(s.sym);
         int fila = s.right;
         int columna = s.left;
-        String err = "Error sintáctico: " + lex + " fila: " + fila + " columna: " + columna;
+        String err = "";
+        if(lex.equals("EOF")){
+            err = "Error sintáctico: Se esperaba el token }";
+        } else {
+            err = "Error sintáctico: " +  " fila: " + fila + " columna: " + columna + ", No se esperaba el token: " + lex;
+        }
 
         System.err.println(err);
         errores.add(err);
@@ -424,14 +429,34 @@ public class ASintactico extends java_cup.runtime.lr_parser {
 
     @Override
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
-        String lex = s.value.toString();
+        String lex = s.value != null ? s.value.toString() : getToken(s.sym);
         int fila = s.right;
         int columna = s.left;
-        String err = "Error sintáctico, pánico: " + lex + " fila: " + fila + " columna: " + columna;
-
+        String err = "";
+        if(lex.equals("EOF")){
+            err = "";
+        }else{
+            err = "Error sintáctico, pánico: " + " fila: " + fila + " columna: " + columna + ", No se esperaba el token: " + lex;
+        }
         System.err.println(err);
         errores.add(err);
     }
+
+    public String getToken(int id){
+        String value = Sym.terminalNames[id];
+        switch(id){
+            case Sym.KEYINIT:
+                return "{";
+            case Sym.KEYFIN:
+                return "}";
+            case Sym.PARINIT:
+                return "(";
+            case Sym.PARFIN:
+                return ")";
+            default:
+                return value;
+        }
+    }   
 
 
 /** Cup generated class to encapsulate user supplied action code.*/
@@ -491,6 +516,9 @@ class CUP$ASintactico$actions {
         token++;
         TreeNode tn = new TreeNode("Inicio", null, token);
         tn.agregarHijo(f);
+        /*for(TreeNode h : f.getHijos()){
+            tn.agregarHijo(h);
+        }*/
         tn.print();
         for(int i = 0; i < errores.size(); i++){
             System.out.println("Error: " + errores.get(i));
@@ -515,7 +543,10 @@ class CUP$ASintactico$actions {
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(i);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("statement",1, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
@@ -536,7 +567,10 @@ class CUP$ASintactico$actions {
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(w);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;        
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("statement",1, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
@@ -557,7 +591,10 @@ class CUP$ASintactico$actions {
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(e);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("statement",1, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
@@ -578,7 +615,10 @@ class CUP$ASintactico$actions {
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(d);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("statement",1, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
@@ -599,7 +639,10 @@ class CUP$ASintactico$actions {
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(f);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("statement",1, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
@@ -620,7 +663,10 @@ class CUP$ASintactico$actions {
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(a);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("statement",1, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
@@ -641,7 +687,10 @@ class CUP$ASintactico$actions {
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(p);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("statement",1, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
@@ -662,7 +711,10 @@ class CUP$ASintactico$actions {
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(s);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("statement",1, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
@@ -705,7 +757,10 @@ class CUP$ASintactico$actions {
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(f);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("statement",1, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
@@ -1030,7 +1085,10 @@ class CUP$ASintactico$actions {
 		
     token++;
     TreeNode tn = new TreeNode("Exp", null, token);
-    tn.agregarHijo(t);
+    //tn.agregarHijo(t);
+    for(TreeNode h : t.getHijos()){
+        tn.agregarHijo(h);
+    }
     tn.agregarHijo(ar);
     RESULT = tn;
 
@@ -1053,10 +1111,13 @@ class CUP$ASintactico$actions {
 		TreeNode ar = (TreeNode)((java_cup.runtime.Symbol) CUP$ASintactico$stack.peek()).value;
 		
     token++;
-    TreeNode tn = new TreeNode("OPSUM", null, token);
-    token++;
-    tn.agregarHijo(s, token);
-    tn.agregarHijo(t);
+    TreeNode tn = new TreeNode(s, null, token);
+    //token++;
+    //tn.agregarHijo(s, token);
+    //tn.agregarHijo(t);
+    for(TreeNode h : t.getHijos()){
+        tn.agregarHijo(h);
+    }
     tn.agregarHijo(ar);
     RESULT = tn;
 
@@ -1112,9 +1173,9 @@ class CUP$ASintactico$actions {
 		TreeNode t = (TreeNode)((java_cup.runtime.Symbol) CUP$ASintactico$stack.peek()).value;
 		
     token++;
-    TreeNode tn = new TreeNode("Mult", null, token);
-    token++;
-    tn.agregarHijo(o, token);
+    TreeNode tn = new TreeNode(o, null, token);
+    //token++;
+    //tn.agregarHijo(o, token);
     tn.agregarHijo(f);
     tn.agregarHijo(t);
     RESULT = tn;
@@ -1138,9 +1199,9 @@ class CUP$ASintactico$actions {
 		TreeNode t = (TreeNode)((java_cup.runtime.Symbol) CUP$ASintactico$stack.peek()).value;
 		
     token++;
-    TreeNode tn = new TreeNode("Div", null, token);
-    token++;
-    tn.agregarHijo(o, token);
+    TreeNode tn = new TreeNode(o, null, token);
+    //token++;
+    //tn.agregarHijo(o, token);
     tn.agregarHijo(f);
     tn.agregarHijo(t);
     RESULT = tn;
@@ -1164,8 +1225,8 @@ class CUP$ASintactico$actions {
 		TreeNode t = (TreeNode)((java_cup.runtime.Symbol) CUP$ASintactico$stack.peek()).value;
 		
     token++;
-    TreeNode tn = new TreeNode("oprel", null, token);
-    tn.agregarHijo(o);
+    TreeNode tn = new TreeNode(o.getVal(), null, token);
+    //tn.agregarHijo(o);
     tn.agregarHijo(f);
     tn.agregarHijo(t);
     RESULT = tn;
@@ -1561,7 +1622,10 @@ class CUP$ASintactico$actions {
 		
     token++;
     TreeNode tn = new TreeNode("Declaracion", null, token);
-    tn.agregarHijo(d);
+    //tn.agregarHijo(d);
+    for(TreeNode h : d.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("declaration",21, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
@@ -1584,7 +1648,11 @@ class CUP$ASintactico$actions {
 		
     token++;
     TreeNode tn = new TreeNode("Dec", null, token);
-    tn.agregarHijo(d);
+    //tn.agregarHijo(d);
+    for(TreeNode h : d.getHijos()){
+        tn.agregarHijo(h);
+    }
+    //
     token++;
     TreeNode id = new TreeNode("ID", null, token);
     token++;
@@ -1638,9 +1706,9 @@ class CUP$ASintactico$actions {
 		TreeNode f = (TreeNode)((java_cup.runtime.Symbol) CUP$ASintactico$stack.peek()).value;
 		
     token++;
-    TreeNode tn = new TreeNode("oprel", null, token);
-    token++;
-    tn.agregarHijo(o, token);
+    TreeNode tn = new TreeNode(o, null, token);
+    //token++;
+    //tn.agregarHijo(o, token);
     tn.agregarHijo(f);
     RESULT = tn;
 

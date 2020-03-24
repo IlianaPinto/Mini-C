@@ -9,10 +9,15 @@ parser code
     
     @Override
     public void syntax_error(Symbol s){
-        String lex = s.value.toString();
+        String lex = s.value != null ? s.value.toString() : getToken(s.sym);
         int fila = s.right;
         int columna = s.left;
-        String err = "Error sintáctico: " + lex + " fila: " + fila + " columna: " + columna;
+        String err = "";
+        if(lex.equals("EOF")){
+            err = "Error sintáctico: Se esperaba el token }";
+        } else {
+            err = "Error sintáctico: " +  " fila: " + fila + " columna: " + columna + ", No se esperaba el token: " + lex;
+        }
 
         System.err.println(err);
         errores.add(err);
@@ -20,14 +25,34 @@ parser code
 
     @Override
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
-        String lex = s.value.toString();
+        String lex = s.value != null ? s.value.toString() : getToken(s.sym);
         int fila = s.right;
         int columna = s.left;
-        String err = "Error sintáctico, pánico: " + lex + " fila: " + fila + " columna: " + columna;
-
+        String err = "";
+        if(lex.equals("EOF")){
+            err = "";
+        }else{
+            err = "Error sintáctico, pánico: " + " fila: " + fila + " columna: " + columna + ", No se esperaba el token: " + lex;
+        }
         System.err.println(err);
         errores.add(err);
     }
+
+    public String getToken(int id){
+        String value = Sym.terminalNames[id];
+        switch(id){
+            case Sym.KEYINIT:
+                return "{";
+            case Sym.KEYFIN:
+                return "}";
+            case Sym.PARINIT:
+                return "(";
+            case Sym.PARFIN:
+                return ")";
+            default:
+                return value;
+        }
+    }   
 :}
 
 //**************Acciones gramaticales************
@@ -61,6 +86,9 @@ INICIO::= funcs:f
         token++;
         TreeNode tn = new TreeNode("Inicio", null, token);
         tn.agregarHijo(f);
+        /*for(TreeNode h : f.getHijos()){
+            tn.agregarHijo(h);
+        }*/
         tn.print();
         for(int i = 0; i < errores.size(); i++){
             System.out.println("Error: " + errores.get(i));
@@ -74,7 +102,10 @@ statement::= if:i statement:st
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(i);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 :} |
 while:w statement:st
@@ -82,7 +113,10 @@ while:w statement:st
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(w);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;        
 :} |
 exp:e statement:st
@@ -90,7 +124,10 @@ exp:e statement:st
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(e);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 :} | 
 declaration:d statement:st 
@@ -98,7 +135,10 @@ declaration:d statement:st
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(d);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 :} |
 for:f statement:st
@@ -106,7 +146,10 @@ for:f statement:st
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(f);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 :} |
 asig:a statement:st
@@ -114,7 +157,10 @@ asig:a statement:st
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(a);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 :} |
 printf:p statement:st 
@@ -122,7 +168,10 @@ printf:p statement:st
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(p);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 :} |
 scanf:s statement:st
@@ -130,7 +179,10 @@ scanf:s statement:st
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(s);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 :} | 
 RETURN:r exp:e 
@@ -147,7 +199,10 @@ funccall:f statement:st
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     tn.agregarHijo(f);
-    tn.agregarHijo(st);
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 :}
 | error statement:st 
@@ -292,7 +347,10 @@ finalexpression::= ta:t arp:ar
 {:
     token++;
     TreeNode tn = new TreeNode("Exp", null, token);
-    tn.agregarHijo(t);
+    //tn.agregarHijo(t);
+    for(TreeNode h : t.getHijos()){
+        tn.agregarHijo(h);
+    }
     tn.agregarHijo(ar);
     RESULT = tn;
 :};
@@ -300,10 +358,13 @@ finalexpression::= ta:t arp:ar
 arp::= OPSUM:s ta:t arp:ar 
 {:
     token++;
-    TreeNode tn = new TreeNode("OPSUM", null, token);
-    token++;
-    tn.agregarHijo(s, token);
-    tn.agregarHijo(t);
+    TreeNode tn = new TreeNode(s, null, token);
+    //token++;
+    //tn.agregarHijo(s, token);
+    //tn.agregarHijo(t);
+    for(TreeNode h : t.getHijos()){
+        tn.agregarHijo(h);
+    }
     tn.agregarHijo(ar);
     RESULT = tn;
 :}
@@ -325,9 +386,9 @@ ta::= fa:f tap:t
 tap::= OPMULT:o fa:f tap:t 
 {:
     token++;
-    TreeNode tn = new TreeNode("Mult", null, token);
-    token++;
-    tn.agregarHijo(o, token);
+    TreeNode tn = new TreeNode(o, null, token);
+    //token++;
+    //tn.agregarHijo(o, token);
     tn.agregarHijo(f);
     tn.agregarHijo(t);
     RESULT = tn;
@@ -335,9 +396,9 @@ tap::= OPMULT:o fa:f tap:t
 | OPDIV:o fa:f tap:t 
 {:
     token++;
-    TreeNode tn = new TreeNode("Div", null, token);
-    token++;
-    tn.agregarHijo(o, token);
+    TreeNode tn = new TreeNode(o, null, token);
+    //token++;
+    //tn.agregarHijo(o, token);
     tn.agregarHijo(f);
     tn.agregarHijo(t);
     RESULT = tn;
@@ -345,8 +406,8 @@ tap::= OPMULT:o fa:f tap:t
 | oprel:o fa:f tap:t 
 {:
     token++;
-    TreeNode tn = new TreeNode("oprel", null, token);
-    tn.agregarHijo(o);
+    TreeNode tn = new TreeNode(o.getVal(), null, token);
+    //tn.agregarHijo(o);
     tn.agregarHijo(f);
     tn.agregarHijo(t);
     RESULT = tn;
@@ -501,7 +562,10 @@ declaration::= decid:d SEMICOLON
 {:
     token++;
     TreeNode tn = new TreeNode("Declaracion", null, token);
-    tn.agregarHijo(d);
+    //tn.agregarHijo(d);
+    for(TreeNode h : d.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 :};
 
@@ -509,7 +573,11 @@ decid::= decid:d COMMA IDE:i decasig:de
 {:
     token++;
     TreeNode tn = new TreeNode("Dec", null, token);
-    tn.agregarHijo(d);
+    //tn.agregarHijo(d);
+    for(TreeNode h : d.getHijos()){
+        tn.agregarHijo(h);
+    }
+    //
     token++;
     TreeNode id = new TreeNode("ID", null, token);
     token++;
@@ -535,9 +603,9 @@ decid::= decid:d COMMA IDE:i decasig:de
 decasig::= OPASIG:o finalexpression:f 
 {:
     token++;
-    TreeNode tn = new TreeNode("oprel", null, token);
-    token++;
-    tn.agregarHijo(o, token);
+    TreeNode tn = new TreeNode(o, null, token);
+    //token++;
+    //tn.agregarHijo(o, token);
     tn.agregarHijo(f);
     RESULT = tn;
 :} 
