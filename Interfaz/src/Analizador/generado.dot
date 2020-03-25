@@ -1,3 +1,4 @@
+digraph {
 "159_Inicio" -> "0_Funciones";
 "0_Funciones" -> "155_Funcion";
 "155_Funcion" -> "2_Tipo";
@@ -96,3 +97,4 @@
 "154_Statement" -> "148_Exp";
 "148_Exp" -> "143_Num";
 "143_Num" -> "144_0";
+}

@@ -14,69 +14,85 @@ import java.util.ArrayList;
  * @author HP
  */
 public class TreeNode {
+
     public String val = "";
     public TreeNode padre;
     public int id;
     public ArrayList<TreeNode> hijos = new ArrayList<>();
-    
-    TreeNode(String val, TreeNode padre, int id){
+
+    TreeNode(String val, TreeNode padre, int id) {
         this.val = val;
-        this.padre =  padre;
+        this.padre = padre;
         this.id = id;
     }
-    
-    public String getVal(){
+
+    public String getVal() {
         return this.val;
     }
-    
-    public ArrayList<TreeNode> getHijos(){
+
+    public ArrayList<TreeNode> getHijos() {
         return this.hijos;
     }
-    
-    public void agregarHijo(TreeNode hijo){
+
+    public void agregarHijo(TreeNode hijo) {
         hijo.setPadre(this);
         this.hijos.add(hijo);
     }
-    
-    public void agregarHijo(String val, int id){
+
+    public void agregarHijo(String val, int id) {
         hijos.add(new TreeNode(val, this, id));
     }
-    
-    public void setPadre(TreeNode tn){
+
+    public void setPadre(TreeNode tn) {
         this.padre = tn;
     }
-    
-    public void fix(){
-        for (TreeNode hijo : hijos) {
-            if(this.val.equals(hijo.getVal())){
-                for (TreeNode hijo1 : hijo.getHijos()) {
-                    agregarHijo(hijo1);
-                }
-                hijos.remove(hijo);
-            }
-        }
-    }
-    
-    public void print(){
+
+    public void print() {
         String pad = "";
-        if(this.padre != null){
+        if (this.padre != null) {
             pad += this.padre.id + "_";
             pad += this.padre.getVal();
-        }else{
+        } else {
             pad = "null";
+            limpiar("");
+            escribirArchivo("digraph {\n");
         }
-        if(!this.val.equals("#") && !this.val.equals("Inicio"))
-        System.out.println("\""+pad+"\" -> \""+this.id+"_"+this.val+"\";");
+        if (!this.val.equals("#") && !this.val.equals("Inicio")) {
+            String cadena = "\"" + pad + "\" -> \"" + this.id + "_" + this.val + "\";";
+            System.out.println(cadena);
+            cadena += "\n";
+            escribirArchivo(cadena);
+        }
         for (TreeNode hijo : hijos) {
             hijo.print();
         }
     }
-    
-    public void escribirArchivo(String v){
+
+    public void escribirArchivo(String v) {
         FileWriter fichero = null;
         PrintWriter pw = null;
         try {
-            fichero = new FileWriter("src/Analizador/generado.txt");
+            fichero = new FileWriter("src/Analizador/generado.dot", true);
+            pw = new PrintWriter(fichero);
+            pw.print(v);
+        } catch (Exception e) {
+            //e.printStackTrace();
+        } finally {
+            try {
+                if (null != fichero) {
+                    fichero.close();
+                }
+            } catch (Exception e2) {
+                //e2.printStackTrace();
+            }
+        }
+    }
+    
+    public void limpiar(String v) {
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            fichero = new FileWriter("src/Analizador/generado.dot");
             pw = new PrintWriter(fichero);
             pw.print(v);
         } catch (Exception e) {

@@ -520,6 +520,7 @@ class CUP$ASintactico$actions {
             tn.agregarHijo(h);
         }*/
         tn.print();
+        tn.escribirArchivo("}");
         for(int i = 0; i < errores.size(); i++){
             System.out.println("Error: " + errores.get(i));
         }

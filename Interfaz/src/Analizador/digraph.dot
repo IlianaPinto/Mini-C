@@ -1,0 +1,18 @@
+digraph {
+    "26_Inicio" -> "0_Funciones";
+"0_Funciones" -> "22_Funcion";
+"22_Funcion" -> "2_Tipo";
+"2_Tipo" -> "3_int";
+"22_Funcion" -> "23_ID";
+"23_ID" -> "24_main";
+"22_Funcion" -> "21_Statement";
+"21_Statement" -> "12_Declaracion";
+"12_Declaracion" -> "6_Tipo";
+"6_Tipo" -> "7_int";
+"12_Declaracion" -> "10_ID";
+"10_ID" -> "11_nota";
+"21_Statement" -> "20_return";
+"21_Statement" -> "18_Exp";
+"18_Exp" -> "13_Num";
+"13_Num" -> "14_0";
+}

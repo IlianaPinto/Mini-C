@@ -58,7 +58,13 @@ public class Main extends javax.swing.JFrame {
         jTabbedPane3 = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Compilador Mini-C");
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setResizable(false);
 
+        jPanel1.setBackground(new java.awt.Color(51, 51, 51));
+
+        bt_seleccionar.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
         bt_seleccionar.setText("Seleccionar Archivo");
         bt_seleccionar.setName("bt_seleccionar"); // NOI18N
         bt_seleccionar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -67,6 +73,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        bt_probar.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
         bt_probar.setText("Probar");
         bt_probar.setName("bt_probar"); // NOI18N
         bt_probar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -79,6 +86,7 @@ public class Main extends javax.swing.JFrame {
         TextArea.setRows(5);
         jScrollPane1.setViewportView(TextArea);
 
+        bt_guardar.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
         bt_guardar.setText("Guardar");
         bt_guardar.setName("bt_guardar"); // NOI18N
         bt_guardar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -91,7 +99,12 @@ public class Main extends javax.swing.JFrame {
         TextErrores.setRows(5);
         jScrollPane2.setViewportView(TextErrores);
 
+        jLabel1.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Archivo: ");
+
+        titulo.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
+        titulo.setForeground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -101,21 +114,23 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(bt_seleccionar)
-                                .addGap(18, 18, 18)
-                                .addComponent(bt_guardar)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 385, Short.MAX_VALUE)
-                                .addComponent(bt_probar))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addComponent(bt_seleccionar)
+                        .addGap(18, 18, 18)
+                        .addComponent(bt_guardar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 321, Short.MAX_VALUE)
+                        .addComponent(bt_probar)
                         .addGap(25, 25, 25))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(titulo)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2)
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
