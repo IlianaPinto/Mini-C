@@ -231,6 +231,7 @@ public class Main extends javax.swing.JFrame {
             fichero2 = new FileWriter(fichero.getAbsolutePath());
             pw = new PrintWriter(fichero2);
             pw.print(this.TextArea.getText());
+            this.TextErrores.setText("");
             JOptionPane.showMessageDialog(this, "Archivo guardado");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "No ha seleccionado un archivo");

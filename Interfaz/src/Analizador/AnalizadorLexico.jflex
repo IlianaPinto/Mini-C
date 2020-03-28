@@ -72,6 +72,7 @@ opgraeq = ">="
 opcond = "?"
 opand = "&&"
 opor = "||"
+mod = "%"
 
 //delimiters
 keyinit = "{"
@@ -131,7 +132,8 @@ colon = ":"
     {opcond}        {System.out.println("operador: " + yytext());return new Symbol(Sym.OPCOND, yycolumn, yyline, yytext());}
     {opand}         {System.out.println("operador: " + yytext());return new Symbol(Sym.AND, yycolumn, yyline, yytext());}
     {opor}          {System.out.println("operador: " + yytext());return new Symbol(Sym.OR, yycolumn, yyline, yytext());}
-    {opamp}          {System.out.println("operador: " + yytext());return new Symbol(Sym.AMP, yycolumn, yyline, yytext());}
+    {opamp}         {System.out.println("operador: " + yytext());return new Symbol(Sym.AMP, yycolumn, yyline, yytext());}
+    {mod}           {System.out.println("operador: " + yytext());return new Symbol(Sym.MOD, yycolumn, yyline, yytext());}
 
     .               {System.out.println("ERROR LEXICO "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);}
 }

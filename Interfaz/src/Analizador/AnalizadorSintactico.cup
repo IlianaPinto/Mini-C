@@ -69,7 +69,7 @@ action code
 terminal String         INTEGER, CHARACTER, VOID, RETURN, FOR, WHILE, IF, ELSE, PRINTF, SCANF,
                         KEYINIT, KEYFIN, PARINIT, PARFIN, COMMA, SEMICOLON, COLON, NUM, IDE, CONSTCHAR,
                         CONSTSTR, OPMULT, OPDIV, OPSUM, OPINC, OPASIG, OPCOMP, OPDIF, OPGRA, OPLESS,OPGRAEP,
-                        OPLESSEQ, OPCOND, AND, OR, AMP;
+                        OPLESSEQ, OPCOND, AND, OR, AMP, MOD;
 
 non terminal TreeNode   INICIO, statement, exp, t, for, forid, while, if, printf, printfp, scanf, amp,
                         finalexpression, arp, ta, tap, fa, oprel, asig, type, typeap, declaration,
@@ -194,17 +194,6 @@ RETURN:r exp:e
     tn.agregarHijo(r, token);
     tn.agregarHijo(e);
     RESULT = tn;
-:} |
-funccall:f statement:st 
-{:
-    token++;
-    TreeNode tn = new TreeNode("Statement", null, token);
-    tn.agregarHijo(f);
-    //tn.agregarHijo(st);
-    for(TreeNode h : st.getHijos()){
-        tn.agregarHijo(h);
-    }
-    RESULT = tn;
 :}
 | error statement:st 
 {:
@@ -277,13 +266,13 @@ for::= FOR PARINIT forid:f exp:e finalexpression:fe PARFIN KEYINIT statement:st 
     RESULT = tn;
 :};
 
-forid::= IDE:i SEMICOLON 
+forid::= exp:e 
 {:
-    token++;
+    /*token++;
     TreeNode tn = new TreeNode("ID", null, token);
     token++;
-    tn.agregarHijo(i, token);
-    RESULT = tn;
+    tn.agregarHijo(i, token);*/
+    RESULT = e;
 :} 
 | declaration:d
 {:
@@ -450,6 +439,10 @@ fa::= IDE:i increment:in
     tn.agregarHijo(i, token);
     RESULT = tn;
 :}
+| funccall:f
+{:
+    RESULT = f;
+:}
 | NUM:n
 {:
     token++;
@@ -522,6 +515,11 @@ oprel::= OPGRA:o
     RESULT = new TreeNode(o, null, token);
 :} 
 | OR:o 
+{:
+    token++;
+    RESULT = new TreeNode(o, null, token);
+:}
+| MOD:o
 {:
     token++;
     RESULT = new TreeNode(o, null, token);
@@ -766,7 +764,7 @@ funcb::= KEYINIT statement:st KEYFIN
 :};
 
 //Funccall
-funccall::= IDE:i PARINIT paramsI:p PARFIN SEMICOLON 
+funccall::= IDE:i PARINIT paramsI:p PARFIN  
 {:
     token++;
     TreeNode tn = new TreeNode("Funccall", null, token);

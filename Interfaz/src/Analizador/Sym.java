@@ -30,6 +30,7 @@ public class Sym {
   public static final int PARINIT = 14;
   public static final int error = 1;
   public static final int OPGRA = 30;
+  public static final int MOD = 38;
   public static final int CONSTSTR = 22;
   public static final int OPINC = 26;
   public static final int VOID = 4;
@@ -84,7 +85,8 @@ public class Sym {
   "OPCOND",
   "AND",
   "OR",
-  "AMP"
+  "AMP",
+  "MOD"
   };
 }
 
