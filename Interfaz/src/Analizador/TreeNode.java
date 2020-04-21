@@ -57,7 +57,7 @@ public class TreeNode {
             limpiar("");
             escribirArchivo("digraph {\n");
         }
-        if (!this.val.equals("#") && !this.val.equals("Inicio")) {
+        if (!this.val.equals("#") && !this.val.equals("Inicio") && !(this.id == this.padre.id && this.val.equals(this.padre.getVal()))) {
             String cadena = "\"" + pad + "\" -> \"" + this.id + "_" + this.val + "\";";
             System.out.println(cadena);
             cadena += "\n";

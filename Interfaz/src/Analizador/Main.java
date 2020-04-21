@@ -206,6 +206,7 @@ public class Main extends javax.swing.JFrame {
                 bf = new BufferedReader(fr);
                 String linea;
                 this.TextArea.setText("");
+                this.TextErrores.setText("");
                 while ((linea = bf.readLine()) != null) {
                     this.TextArea.append(linea + "\n");
                 }
