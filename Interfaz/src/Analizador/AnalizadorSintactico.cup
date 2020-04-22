@@ -558,7 +558,21 @@ declaration::= decid:d SEMICOLON
     RESULT = tn;
 :};
 
-declarations::= declaration:decla declarations {::} | ;
+declarations::= declaration:decla declarations:d 
+{:
+    token++;
+    TreeNode tn = new TreeNode("Dec", null, token);
+    tn.agregarHijo(decla);
+    for(TreeNode h : d.getHijos()){
+        tn.agregarHijo(h);
+    }
+    RESULT = tn;
+:}
+|
+{:
+    token++;
+    RESULT = new TreeNode("#", null, token);
+:};
 
 decid::= decid:d COMMA IDE:i decasig:de
 {:
@@ -731,7 +745,11 @@ func::= typev:t IDE:i PARINIT:pi par:p PARFIN:pf funcb:fb
     id.agregarHijo(i, token);
     tn.agregarHijo(id);
     tn.agregarHijo(p);
-    tn.agregarHijo(fb);
+
+    //tn.agregarHijo(fb);
+    for(TreeNode h : fb.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 :}
 |error
@@ -747,7 +765,14 @@ func::= typev:t IDE:i PARINIT:pi par:p PARFIN:pf funcb:fb
 
 funcb::= KEYINIT declarations:decla statement:st KEYFIN
 {:
-    RESULT = st;
+    token++;
+    TreeNode tn = new TreeNode("Fn", null, token);
+    //tn.agregarHijo(decla);
+    for(TreeNode h : decla.getHijos()){
+        tn.agregarHijo(h);
+    }
+    tn.agregarHijo(st);
+    RESULT = tn;
 :}
  | SEMICOLON
 {:

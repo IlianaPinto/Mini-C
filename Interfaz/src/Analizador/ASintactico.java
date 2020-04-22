@@ -1613,7 +1613,18 @@ class CUP$ASintactico$actions {
 		int declaleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)).left;
 		int declaright = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)).right;
 		TreeNode decla = (TreeNode)((java_cup.runtime.Symbol) CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)).value;
+		int dleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).left;
+		int dright = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).right;
+		TreeNode d = (TreeNode)((java_cup.runtime.Symbol) CUP$ASintactico$stack.peek()).value;
 		
+    token++;
+    TreeNode tn = new TreeNode("Dec", null, token);
+    tn.agregarHijo(decla);
+    for(TreeNode h : d.getHijos()){
+        tn.agregarHijo(h);
+    }
+    RESULT = tn;
+
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("declarations",36, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
@@ -1622,6 +1633,9 @@ class CUP$ASintactico$actions {
           case 60: // declarations ::= 
             {
               TreeNode RESULT =null;
+		
+    token++;
+    RESULT = new TreeNode("#", null, token);
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("declarations",36, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
@@ -2015,7 +2029,11 @@ class CUP$ASintactico$actions {
     id.agregarHijo(i, token);
     tn.agregarHijo(id);
     tn.agregarHijo(p);
-    tn.agregarHijo(fb);
+
+    //tn.agregarHijo(fb);
+    for(TreeNode h : fb.getHijos()){
+        tn.agregarHijo(h);
+    }
     RESULT = tn;
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("func",30, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-5)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
@@ -2050,7 +2068,14 @@ class CUP$ASintactico$actions {
 		int stright = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)).right;
 		TreeNode st = (TreeNode)((java_cup.runtime.Symbol) CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)).value;
 		
-    RESULT = st;
+    token++;
+    TreeNode tn = new TreeNode("Fn", null, token);
+    //tn.agregarHijo(decla);
+    for(TreeNode h : decla.getHijos()){
+        tn.agregarHijo(h);
+    }
+    tn.agregarHijo(st);
+    RESULT = tn;
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funcb",32, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-3)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
