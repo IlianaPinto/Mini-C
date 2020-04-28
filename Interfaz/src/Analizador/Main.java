@@ -178,11 +178,15 @@ public class Main extends javax.swing.JFrame {
             p.parse();
             System.out.println("**************************************************");
             this.TextErrores.setText("");
+            ArrayList<String> lexi = lexer.errores;
             ArrayList<String> l = p.errores;
-            if(l.size() == 0){
+            if(l.isEmpty() && lexi.isEmpty()){
                 this.TextErrores.append("Compilado sin errores!");
             }
             this.TextErrores.setCaretColor(Color.yellow);
+            for (int i = 0; i < lexi.size(); i++) {
+                this.TextErrores.append(lexi.get(i) + "\n");
+            }
             for (int i = 0; i < l.size(); i++) {
                 this.TextErrores.append(l.get(i) + "\n");
             }

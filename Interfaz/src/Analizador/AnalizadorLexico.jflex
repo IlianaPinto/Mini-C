@@ -1,5 +1,6 @@
 package Analizador;
 import java_cup.runtime.*;
+import java.util.ArrayList;
 %%
 
 %unicode 
@@ -17,6 +18,7 @@ import java_cup.runtime.*;
 
 %{
     String str = "";
+    ArrayList<String> errores = new ArrayList();
 %}
 
 letter = [a-zA-Z]|"_"
@@ -135,7 +137,11 @@ colon = ":"
     {opamp}         {System.out.println("operador: " + yytext());return new Symbol(Sym.AMP, yycolumn, yyline, yytext());}
     {mod}           {System.out.println("operador: " + yytext());return new Symbol(Sym.MOD, yycolumn, yyline, yytext());}
 
-    .               {System.out.println("ERROR LEXICO "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);}
+    .               {
+                        System.out.println("ERROR LEXICO "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);
+                        String err = "ERROR LEXICO "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn;
+                        errores.add(err);
+                    }
 }
 
 <COMMENTPAR>
