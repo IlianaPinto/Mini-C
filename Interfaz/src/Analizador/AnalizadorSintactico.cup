@@ -429,6 +429,26 @@ fa::= IDE:i increment:in
     tn.agregarHijo(i, token);
     RESULT = tn;
 :}
+| AMP:a IDE:i
+{:
+    token++;
+    TreeNode tn = new TreeNode("Id", null, token);
+    token++;
+    tn.agregarHijo(a, token);
+    token++;
+    tn.agregarHijo(i, token);
+    RESULT = tn;
+:}
+| OPMULT:o IDE:i 
+{:
+    token++;
+    TreeNode tn = new TreeNode("Id", null, token);
+    token++;
+    tn.agregarHijo(o, token);
+    token++;
+    tn.agregarHijo(i, token);
+    RESULT = tn;
+:}
 | funccall:f
 {:
     RESULT = f;
@@ -453,6 +473,7 @@ fa::= IDE:i increment:in
 {:
     RESULT = f;
 :};
+
 
 increment::= OPINC:o
 {:
@@ -574,7 +595,7 @@ declarations::= declaration:decla declarations:d
     RESULT = new TreeNode("#", null, token);
 :};
 
-decid::= decid:d COMMA IDE:i decasig:de
+decid::= decid:d COMMA typeap:a IDE:i decasig:de
 {:
     token++;
     TreeNode tn = new TreeNode("Dec", null, token);
@@ -583,6 +604,7 @@ decid::= decid:d COMMA IDE:i decasig:de
         tn.agregarHijo(h);
     }
     //
+    tn.agregarHijo(a);
     token++;
     TreeNode id = new TreeNode("ID", null, token);
     token++;
