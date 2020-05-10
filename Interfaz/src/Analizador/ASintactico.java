@@ -429,6 +429,7 @@ public class ASintactico extends java_cup.runtime.lr_parser {
 
 
     ArrayList<String> errores = new ArrayList();
+    TreeNode Tree;
     
     @Override
     public void syntax_error(Symbol s){
@@ -543,6 +544,7 @@ class CUP$ASintactico$actions {
         for(int i = 0; i < errores.size(); i++){
             System.out.println("Error: " + errores.get(i));
         }
+        Tree = tn;
         RESULT = tn;
     
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("INICIO",0, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);

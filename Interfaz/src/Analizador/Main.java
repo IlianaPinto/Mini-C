@@ -183,7 +183,22 @@ public class Main extends javax.swing.JFrame {
             if(l.isEmpty() && lexi.isEmpty()){
                 this.TextErrores.append("Compilado sin errores!");
             }
-            this.TextErrores.setCaretColor(Color.yellow);
+            //semantico
+            tabla.clear();
+            funciones.clear();
+            recorrer(p.Tree);
+            for (int i = 0; i < tabla.size(); i++) {
+                System.out.println("Variable: Tipo = " + tabla.get(i).getTipo() + " , Id = " + tabla.get(i).getId() + " , Ambito = " +tabla.get(i).getAmbito());
+            }
+            for (int i = 0; i < funciones.size(); i++) { 
+                System.out.println("Funcion: Tipo = " + funciones.get(i).getTipo() + " , Id = " + funciones.get(i).getId());
+                System.out.println("Parametros:");
+                for (int j = 0; j < funciones.get(i).getParams().size(); j++) {
+                    System.out.print((j+1) + " Tipo = " + funciones.get(i).getParams().get(j).getTipo() + " Id = ");
+                    System.out.println(funciones.get(i).getParams().get(j).getId() + " Ambito = " + funciones.get(i).getParams().get(j).getAmbito());
+                }
+            }
+            //************
             for (int i = 0; i < lexi.size(); i++) {
                 this.TextErrores.append(lexi.get(i) + "\n");
             }
@@ -254,6 +269,72 @@ public class Main extends javax.swing.JFrame {
         
     }//GEN-LAST:event_bt_guardarMouseClicked
 
+    //Metodos
+    public void recorrer (TreeNode tn){
+        TreeNode nodo = tn;
+        if (nodo != null) {
+            if(nodo.getVal().equals("Declaracion")){
+                String tipo = "";
+                String id = "";
+                for (TreeNode hijo : nodo.getHijos()) {
+                    if(hijo.getVal().equals("Tipo")){
+                        tipo = hijo.getHijos().get(0).getVal();
+                    }else if(hijo.getVal().equals("*")){
+                        tipo += "*";
+                    }else if(hijo.getVal().equals("ID")){
+                        id += hijo.getHijos().get(0).getVal();
+                        this.tabla.add(new Variable(tipo, id, this.ambito_actual));
+                        id = "";
+                    }
+                }
+            }else if(nodo.getVal().equals("Funcion")){
+                String tipo_f = "";
+                String id_f = "";
+                for(TreeNode hijo : nodo.getHijos()){
+                    if (hijo.getVal().equals("Tipo")) {
+                        tipo_f = hijo.getHijos().get(0).getVal();
+                        if(hijo.getHijos().get(1).getVal().equals("*")){
+                            tipo_f += "*";
+                        }
+                    }else if(hijo.getVal().equals("ID")){
+                        id_f += hijo.getHijos().get(0).getVal();
+                        this.ambito_actual = id_f;
+                    }else if(hijo.getVal().equals("p") || hijo.getVal().equals("#")){
+                        if(!"".equals(tipo_f)){    
+                            ArrayList<Variable> v = parametros(hijo, new ArrayList<>());
+                            Funcion func = (new Funcion(tipo_f, id_f));
+                            func.agregar_params(v);
+                            this.funciones.add(func);
+                            tipo_f = "";
+                            id_f = "";
+                        }
+                    }else{
+                        recorrer(hijo);
+                    }
+                }
+            }else{
+                for (TreeNode hijo : nodo.getHijos()) {
+                    recorrer(hijo);
+                }
+            }
+        }
+    }
+    
+    public ArrayList<Variable> parametros(TreeNode tn, ArrayList<Variable> arr){
+        if(!tn.getHijos().isEmpty()){
+            for (TreeNode hijo : tn.getHijos()) {
+                if(hijo.getVal().equals("Tipo")){
+                    Variable v = new Variable(hijo.getHijos().get(0).getVal(), "", this.ambito_actual);
+                    arr.add(v);
+                }else if(hijo.getVal().equals("ID")){
+                    arr.get(arr.size()-1).setId(hijo.getHijos().get(0).getVal());
+                }else if(hijo.getVal().equals("p")){
+                    return parametros(hijo, arr);
+                }
+            }
+        }
+        return arr;
+    }
     /**
      * @param args the command line arguments
      */
@@ -305,4 +386,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel titulo;
     // End of variables declaration//GEN-END:variables
     File fichero;
+    ArrayList<Variable> tabla = new ArrayList();
+    ArrayList<Funcion> funciones = new ArrayList();
+    String ambito_actual = "";
 }

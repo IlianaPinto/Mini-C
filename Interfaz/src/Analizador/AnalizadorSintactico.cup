@@ -6,6 +6,7 @@ import java.util.ArrayList;
 parser code 
 {:
     ArrayList<String> errores = new ArrayList();
+    TreeNode Tree;
     
     @Override
     public void syntax_error(Symbol s){
@@ -94,6 +95,7 @@ INICIO::= funcs:f
         for(int i = 0; i < errores.size(); i++){
             System.out.println("Error: " + errores.get(i));
         }
+        Tree = tn;
         RESULT = tn;
     :};
 
