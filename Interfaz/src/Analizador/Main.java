@@ -283,6 +283,9 @@ public class Main extends javax.swing.JFrame {
                         tipo += "*";
                     }else if(hijo.getVal().equals("ID")){
                         id += hijo.getHijos().get(0).getVal();
+                        if(verificar_variable(id)){
+                            System.out.println("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");
+                        }
                         this.tabla.add(new Variable(tipo, id, this.ambito_actual));
                         id = "";
                     }
@@ -305,6 +308,9 @@ public class Main extends javax.swing.JFrame {
                             Funcion func = (new Funcion(tipo_f, id_f));
                             func.agregar_params(v);
                             this.funciones.add(func);
+                            for (Variable variable : v) {
+                                tabla.add(variable);
+                            }
                             tipo_f = "";
                             id_f = "";
                         }
@@ -334,6 +340,16 @@ public class Main extends javax.swing.JFrame {
             }
         }
         return arr;
+    }
+    
+    public boolean verificar_variable(String variable){
+        boolean ret = false;
+        for (int i = 0; i < this.tabla.size(); i++) {
+            if(variable.equals(this.tabla.get(i).getId()) && this.ambito_actual.equals(this.tabla.get(i).getAmbito())){
+                ret = true;
+            }
+        }
+        return ret;
     }
     /**
      * @param args the command line arguments
