@@ -42,6 +42,11 @@ public class TreeNode {
     public void agregarHijo(String val, int id) {
         hijos.add(new TreeNode(val, this, id));
     }
+    
+    public void agregarHijoInicio(TreeNode hijo) {
+        hijo.setPadre(this);
+        this.hijos.add(0,hijo);
+    }
 
     public void setPadre(TreeNode tn) {
         this.padre = tn;
@@ -57,12 +62,12 @@ public class TreeNode {
             limpiar("");
             escribirArchivo("digraph {\n");
         }
-        if (!this.val.equals("#") && !this.val.equals("Inicio") && !(this.id == this.padre.id && this.val.equals(this.padre.getVal()))) {
+        //if (!this.val.equals("#") && !this.val.equals("Inicio") && !(this.id == this.padre.id && this.val.equals(this.padre.getVal()))) {
             String cadena = "\"" + pad + "\" -> \"" + this.id + "_" + this.val + "\";";
             System.out.println(cadena);
             cadena += "\n";
             escribirArchivo(cadena);
-        }
+        //}
         for (TreeNode hijo : hijos) {
             hijo.print();
         }

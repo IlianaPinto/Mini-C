@@ -180,7 +180,7 @@ public class Main extends javax.swing.JFrame {
             this.TextErrores.setText("");
             ArrayList<String> lexi = lexer.errores;
             ArrayList<String> l = p.errores;
-            if(l.isEmpty() && lexi.isEmpty()){
+            if (l.isEmpty() && lexi.isEmpty()) {
                 this.TextErrores.append("Compilado sin errores!");
             }
             //semantico
@@ -188,13 +188,13 @@ public class Main extends javax.swing.JFrame {
             funciones.clear();
             recorrer(p.Tree);
             for (int i = 0; i < tabla.size(); i++) {
-                System.out.println("Variable: Tipo = " + tabla.get(i).getTipo() + " , Id = " + tabla.get(i).getId() + " , Ambito = " +tabla.get(i).getAmbito());
+                System.out.println("Variable: Tipo = " + tabla.get(i).getTipo() + " , Id = " + tabla.get(i).getId() + " , Ambito = " + tabla.get(i).getAmbito());
             }
-            for (int i = 0; i < funciones.size(); i++) { 
+            for (int i = 0; i < funciones.size(); i++) {
                 System.out.println("Funcion: Tipo = " + funciones.get(i).getTipo() + " , Id = " + funciones.get(i).getId());
                 System.out.println("Parametros:");
                 for (int j = 0; j < funciones.get(i).getParams().size(); j++) {
-                    System.out.print((j+1) + " Tipo = " + funciones.get(i).getParams().get(j).getTipo() + " Id = ");
+                    System.out.print((j + 1) + " Tipo = " + funciones.get(i).getParams().get(j).getTipo() + " Id = ");
                     System.out.println(funciones.get(i).getParams().get(j).getId() + " Ambito = " + funciones.get(i).getParams().get(j).getAmbito());
                 }
             }
@@ -266,44 +266,50 @@ public class Main extends javax.swing.JFrame {
                 //e2.printStackTrace();
             }
         }
-        
+
     }//GEN-LAST:event_bt_guardarMouseClicked
 
     //Metodos
-    public void recorrer (TreeNode tn){
+    public void recorrer(TreeNode tn) {
         TreeNode nodo = tn;
         if (nodo != null) {
-            if(nodo.getVal().equals("Declaracion")){
+            if (nodo.getVal().equals("Declaracion")) {
                 String tipo = "";
                 String id = "";
                 for (TreeNode hijo : nodo.getHijos()) {
-                    if(hijo.getVal().equals("Tipo")){
+                    if (hijo.getVal().equals("Tipo")) {
                         tipo = hijo.getHijos().get(0).getVal();
-                    }else if(hijo.getVal().equals("*")){
+                        if(hijo.getHijos().get(1).getVal().equals("*")){
+                            tipo += "*";
+                        }
+                    } else if (hijo.getVal().equals("*")) {
                         tipo += "*";
-                    }else if(hijo.getVal().equals("ID")){
+                    } else if (hijo.getVal().equals("ID")) {
                         id += hijo.getHijos().get(0).getVal();
-                        if(verificar_variable(id)){
+                        if (verificar_variable(id)) {
                             System.out.println("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");
                         }
                         this.tabla.add(new Variable(tipo, id, this.ambito_actual));
+                        if (tipo.contains("*")) {
+                            tipo = tipo.substring(0, tipo.length() - 1);
+                        }
                         id = "";
                     }
                 }
-            }else if(nodo.getVal().equals("Funcion")){
+            } else if (nodo.getVal().equals("Funcion")) {
                 String tipo_f = "";
                 String id_f = "";
-                for(TreeNode hijo : nodo.getHijos()){
+                for (TreeNode hijo : nodo.getHijos()) {
                     if (hijo.getVal().equals("Tipo")) {
                         tipo_f = hijo.getHijos().get(0).getVal();
-                        if(hijo.getHijos().get(1).getVal().equals("*")){
+                        if (hijo.getHijos().get(1).getVal().equals("*")) {
                             tipo_f += "*";
                         }
-                    }else if(hijo.getVal().equals("ID")){
+                    } else if (hijo.getVal().equals("ID")) {
                         id_f += hijo.getHijos().get(0).getVal();
                         this.ambito_actual = id_f;
-                    }else if(hijo.getVal().equals("p") || hijo.getVal().equals("#")){
-                        if(!"".equals(tipo_f)){    
+                    } else if (hijo.getVal().equals("p") || hijo.getVal().equals("#")) {
+                        if (!"".equals(tipo_f)) {
                             ArrayList<Variable> v = parametros(hijo, new ArrayList<>());
                             Funcion func = (new Funcion(tipo_f, id_f));
                             func.agregar_params(v);
@@ -314,43 +320,120 @@ public class Main extends javax.swing.JFrame {
                             tipo_f = "";
                             id_f = "";
                         }
-                    }else{
+                    } else {
                         recorrer(hijo);
                     }
                 }
-            }else{
+            } else if (nodo.getVal().equals("Exp")) {
+                this.variables.clear();
+                variables_expresion(nodo);
+                boolean ambitos = true;
+                for (int i = 0; i < this.variables.size(); i++) {
+                    if (!verificar_variables_exp(this.variables.get(i))) {
+                        System.out.println("La variable " + variables.get(i) + " No existe o no está en la funcion " + this.ambito_actual);
+                        ambitos = false;
+                    }
+                }
+                if (ambitos) {
+                    ArrayList<Variable> tipos = new ArrayList<>();
+                    for (int i = 0; i < this.variables.size(); i++) {
+                        for (int j = 0; j < this.tabla.size(); j++) {
+                            if (this.variables.get(i).equals(this.tabla.get(j).getId()) && (this.tabla.get(j).getAmbito().equals(this.ambito_actual) || this.tabla.get(j).getAmbito().equals("1Global"))) {
+                                tipos.add(this.tabla.get(j));
+                            }
+                        }
+                    }
+                    String tipo_1 = tipos.get(0).getTipo();
+                    boolean tipos_iguales = true;
+                    for (int i = 1; i < tipos.size(); i++) {
+                        if (!tipos.get(i).getTipo().equals(tipo_1)) {
+                            tipos_iguales = false;
+                            System.out.println("Error de tipos: Funcion " + this.ambito_actual + " variable " + tipos.get(i).getId());
+                        }
+                    }
+                }
+
+            } else if (nodo.getVal().equals("DecGlobal")) {
+                String tipo = "";
+                String id = "";
+                for (TreeNode hijo : nodo.getHijos()) {
+                    if (hijo.getVal().equals("Tipo")) {
+                        tipo = hijo.getHijos().get(0).getVal();
+                        if(hijo.getHijos().get(1).getVal().equals("*")){
+                            tipo += "*";
+                        }
+                    } else if (hijo.getVal().equals("*")) {
+                        tipo += "*";
+                    } else if (hijo.getVal().equals("ID")) {
+                        id += hijo.getHijos().get(0).getVal();
+                        if (verificar_variable(id)) {
+                            System.out.println("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");
+                        }
+                        this.tabla.add(new Variable(tipo, id, "1Global"));
+                        if (tipo.contains("*")) {
+                            tipo = tipo.substring(0, tipo.length() - 1);
+                        }
+                        id = "";
+                    }
+                }
+            } else {
                 for (TreeNode hijo : nodo.getHijos()) {
                     recorrer(hijo);
                 }
             }
         }
     }
-    
-    public ArrayList<Variable> parametros(TreeNode tn, ArrayList<Variable> arr){
-        if(!tn.getHijos().isEmpty()){
+
+    public ArrayList<Variable> parametros(TreeNode tn, ArrayList<Variable> arr) {
+        if (!tn.getHijos().isEmpty()) {
             for (TreeNode hijo : tn.getHijos()) {
-                if(hijo.getVal().equals("Tipo")){
+                if (hijo.getVal().equals("Tipo")) {
                     Variable v = new Variable(hijo.getHijos().get(0).getVal(), "", this.ambito_actual);
+                    if (!"#".equals(hijo.getHijos().get(1).getVal())) {
+                        v.setTipo(v.getTipo() + "*");
+                    }
                     arr.add(v);
-                }else if(hijo.getVal().equals("ID")){
-                    arr.get(arr.size()-1).setId(hijo.getHijos().get(0).getVal());
-                }else if(hijo.getVal().equals("p")){
+                } else if (hijo.getVal().equals("ID")) {
+                    arr.get(arr.size() - 1).setId(hijo.getHijos().get(0).getVal());
+                } else if (hijo.getVal().equals("p")) {
                     return parametros(hijo, arr);
                 }
             }
         }
         return arr;
     }
-    
-    public boolean verificar_variable(String variable){
+
+    public boolean verificar_variable(String variable) {
         boolean ret = false;
         for (int i = 0; i < this.tabla.size(); i++) {
-            if(variable.equals(this.tabla.get(i).getId()) && this.ambito_actual.equals(this.tabla.get(i).getAmbito())){
+            if (variable.equals(this.tabla.get(i).getId()) && this.ambito_actual.equals(this.tabla.get(i).getAmbito())) {
                 ret = true;
             }
         }
         return ret;
     }
+
+    public boolean verificar_variables_exp(String v) {
+        boolean ret = false;
+        for (int i = 0; i < this.tabla.size(); i++) {
+            if (this.tabla.get(i).getId().equals(v) && (this.tabla.get(i).getAmbito().equals(this.ambito_actual) || this.tabla.get(i).getAmbito().equals("1Global"))) {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    public void variables_expresion(TreeNode root) {
+        for (TreeNode hijo : root.getHijos()) {
+            if (hijo.getVal().equals("ID")) {
+                this.variables.add(hijo.getHijos().get(0).getVal());
+            } else if (hijo.getVal().equals("#")) {
+            } else {
+                variables_expresion(hijo);
+            }
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -404,5 +487,6 @@ public class Main extends javax.swing.JFrame {
     File fichero;
     ArrayList<Variable> tabla = new ArrayList();
     ArrayList<Funcion> funciones = new ArrayList();
+    ArrayList<String> variables = new ArrayList();
     String ambito_actual = "";
 }

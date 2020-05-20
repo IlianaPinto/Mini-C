@@ -75,7 +75,7 @@ terminal String         INTEGER, CHARACTER, VOID, RETURN, FOR, WHILE, IF, ELSE, 
 non terminal TreeNode   INICIO, statement, exp, t, for, forid, while, if, printf, printfp, scanf, amp,
                         finalexpression, arp, ta, tap, fa, oprel, asig, type, typeap, declaration,
                         decid, decasig, params, paramsb, par, paramst, paramst2, typev, funcdec,
-                        func, funcs, funcb, funccall, increment, paramsI, declarations, values;
+                        func, funcs, funcb, funccall, increment, paramsI, declarations, values, declaration2, declaration3;
 
 precedence nonassoc ELSE;
 
@@ -407,7 +407,7 @@ tap::= OPMULT:o fa:f tap:t
 fa::= IDE:i increment:in
 {:
     token++;
-    TreeNode tn = new TreeNode("Id", null, token);
+    TreeNode tn = new TreeNode("ID", null, token);
     token++;
     tn.agregarHijo(i, token);
     tn.agregarHijo(in);
@@ -416,7 +416,7 @@ fa::= IDE:i increment:in
 | OPINC:in IDE:i
 {:
     token++;
-    TreeNode tn = new TreeNode("Id", null, token);
+    TreeNode tn = new TreeNode("ID", null, token);
     token++;
     tn.agregarHijo(in, token);
     token++;
@@ -426,7 +426,7 @@ fa::= IDE:i increment:in
 | AMP:a IDE:i
 {:
     token++;
-    TreeNode tn = new TreeNode("Id", null, token);
+    TreeNode tn = new TreeNode("ID", null, token);
     token++;
     tn.agregarHijo(a, token);
     token++;
@@ -436,7 +436,7 @@ fa::= IDE:i increment:in
 | OPMULT:o IDE:i 
 {:
     token++;
-    TreeNode tn = new TreeNode("Id", null, token);
+    TreeNode tn = new TreeNode("ID", null, token);
     token++;
     tn.agregarHijo(o, token);
     token++;
@@ -759,24 +759,23 @@ funcs::= func:f
     tn.agregarHijo(f);
     RESULT = tn;
 :};
-//ctrl z
-func::= typev:t IDE:i PARINIT:pi par:p PARFIN:pf funcb:fb
+//ctrl z :c
+func::= typev:t IDE:i funcdec:f
 {: 
-    token++;
-    TreeNode tn = new TreeNode("Funcion",null, token);
-    tn.agregarHijo(t);
     token++;
     TreeNode id =  new TreeNode("ID", null, token);
     token++;
     id.agregarHijo(i, token);
-    tn.agregarHijo(id);
-    tn.agregarHijo(p);
+    f.agregarHijoInicio(id);
+    f.agregarHijoInicio(t);
+    
+    //tn.agregarHijo(p);
 
     //tn.agregarHijo(fb);
-    for(TreeNode h : fb.getHijos()){
+    /*for(TreeNode h : fb.getHijos()){
         tn.agregarHijo(h);
-    }
-    RESULT = tn;
+    }*/
+    RESULT = f;
 :}
 |error
 {:
@@ -806,14 +805,61 @@ funcb::= KEYINIT declarations:decla statement:st KEYFIN
     RESULT = new TreeNode("#", null, token);
 :};
 
-funcdec::= func:f
+funcdec::= PARINIT:pi par:p PARFIN:pf funcb:fb
 {:
-    RESULT = f;
+    token++;
+    TreeNode tn = new TreeNode("Funcion", null, token);
+    tn.agregarHijo(p);
+    for(TreeNode h : fb.getHijos()){
+        tn.agregarHijo(h);
+    }
+    RESULT = tn;
 :}
-| declarations:d
+| declaration2:d SEMICOLON
 {:
-    RESULT = d;
+    token++;
+    TreeNode tn = new TreeNode("DecGlobal", null, token);
+    for(TreeNode hijo : d.getHijos()){
+        tn.agregarHijo(hijo);
+    }
+    RESULT = tn;
 :};
+
+declaration2::= declaration2:d COMMA typeap:ta IDE:i declaration3:de
+{:
+    token++;
+    TreeNode tn = new TreeNode("Dec", null, token);
+    for(TreeNode h : d.getHijos()){
+        tn.agregarHijo(h);
+    }
+    token++;
+    TreeNode id =  new TreeNode("ID", null, token);
+    token++;
+    id.agregarHijo(i, token);
+    tn.agregarHijo(ta);
+    tn.agregarHijo(id);
+    tn.agregarHijo(de);
+    RESULT = tn;
+:}
+| declaration3:de
+{:
+    RESULT = de;
+:};
+
+declaration3::= OPASIG:o values:v
+{:
+    token++;
+    TreeNode tn = new TreeNode("Asig", null, token);
+    token++;
+    tn.agregarHijo(o, token);
+    tn.agregarHijo(v);
+    RESULT = tn;
+:}
+|
+{:
+    token++;
+    RESULT = new TreeNode("#", null, token);
+:} ;
 
 //Funccall
 funccall::= IDE:i PARINIT paramsI:p PARFIN  
