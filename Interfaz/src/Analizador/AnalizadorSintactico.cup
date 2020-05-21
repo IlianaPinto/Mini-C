@@ -808,7 +808,12 @@ funcb::= KEYINIT declarations:decla statement:st KEYFIN
 funcdec::= PARINIT:pi par:p PARFIN:pf funcb:fb
 {:
     token++;
-    TreeNode tn = new TreeNode("Funcion", null, token);
+    TreeNode tn;
+    if(fb.getHijos().size() > 0){
+        tn = new TreeNode("Funcion", null, token);
+    }else{
+        tn = new TreeNode("DecFuncion", null, token);
+    }
     tn.agregarHijo(p);
     for(TreeNode h : fb.getHijos()){
         tn.agregarHijo(h);

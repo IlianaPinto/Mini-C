@@ -2204,7 +2204,12 @@ class CUP$ASintactico$actions {
 		TreeNode fb = (TreeNode)((java_cup.runtime.Symbol) CUP$ASintactico$stack.peek()).value;
 		
     token++;
-    TreeNode tn = new TreeNode("Funcion", null, token);
+    TreeNode tn;
+    if(fb.getHijos().size() > 0){
+        tn = new TreeNode("Funcion", null, token);
+    }else{
+        tn = new TreeNode("DecFuncion", null, token);
+    }
     tn.agregarHijo(p);
     for(TreeNode h : fb.getHijos()){
         tn.agregarHijo(h);

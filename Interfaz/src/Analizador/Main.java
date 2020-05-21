@@ -186,7 +186,22 @@ public class Main extends javax.swing.JFrame {
             //semantico
             tabla.clear();
             funciones.clear();
+            decfunciones.clear();
             recorrer(p.Tree);
+
+            int m = verificar_main();
+            switch (m) {
+                case 0:
+                    System.out.println("No existe main");//*******
+                    break;
+                case 1:
+                    System.out.println("Bien");//*******
+                    break;
+                default:
+                    System.out.println("Hay más de 1 main");//*******
+                    break;
+            }
+
             for (int i = 0; i < tabla.size(); i++) {
                 System.out.println("Variable: Tipo = " + tabla.get(i).getTipo() + " , Id = " + tabla.get(i).getId() + " , Ambito = " + tabla.get(i).getAmbito());
             }
@@ -196,6 +211,12 @@ public class Main extends javax.swing.JFrame {
                 for (int j = 0; j < funciones.get(i).getParams().size(); j++) {
                     System.out.print((j + 1) + " Tipo = " + funciones.get(i).getParams().get(j).getTipo() + " Id = ");
                     System.out.println(funciones.get(i).getParams().get(j).getId() + " Ambito = " + funciones.get(i).getParams().get(j).getAmbito());
+                }
+            }
+            for (int i = 0; i < this.decfunciones.size(); i++) {
+                System.out.println("DECFUNC: " + this.decfunciones.get(i).getId());
+                for (int j = 0; j < this.decfunciones.get(i).getParams().size(); j++) {
+                    System.out.println(this.decfunciones.get(i).getParams().get(j).getTipo());
                 }
             }
             //************
@@ -279,7 +300,7 @@ public class Main extends javax.swing.JFrame {
                 for (TreeNode hijo : nodo.getHijos()) {
                     if (hijo.getVal().equals("Tipo")) {
                         tipo = hijo.getHijos().get(0).getVal();
-                        if(hijo.getHijos().get(1).getVal().equals("*")){
+                        if (hijo.getHijos().get(1).getVal().equals("*")) {
                             tipo += "*";
                         }
                     } else if (hijo.getVal().equals("*")) {
@@ -313,7 +334,11 @@ public class Main extends javax.swing.JFrame {
                             ArrayList<Variable> v = parametros(hijo, new ArrayList<>());
                             Funcion func = (new Funcion(tipo_f, id_f));
                             func.agregar_params(v);
-                            this.funciones.add(func);
+                            if (verificar_funcion(id_f)) {
+                                this.funciones.add(func);
+                            } else {
+                                System.out.println("La funcion " + id_f + " fue declarada más de una vez.");//*********
+                            }
                             for (Variable variable : v) {
                                 tabla.add(variable);
                             }
@@ -324,13 +349,44 @@ public class Main extends javax.swing.JFrame {
                         recorrer(hijo);
                     }
                 }
+            } else if (nodo.getVal().equals("DecFuncion")) {
+                String tipo_f = "";
+                String id_f = "";
+                for (TreeNode hijo : nodo.getHijos()) {
+                    if (hijo.getVal().equals("Tipo")) {
+                        tipo_f = hijo.getHijos().get(0).getVal();
+                        if (hijo.getHijos().get(1).getVal().equals("*")) {
+                            tipo_f += "*";
+                        }
+                    } else if (hijo.getVal().equals("ID")) {
+                        id_f += hijo.getHijos().get(0).getVal();
+                        this.ambito_actual = id_f;
+                    } else if (hijo.getVal().equals("p") || hijo.getVal().equals("#")) {
+                        if (!"".equals(tipo_f)) {
+                            ArrayList<Variable> v = parametros(hijo, new ArrayList<>());
+                            Funcion func = (new Funcion(tipo_f, id_f));
+                            func.agregar_params(v);
+                            if (verificar_decfunc(id_f)) {
+                                this.decfunciones.add(func);
+                            } else {
+                                System.out.println("La funcion " + id_f + " fue definida más de una vez.");//*********
+                            }
+
+                            tipo_f = "";
+                            id_f = "";
+                        }
+                    } else {
+                        recorrer(hijo);
+                    }
+                }
             } else if (nodo.getVal().equals("Exp")) {
                 this.variables.clear();
+                this.constantes.clear();
                 variables_expresion(nodo);
                 boolean ambitos = true;
                 for (int i = 0; i < this.variables.size(); i++) {
                     if (!verificar_variables_exp(this.variables.get(i))) {
-                        System.out.println("La variable " + variables.get(i) + " No existe o no está en la funcion " + this.ambito_actual);
+                        System.out.println("La variable " + variables.get(i) + " No existe o no está en la funcion " + this.ambito_actual);//*********
                         ambitos = false;
                     }
                 }
@@ -348,7 +404,13 @@ public class Main extends javax.swing.JFrame {
                     for (int i = 1; i < tipos.size(); i++) {
                         if (!tipos.get(i).getTipo().equals(tipo_1)) {
                             tipos_iguales = false;
-                            System.out.println("Error de tipos: Funcion " + this.ambito_actual + " variable " + tipos.get(i).getId());
+                            System.out.println("Error de tipos: Funcion " + this.ambito_actual + " variable " + tipos.get(i).getId());//**********
+                        }
+                    }
+                    for (int i = 0; i < this.constantes.size(); i++) {
+                        if (!this.constantes.get(i).equals(tipo_1)) {
+                            tipos_iguales = false;
+                            System.out.println("Error de tipos: Funcion " + this.ambito_actual + " constante  " + this.constantes.get(i));//**********
                         }
                     }
                 }
@@ -359,7 +421,7 @@ public class Main extends javax.swing.JFrame {
                 for (TreeNode hijo : nodo.getHijos()) {
                     if (hijo.getVal().equals("Tipo")) {
                         tipo = hijo.getHijos().get(0).getVal();
-                        if(hijo.getHijos().get(1).getVal().equals("*")){
+                        if (hijo.getHijos().get(1).getVal().equals("*")) {
                             tipo += "*";
                         }
                     } else if (hijo.getVal().equals("*")) {
@@ -367,7 +429,7 @@ public class Main extends javax.swing.JFrame {
                     } else if (hijo.getVal().equals("ID")) {
                         id += hijo.getHijos().get(0).getVal();
                         if (verificar_variable(id)) {
-                            System.out.println("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");
+                            System.out.println("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");//******
                         }
                         this.tabla.add(new Variable(tipo, id, "1Global"));
                         if (tipo.contains("*")) {
@@ -428,10 +490,134 @@ public class Main extends javax.swing.JFrame {
             if (hijo.getVal().equals("ID")) {
                 this.variables.add(hijo.getHijos().get(0).getVal());
             } else if (hijo.getVal().equals("#")) {
+            } else if (hijo.getVal().equals("Num")) {
+                this.constantes.add("int");
+            } else if (hijo.getVal().equals("ConstChar")) {
+                this.constantes.add("char");
+            } else if (hijo.getVal().equals("Funccall")) {
+                String f = hijo.getHijos().get(0).getHijos().get(0).getVal();
+                boolean exist = false;
+                for (int i = 0; i < this.funciones.size(); i++) {
+                    if (f.equals(this.funciones.get(i).getId())) {
+                        this.constantes.add(this.funciones.get(i).tipo);
+                        exist = true;
+                    }
+                }
+                if(!exist){
+                    System.out.println("La funcion " + f + " no existe");//**************
+                }
+                this.funccall.clear();
+                funcion(hijo.getHijos().get(1));
+                
+                ArrayList<String> argumentos = new ArrayList<>();
+                for (int i = 0; i < this.funccall.size(); i++) {
+                    String tipo = "";
+                    boolean same = true;
+                    for (int j = 0; j < this.funccall.get(i).size(); j++) {
+                        if(j == 0){
+                            tipo = this.funccall.get(i).get(j);
+                            if(!"int".equals(tipo) && !"char".equals(tipo)){
+                                tipo = tipo_var(tipo);
+                            }
+                        }else{
+                            if(!this.funccall.get(i).get(j).equals("int") && !this.funccall.get(i).get(j).equals("char")){
+                                String val = tipo_var(this.funccall.get(i).get(j));
+                                if(!val.equals(tipo)){
+                                    same = false;
+                                }
+                            }
+                        }
+                    }
+                    if(same){
+                        argumentos.add(tipo);
+                    }else{
+                        argumentos.add("#");
+                        System.out.println("La expresión " + i + " No sirve");//**********
+                    }
+                }
+                Funcion func = new Funcion("","");
+                for (int i = 0; i < this.funciones.size(); i++) {
+                    if(f.equals(this.funciones.get(i).getId())){
+                        func = this.funciones.get(i);
+                    }
+                }
+                boolean correct = true;
+                if(func.getParams().size() == argumentos.size()){
+                    for (int i = 0; i < argumentos.size(); i++) {
+                        if(!func.getParams().get(i).getTipo().equals(argumentos.get(i))){
+                            correct = false;
+                        }
+                    }
+                }else{
+                    correct = false;
+                }
+                if(!correct && exist){
+                    System.out.println("Los parametros al llamado a al función " + f + " son incorrectos.");//*********
+                }
+                
             } else {
                 variables_expresion(hijo);
             }
         }
+    }
+
+    public void funcion(TreeNode root) {
+        if(!root.getHijos().isEmpty()){
+            for (TreeNode hijo : root.getHijos()) {
+                if(hijo.getVal().equals("Exp")){
+                    this.funccall.add(new ArrayList<>());
+                    funcion(hijo);
+                }else if(hijo.getVal().equals("Num")){
+                    this.funccall.get(this.funccall.size()-1).add("int");
+                }else if(hijo.getVal().equals("ID")){
+                    this.funccall.get(this.funccall.size()-1).add(hijo.getHijos().get(0).getVal());
+                }else if(hijo.getVal().equals("ConstChar")){
+                    this.funccall.get(this.funccall.size()-1).add("char");
+                }else{
+                    funcion(hijo);
+                }
+            }
+        }
+    }
+
+    public int verificar_main() {
+        int cont = 0;
+        for (int i = 0; i < this.funciones.size(); i++) {
+            if (this.funciones.get(i).getId().equals("main")) {
+                cont++;
+            }
+        }
+        return cont;
+    }
+
+    public boolean verificar_funcion(String id) {
+        boolean ret = true;
+        for (int i = 0; i < this.funciones.size(); i++) {
+            if (this.funciones.get(i).getId().equals(id)) {
+                ret = false;
+            }
+        }
+        return ret;
+    }
+
+    public boolean verificar_decfunc(String id) {
+        boolean ret = true;
+        for (int i = 0; i < this.decfunciones.size(); i++) {
+            if (this.decfunciones.get(i).getId().equals(id)) {
+                ret = false;
+            }
+        }
+        return ret;
+    }
+    
+    public String tipo_var(String id){
+        String ret = "";
+        for (int i = 0; i < this.tabla.size(); i++) {
+            if(this.tabla.get(i).getId().equals(id)){
+                ret = this.tabla.get(i).getTipo();
+            }
+        }
+        return ret;
     }
 
     /**
@@ -487,6 +673,9 @@ public class Main extends javax.swing.JFrame {
     File fichero;
     ArrayList<Variable> tabla = new ArrayList();
     ArrayList<Funcion> funciones = new ArrayList();
+    ArrayList<Funcion> decfunciones = new ArrayList();
     ArrayList<String> variables = new ArrayList();
+    ArrayList<String> constantes = new ArrayList();
+    ArrayList<ArrayList<String>> funccall = new ArrayList();
     String ambito_actual = "";
 }
