@@ -428,7 +428,7 @@ public class Main extends javax.swing.JFrame {
                         tipo += "*";
                     } else if (hijo.getVal().equals("ID")) {
                         id += hijo.getHijos().get(0).getVal();
-                        if (verificar_variable(id)) {
+                        if (verificar_variable_global(id)) {
                             System.out.println("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");//******
                         }
                         this.tabla.add(new Variable(tipo, id, "1Global"));
@@ -469,6 +469,26 @@ public class Main extends javax.swing.JFrame {
         boolean ret = false;
         for (int i = 0; i < this.tabla.size(); i++) {
             if (variable.equals(this.tabla.get(i).getId()) && this.ambito_actual.equals(this.tabla.get(i).getAmbito())) {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+    
+    public boolean verificar_variable_global(String variable) {
+        boolean ret = false;
+        for (int i = 0; i < this.tabla.size(); i++) {
+            if (variable.equals(this.tabla.get(i).getId()) && ("1Global").equals(this.tabla.get(i).getAmbito())) {
+                ret = true;
+            }
+        }
+        for (int i = 0; i < this.funciones.size(); i++) {
+            if(variable.equals(this.funciones.get(i).getId())){
+                ret = true;
+            }
+        }
+        for (int i = 0; i < this.decfunciones.size(); i++) {
+            if(variable.equals(this.decfunciones.get(i).getId())){
                 ret = true;
             }
         }
@@ -597,6 +617,11 @@ public class Main extends javax.swing.JFrame {
                 ret = false;
             }
         }
+        for (int i = 0; i < this.tabla.size(); i++) {
+            if (this.tabla.get(i).getId().equals(id) && this.tabla.get(i).getAmbito().equals("1Global")) {
+                ret = false;
+            }
+        }
         return ret;
     }
 
@@ -604,6 +629,12 @@ public class Main extends javax.swing.JFrame {
         boolean ret = true;
         for (int i = 0; i < this.decfunciones.size(); i++) {
             if (this.decfunciones.get(i).getId().equals(id)) {
+                ret = false;
+            }
+        }
+        //esto agregué
+        for (int i = 0; i < this.tabla.size(); i++) {
+            if (this.tabla.get(i).getId().equals(id) && this.tabla.get(i).getAmbito().equals("1Global")) {
                 ret = false;
             }
         }
