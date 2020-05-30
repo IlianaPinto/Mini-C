@@ -745,8 +745,9 @@ class CUP$ASintactico$actions {
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     token++;
-    tn.agregarHijo(r, token);
-    tn.agregarHijo(e);
+    TreeNode rt = new TreeNode(r, null, token);
+    rt.agregarHijo(e);
+    tn.agregarHijo(rt);
     RESULT = tn;
 
               CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("statement",1, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);

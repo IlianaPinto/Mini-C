@@ -326,6 +326,7 @@ public class Main extends javax.swing.JFrame {
                         if (hijo.getHijos().get(1).getVal().equals("*")) {
                             tipo_f += "*";
                         }
+                        this.tipo_actual = tipo_f;
                     } else if (hijo.getVal().equals("ID")) {
                         id_f += hijo.getHijos().get(0).getVal();
                         this.ambito_actual = id_f;
@@ -399,7 +400,11 @@ public class Main extends javax.swing.JFrame {
                             }
                         }
                     }
-                    String tipo_1 = tipos.get(0).getTipo();
+                    String tipo_1 = "";
+                    if (tipos.size() > 0) {
+                        tipo_1 = tipos.get(0).getTipo();
+                    }
+
                     boolean tipos_iguales = true;
                     for (int i = 1; i < tipos.size(); i++) {
                         if (!tipos.get(i).getTipo().equals(tipo_1)) {
@@ -407,11 +412,29 @@ public class Main extends javax.swing.JFrame {
                             System.out.println("Error de tipos: Funcion " + this.ambito_actual + " variable " + tipos.get(i).getId());//**********
                         }
                     }
-                    for (int i = 0; i < this.constantes.size(); i++) {
-                        if (!this.constantes.get(i).equals(tipo_1)) {
-                            tipos_iguales = false;
-                            System.out.println("Error de tipos: Funcion " + this.ambito_actual + " constante  " + this.constantes.get(i));//**********
+                    if (!tipo_1.equals("")) {
+                        for (int i = 0; i < this.constantes.size(); i++) {
+                            if (!this.constantes.get(i).equals(tipo_1)) {
+                                tipos_iguales = false;
+                                System.out.println("Error de tipos: Funcion " + this.ambito_actual + " constante " + this.constantes.get(i));//**********
+                            }
                         }
+                    } else {
+                        if (this.constantes.size() > 0) {
+                            tipo_1 = this.constantes.get(0);
+                        }
+                        for (int i = 1; i < this.constantes.size(); i++) {
+                            if (!this.constantes.get(i).equals(tipo_1)) {
+                                tipos_iguales = false;
+                                System.out.println("Error de tipos: Funcion " + this.ambito_actual + " constante " + this.constantes.get(i));//**********
+                            }
+                        }
+                    }
+                    if (this.return_flag) {
+                        if (!tipo_1.equals(this.tipo_actual)) {
+                            System.out.println("El tipo del return en la funcion " + this.ambito_actual + " no corresponde.");//**********
+                        }
+                        this.return_flag = false;
                     }
                 }
 
@@ -438,6 +461,9 @@ public class Main extends javax.swing.JFrame {
                         id = "";
                     }
                 }
+            } else if (nodo.getVal().equals("return")) {
+                this.return_flag = true;
+                recorrer(nodo.getHijos().get(0));
             } else {
                 for (TreeNode hijo : nodo.getHijos()) {
                     recorrer(hijo);
@@ -474,7 +500,7 @@ public class Main extends javax.swing.JFrame {
         }
         return ret;
     }
-    
+
     public boolean verificar_variable_global(String variable) {
         boolean ret = false;
         for (int i = 0; i < this.tabla.size(); i++) {
@@ -483,12 +509,12 @@ public class Main extends javax.swing.JFrame {
             }
         }
         for (int i = 0; i < this.funciones.size(); i++) {
-            if(variable.equals(this.funciones.get(i).getId())){
+            if (variable.equals(this.funciones.get(i).getId())) {
                 ret = true;
             }
         }
         for (int i = 0; i < this.decfunciones.size(); i++) {
-            if(variable.equals(this.decfunciones.get(i).getId())){
+            if (variable.equals(this.decfunciones.get(i).getId())) {
                 ret = true;
             }
         }
@@ -523,58 +549,58 @@ public class Main extends javax.swing.JFrame {
                         exist = true;
                     }
                 }
-                if(!exist){
+                if (!exist) {
                     System.out.println("La funcion " + f + " no existe");//**************
                 }
                 this.funccall.clear();
                 funcion(hijo.getHijos().get(1));
-                
+
                 ArrayList<String> argumentos = new ArrayList<>();
                 for (int i = 0; i < this.funccall.size(); i++) {
                     String tipo = "";
                     boolean same = true;
                     for (int j = 0; j < this.funccall.get(i).size(); j++) {
-                        if(j == 0){
+                        if (j == 0) {
                             tipo = this.funccall.get(i).get(j);
-                            if(!"int".equals(tipo) && !"char".equals(tipo)){
+                            if (!"int".equals(tipo) && !"char".equals(tipo)) {
                                 tipo = tipo_var(tipo);
                             }
-                        }else{
-                            if(!this.funccall.get(i).get(j).equals("int") && !this.funccall.get(i).get(j).equals("char")){
+                        } else {
+                            if (!this.funccall.get(i).get(j).equals("int") && !this.funccall.get(i).get(j).equals("char")) {
                                 String val = tipo_var(this.funccall.get(i).get(j));
-                                if(!val.equals(tipo)){
+                                if (!val.equals(tipo)) {
                                     same = false;
                                 }
                             }
                         }
                     }
-                    if(same){
+                    if (same) {
                         argumentos.add(tipo);
-                    }else{
+                    } else {
                         argumentos.add("#");
                         System.out.println("La expresión " + i + " No sirve");//**********
                     }
                 }
-                Funcion func = new Funcion("","");
+                Funcion func = new Funcion("", "");
                 for (int i = 0; i < this.funciones.size(); i++) {
-                    if(f.equals(this.funciones.get(i).getId())){
+                    if (f.equals(this.funciones.get(i).getId())) {
                         func = this.funciones.get(i);
                     }
                 }
                 boolean correct = true;
-                if(func.getParams().size() == argumentos.size()){
+                if (func.getParams().size() == argumentos.size()) {
                     for (int i = 0; i < argumentos.size(); i++) {
-                        if(!func.getParams().get(i).getTipo().equals(argumentos.get(i))){
+                        if (!func.getParams().get(i).getTipo().equals(argumentos.get(i))) {
                             correct = false;
                         }
                     }
-                }else{
+                } else {
                     correct = false;
                 }
-                if(!correct && exist){
+                if (!correct && exist) {
                     System.out.println("Los parametros al llamado a al función " + f + " son incorrectos.");//*********
                 }
-                
+
             } else {
                 variables_expresion(hijo);
             }
@@ -582,18 +608,18 @@ public class Main extends javax.swing.JFrame {
     }
 
     public void funcion(TreeNode root) {
-        if(!root.getHijos().isEmpty()){
+        if (!root.getHijos().isEmpty()) {
             for (TreeNode hijo : root.getHijos()) {
-                if(hijo.getVal().equals("Exp")){
+                if (hijo.getVal().equals("Exp")) {
                     this.funccall.add(new ArrayList<>());
                     funcion(hijo);
-                }else if(hijo.getVal().equals("Num")){
-                    this.funccall.get(this.funccall.size()-1).add("int");
-                }else if(hijo.getVal().equals("ID")){
-                    this.funccall.get(this.funccall.size()-1).add(hijo.getHijos().get(0).getVal());
-                }else if(hijo.getVal().equals("ConstChar")){
-                    this.funccall.get(this.funccall.size()-1).add("char");
-                }else{
+                } else if (hijo.getVal().equals("Num")) {
+                    this.funccall.get(this.funccall.size() - 1).add("int");
+                } else if (hijo.getVal().equals("ID")) {
+                    this.funccall.get(this.funccall.size() - 1).add(hijo.getHijos().get(0).getVal());
+                } else if (hijo.getVal().equals("ConstChar")) {
+                    this.funccall.get(this.funccall.size() - 1).add("char");
+                } else {
                     funcion(hijo);
                 }
             }
@@ -640,11 +666,11 @@ public class Main extends javax.swing.JFrame {
         }
         return ret;
     }
-    
-    public String tipo_var(String id){
+
+    public String tipo_var(String id) {
         String ret = "";
         for (int i = 0; i < this.tabla.size(); i++) {
-            if(this.tabla.get(i).getId().equals(id)){
+            if (this.tabla.get(i).getId().equals(id)) {
                 ret = this.tabla.get(i).getTipo();
             }
         }
@@ -709,4 +735,6 @@ public class Main extends javax.swing.JFrame {
     ArrayList<String> constantes = new ArrayList();
     ArrayList<ArrayList<String>> funccall = new ArrayList();
     String ambito_actual = "";
+    String tipo_actual = "";
+    boolean return_flag = false;
 }

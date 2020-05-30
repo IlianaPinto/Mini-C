@@ -183,8 +183,9 @@ RETURN:r exp:e
     token++;
     TreeNode tn = new TreeNode("Statement", null, token);
     token++;
-    tn.agregarHijo(r, token);
-    tn.agregarHijo(e);
+    TreeNode rt = new TreeNode(r, null, token);
+    rt.agregarHijo(e);
+    tn.agregarHijo(rt);
     RESULT = tn;
 :}
 | error statement:st 
