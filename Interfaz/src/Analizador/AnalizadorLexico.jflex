@@ -93,49 +93,48 @@ colon = ":"
     {linecomment}   {System.out.println("linecomment");yybegin(COMMENTLINE);}
     {finalcomment}  {System.out.println("ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);}
     //reserved
-    {integer}       {System.out.println("Entero: "+yytext()); return new Symbol(Sym.INTEGER, yycolumn, yyline, yytext());}
-    {character}     {System.out.println("Caracter: "+yytext());return new Symbol(Sym.CHARACTER, yycolumn, yyline, yytext());}
-    {cfor}          {System.out.println("cicle: "+yytext());return new Symbol(Sym.FOR, yycolumn, yyline, yytext());}
-    {cwhile}        {System.out.println("cicle: "+yytext());return new Symbol(Sym.WHILE, yycolumn, yyline, yytext());}
-    {cif}           {System.out.println("condition: "+yytext());return new Symbol(Sym.IF, yycolumn, yyline, yytext());}
-    {celse}         {System.out.println("condition: "+yytext());return new Symbol(Sym.ELSE, yycolumn, yyline, yytext());}
-    {printf}        {System.out.println("comando: "+yytext());return new Symbol(Sym.PRINTF, yycolumn, yyline, yytext());}
-    {scanf}         {System.out.println("comando: "+yytext());return new Symbol(Sym.SCANF, yycolumn, yyline, yytext());}
-   //{cmain}         {System.out.println("reservada: "+yytext());return new Symbol(Sym.MAIN, yycolumn, yyline, yytext());}
-    {cvoid}         {System.out.println("reservada: "+yytext());return new Symbol(Sym.VOID, yycolumn, yyline, yytext());}
-    {creturn}       {System.out.println("reservada: "+yytext());return new Symbol(Sym.RETURN, yycolumn, yyline, yytext());}
+    {integer}       {return new Symbol(Sym.INTEGER, yycolumn, yyline, yytext());}
+    {character}     {return new Symbol(Sym.CHARACTER, yycolumn, yyline, yytext());}
+    {cfor}          {return new Symbol(Sym.FOR, yycolumn, yyline, yytext());}
+    {cwhile}        {return new Symbol(Sym.WHILE, yycolumn, yyline, yytext());}
+    {cif}           {return new Symbol(Sym.IF, yycolumn, yyline, yytext());}
+    {celse}         {return new Symbol(Sym.ELSE, yycolumn, yyline, yytext());}
+    {printf}        {return new Symbol(Sym.PRINTF, yycolumn, yyline, yytext());}
+    {scanf}         {return new Symbol(Sym.SCANF, yycolumn, yyline, yytext());}
+    {cvoid}         {return new Symbol(Sym.VOID, yycolumn, yyline, yytext());}
+    {creturn}       {return new Symbol(Sym.RETURN, yycolumn, yyline, yytext());}
     //delimiters
-    {keyinit}       {System.out.println("Delimeter: " + yytext());return new Symbol(Sym.KEYINIT, yycolumn, yyline, yytext());}
-    {keyfin}        {System.out.println("Delimeter: " + yytext());return new Symbol(Sym.KEYFIN, yycolumn, yyline, yytext());}
-    {parinit}       {System.out.println("Delimeter: " + yytext());return new Symbol(Sym.PARINIT, yycolumn, yyline, yytext());}
-    {parfin}        {System.out.println("Delimeter: " + yytext());return new Symbol(Sym.PARFIN, yycolumn, yyline, yytext());}
-    {comma}         {System.out.println("Delimeter: " + yytext());return new Symbol(Sym.COMMA, yycolumn, yyline, yytext());}
-    {semicolon}     {System.out.println("Delimeter: " + yytext());return new Symbol(Sym.SEMICOLON, yycolumn, yyline, yytext());}
-    {colon}         {System.out.println("Delimeter: " + yytext());return new Symbol(Sym.COLON, yycolumn, yyline, yytext());}
+    {keyinit}       {return new Symbol(Sym.KEYINIT, yycolumn, yyline, yytext());}
+    {keyfin}        {return new Symbol(Sym.KEYFIN, yycolumn, yyline, yytext());}
+    {parinit}       {return new Symbol(Sym.PARINIT, yycolumn, yyline, yytext());}
+    {parfin}        {return new Symbol(Sym.PARFIN, yycolumn, yyline, yytext());}
+    {comma}         {return new Symbol(Sym.COMMA, yycolumn, yyline, yytext());}
+    {semicolon}     {return new Symbol(Sym.SEMICOLON, yycolumn, yyline, yytext());}
+    {colon}         {return new Symbol(Sym.COLON, yycolumn, yyline, yytext());}
     //variables
-    {numbers}       {System.out.println("Number: "+yytext());return new Symbol(Sym.NUM, yycolumn, yyline, yytext());}
-    {id}            {System.out.println("Id: " + yytext());return new Symbol(Sym.IDE, yycolumn, yyline, yytext());}
+    {numbers}       {return new Symbol(Sym.NUM, yycolumn, yyline, yytext());}
+    {id}            {return new Symbol(Sym.IDE, yycolumn, yyline, yytext());}
     {n}             {System.out.println("ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);}
-    {constchar}     {System.out.println("constchar: "+yytext());return new Symbol(Sym.CONSTCHAR, yycolumn, yyline, yytext());}
-    {conststr}      {str = "";yybegin(CONSTSTR);/*System.out.println("ESTR: "+str);return new Symbol(Sym.CONSTSTR, yycolumn, yyline, str);*/}
+    {constchar}     {return new Symbol(Sym.CONSTCHAR, yycolumn, yyline, yytext());}
+    {conststr}      {str = "";yybegin(CONSTSTR);}
     {spaces}        {}
     //operators
-    {opmult}        {System.out.println("operador: " + yytext());return new Symbol(Sym.OPMULT, yycolumn, yyline, yytext());}
-    {opdiv}         {System.out.println("operador: " + yytext());return new Symbol(Sym.OPDIV, yycolumn, yyline, yytext());}
-    {opsum}         {System.out.println("operador: " + yytext());return new Symbol(Sym.OPSUM, yycolumn, yyline, yytext());}
-    {opinc}         {System.out.println("operador: " + yytext());return new Symbol(Sym.OPINC, yycolumn, yyline, yytext());}
-    {opasig}        {System.out.println("operador: " + yytext());return new Symbol(Sym.OPASIG, yycolumn, yyline, yytext());}
-    {opcomp}        {System.out.println("operador: " + yytext());return new Symbol(Sym.OPCOMP, yycolumn, yyline, yytext());}
-    {opdif}         {System.out.println("operador: " + yytext());return new Symbol(Sym.OPDIF, yycolumn, yyline, yytext());}
-    {opgra}         {System.out.println("operador: " + yytext());return new Symbol(Sym.OPGRA, yycolumn, yyline, yytext());}
-    {opless}        {System.out.println("operador: " + yytext());return new Symbol(Sym.OPLESS, yycolumn, yyline, yytext());}
-    {oplesseq}      {System.out.println("operador: " + yytext());return new Symbol(Sym.OPLESSEQ, yycolumn, yyline, yytext());}
-    {opgraeq}       {System.out.println("operador: " + yytext());return new Symbol(Sym.OPGRAEP, yycolumn, yyline, yytext());}
-    {opcond}        {System.out.println("operador: " + yytext());return new Symbol(Sym.OPCOND, yycolumn, yyline, yytext());}
-    {opand}         {System.out.println("operador: " + yytext());return new Symbol(Sym.AND, yycolumn, yyline, yytext());}
-    {opor}          {System.out.println("operador: " + yytext());return new Symbol(Sym.OR, yycolumn, yyline, yytext());}
-    {opamp}         {System.out.println("operador: " + yytext());return new Symbol(Sym.AMP, yycolumn, yyline, yytext());}
-    {mod}           {System.out.println("operador: " + yytext());return new Symbol(Sym.MOD, yycolumn, yyline, yytext());}
+    {opmult}        {return new Symbol(Sym.OPMULT, yycolumn, yyline, yytext());}
+    {opdiv}         {return new Symbol(Sym.OPDIV, yycolumn, yyline, yytext());}
+    {opsum}         {return new Symbol(Sym.OPSUM, yycolumn, yyline, yytext());}
+    {opinc}         {return new Symbol(Sym.OPINC, yycolumn, yyline, yytext());}
+    {opasig}        {return new Symbol(Sym.OPASIG, yycolumn, yyline, yytext());}
+    {opcomp}        {return new Symbol(Sym.OPCOMP, yycolumn, yyline, yytext());}
+    {opdif}         {return new Symbol(Sym.OPDIF, yycolumn, yyline, yytext());}
+    {opgra}         {return new Symbol(Sym.OPGRA, yycolumn, yyline, yytext());}
+    {opless}        {return new Symbol(Sym.OPLESS, yycolumn, yyline, yytext());}
+    {oplesseq}      {return new Symbol(Sym.OPLESSEQ, yycolumn, yyline, yytext());}
+    {opgraeq}       {return new Symbol(Sym.OPGRAEP, yycolumn, yyline, yytext());}
+    {opcond}        {return new Symbol(Sym.OPCOND, yycolumn, yyline, yytext());}
+    {opand}         {return new Symbol(Sym.AND, yycolumn, yyline, yytext());}
+    {opor}          {return new Symbol(Sym.OR, yycolumn, yyline, yytext());}
+    {opamp}         {return new Symbol(Sym.AMP, yycolumn, yyline, yytext());}
+    {mod}           {return new Symbol(Sym.MOD, yycolumn, yyline, yytext());}
 
     .               {
                         System.out.println("ERROR LEXICO "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);
@@ -147,7 +146,7 @@ colon = ":"
 <COMMENTPAR>
 {
     {finalcomment}  {yybegin(1);}
-    {initcomment}   {System.out.println("ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);}
+    {initcomment}   {String err = "ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn; errores.add(err);}
     .               {System.out.println(yytext());}
 }
 
@@ -159,10 +158,10 @@ colon = ":"
 
 <CONSTSTR>
 {
-    {conststr}      {System.out.println("str = "+str);yybegin(1);return new Symbol(Sym.CONSTSTR, yycolumn, yyline, str);}
+    {conststr}      {yybegin(1);return new Symbol(Sym.CONSTSTR, yycolumn, yyline, str);}
     {marks}         {str += yytext().charAt(1);}
-    {pfint}         {System.out.println("%d");str += yytext();}
-    {pfchar}        {System.out.println("%c");str += yytext();}   
+    {pfint}         {str += yytext();}
+    {pfchar}        {str += yytext();}   
     .               {str += yytext();}
 }
 

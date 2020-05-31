@@ -180,7 +180,7 @@ public class Main extends javax.swing.JFrame {
             this.TextErrores.setText("");
             ArrayList<String> lexi = lexer.errores;
             ArrayList<String> l = p.errores;
-            
+
             //semantico
             tabla.clear();
             funciones.clear();
@@ -296,6 +296,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_bt_guardarMouseClicked
 
     //Metodos
+    //semantico
     public void recorrer(TreeNode tn) {
         TreeNode nodo = tn;
         if (nodo != null) {
@@ -329,9 +330,12 @@ public class Main extends javax.swing.JFrame {
                 for (TreeNode hijo : nodo.getHijos()) {
                     if (hijo.getVal().equals("Tipo")) {
                         tipo_f = hijo.getHijos().get(0).getVal();
-                        if (hijo.getHijos().get(1).getVal().equals("*")) {
-                            tipo_f += "*";
+                        if (hijo.getHijos().size() > 1) {
+                            if (hijo.getHijos().get(1).getVal().equals("*")) {
+                                tipo_f += "*";
+                            }
                         }
+
                         this.tipo_actual = tipo_f;
                     } else if (hijo.getVal().equals("ID")) {
                         id_f += hijo.getHijos().get(0).getVal();
@@ -413,7 +417,7 @@ public class Main extends javax.swing.JFrame {
                             if (v.equals(this.tabla.get(j).getId()) && (this.tabla.get(j).getAmbito().equals(this.ambito_actual) || this.tabla.get(j).getAmbito().equals("1Global"))) {
                                 if (pointer) {
                                     if (this.tabla.get(j).getTipo().contains("*")) {
-                                        Variable vai = new Variable(this.tabla.get(j).getTipo(),this.tabla.get(j).getId(), this.tabla.get(j).getAmbito());
+                                        Variable vai = new Variable(this.tabla.get(j).getTipo(), this.tabla.get(j).getId(), this.tabla.get(j).getAmbito());
                                         vai.setTipo(vai.getTipo().substring(0, vai.getTipo().length() - 1));
                                         tipos.add(vai);
                                     } else {
@@ -467,6 +471,11 @@ public class Main extends javax.swing.JFrame {
                         }
                         this.return_flag = false;
                     }
+                    if(this.printf_flag){
+                        if(!tipo_1.equals(this.printf_tipo)){
+                            this.errores_semanticos.add("El tipo del printf en la funcion " + this.ambito_actual + " no corresponde.");
+                        }
+                    }
                 }
 
             } else if (nodo.getVal().equals("DecGlobal")) {
@@ -496,6 +505,62 @@ public class Main extends javax.swing.JFrame {
             } else if (nodo.getVal().equals("return")) {
                 this.return_flag = true;
                 recorrer(nodo.getHijos().get(0));
+            }else if(nodo.getVal().equals("Printf")){
+                String cadena = nodo.getHijos().get(0).getVal();
+                String acum = "";
+                this.printf_tipo = "";
+                int cont = 0;
+                for (int i = 0; i < cadena.length(); i++) {
+                    if(cadena.charAt(i) == '%'){
+                        acum += '%';
+                    }else if(cadena.charAt(i) == 'd' || cadena.charAt(i) == 'c'){
+                        if(acum.length() > 0){
+                            cont++;
+                            acum = "";
+                            if(cadena.charAt(i) == 'd'){
+                                this.printf_tipo = "int";
+                            }else{
+                                this.printf_tipo = "char";
+                            }
+                        }
+                    }
+                }
+                if (cont > 1) {
+                    this.errores_semanticos.add("Printf en la funcion " + this.ambito_actual + " espera más parametros de los que requiere.");
+                }else if(cont == 0 && !nodo.getHijos().get(1).getVal().equals("#")){
+                    this.errores_semanticos.add("Printf en la funcion " + this.ambito_actual + " contiene más parámetros de lo esperado.");
+                }else if(cont == 1 && nodo.getHijos().get(1).getVal().equals("#")){
+                    this.errores_semanticos.add("Printf en la funcion " + this.ambito_actual + " no contiene el parámetro esperado.");
+                }else{
+                    this.printf_flag = true;
+                    recorrer(nodo.getHijos().get(1));
+                }
+            }else if(nodo.getVal().equals("Scanf")){
+                String cadena = nodo.getHijos().get(0).getVal();
+                String ampersant = nodo.getHijos().get(1).getVal();
+                String id = nodo.getHijos().get(2).getHijos().get(0).getVal();
+                String tipo_scan = "";
+                if(cadena.equals("%d") || cadena.equals("%c")){
+                    if(cadena.equals("%d")){
+                        tipo_scan = "int";
+                    }else{
+                        tipo_scan = "char";
+                    }
+                    if(ampersant.equals("#")){
+                        tipo_scan += "*";
+                    }
+                    if(verificar_variable(id)){
+                        System.out.println("TIPO DE " + id + " " + tipo_var(id));
+                        System.out.println("Tipo DE scanf" + tipo_scan);
+                        if(!tipo_scan.equals(tipo_var(id))){
+                            this.errores_semanticos.add("Los tipos en el scanf de la funcion " + this.ambito_actual + " no concuerdan");
+                        }
+                    }else{
+                        this.errores_semanticos.add("La variable " + id + " en el Scanf en la funcion " + this.ambito_actual + " no existe");
+                    }
+                }else{
+                    this.errores_semanticos.add("Scanf en la funcion " + this.ambito_actual + " debe ser %d o %c");
+                }
             } else {
                 for (TreeNode hijo : nodo.getHijos()) {
                     recorrer(hijo);
@@ -571,7 +636,7 @@ public class Main extends javax.swing.JFrame {
             if (hijo.getVal().equals("ID")) {
                 if (hijo.getHijos().get(0).getVal().equals("*")) {
                     this.variables.add("*" + hijo.getHijos().get(1).getVal());
-                }else if(hijo.getHijos().get(0).getVal().equals("&")){
+                } else if (hijo.getHijos().get(0).getVal().equals("&")) {
                     this.variables.add(hijo.getHijos().get(1).getVal());
                 } else {
                     this.variables.add(hijo.getHijos().get(0).getVal());
@@ -721,6 +786,7 @@ public class Main extends javax.swing.JFrame {
         return ret;
     }
 
+    //Codigo intermedio
     /**
      * @param args the command line arguments
      */
@@ -782,4 +848,8 @@ public class Main extends javax.swing.JFrame {
     String ambito_actual = "";
     String tipo_actual = "";
     boolean return_flag = false;
+    boolean printf_flag = false;
+    String printf_tipo = "";
+    //Intermedio
+    ArrayList<Cuadruplo> cuadruplos = new ArrayList();
 }

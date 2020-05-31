@@ -121,17 +121,6 @@ while:w statement:st
         tn.agregarHijo(h);
     }
     RESULT = tn;        
-:} |
-exp:e statement:st
-{: 
-    token++;
-    TreeNode tn = new TreeNode("Statement", null, token);
-    tn.agregarHijo(e);
-    //tn.agregarHijo(st);
-    for(TreeNode h : st.getHijos()){
-        tn.agregarHijo(h);
-    }
-    RESULT = tn;
 :} | 
 
 for:f statement:st
@@ -313,6 +302,19 @@ amp::= AMP:a
 :};
 
 //expresiones aritméticas y booleanas
+asig::= IDE:i OPASIG:o exp:e
+{:
+    token++;
+    TreeNode tn = new TreeNode("Asig", null, token);
+    token++;
+    TreeNode id = new TreeNode("ID", null, token);
+    token++;
+    id.agregarHijo(i, token);
+    tn.agregarHijo(id);
+    tn.agregarHijo(e);
+    RESULT = tn;
+:};
+
 exp::= finalexpression:f SEMICOLON
 {:
     RESULT = f;
@@ -500,11 +502,7 @@ oprel::= OPGRA:o
     token++;
     RESULT = new TreeNode(o, null, token);
 :}
-| OPASIG:o 
-{:
-    token++;
-    RESULT = new TreeNode(o, null, token);
-:} 
+
 | OPDIF:o 
 {:
     token++;

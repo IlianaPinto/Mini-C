@@ -64,12 +64,12 @@ class Lexer implements java_cup.runtime.Scanner {
     "\1\23\1\24\1\25\1\26\3\27\1\30\1\31\1\32"+
     "\2\31\1\33\1\0\1\2\1\34\1\35\1\33\1\2"+
     "\1\36\7\2\1\37\1\40\1\41\1\42\1\43\1\44"+
-    "\1\45\1\46\1\47\1\50\1\51\1\2\1\52\1\2"+
-    "\1\53\5\2\1\54\1\2\1\55\3\2\1\56\1\2"+
-    "\1\57\1\60\1\2\1\61\1\62";
+    "\1\45\1\46\1\47\1\50\1\2\1\51\1\2\1\52"+
+    "\5\2\1\53\1\2\1\54\3\2\1\55\1\2\1\56"+
+    "\1\57\1\2\1\60\1\61";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[96];
+    int [] result = new int[95];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -103,12 +103,12 @@ class Lexer implements java_cup.runtime.Scanner {
     "\0\u05c0\0\u05ee\0\u061c\0\346\0\346\0\346\0\u064a\0\u0114"+
     "\0\u0678\0\u06a6\0\u06d4\0\u0702\0\u0730\0\u075e\0\u078c\0\346"+
     "\0\346\0\346\0\346\0\346\0\346\0\346\0\346\0\346"+
-    "\0\346\0\346\0\u07ba\0\u0114\0\u07e8\0\u0114\0\u0816\0\u0844"+
-    "\0\u0872\0\u08a0\0\u08ce\0\u0114\0\u08fc\0\u0114\0\u092a\0\u0958"+
-    "\0\u0986\0\u0114\0\u09b4\0\u0114\0\u0114\0\u09e2\0\u0114\0\u0114";
+    "\0\346\0\u07ba\0\u0114\0\u07e8\0\u0114\0\u0816\0\u0844\0\u0872"+
+    "\0\u08a0\0\u08ce\0\u0114\0\u08fc\0\u0114\0\u092a\0\u0958\0\u0986"+
+    "\0\u0114\0\u09b4\0\u0114\0\u0114\0\u09e2\0\u0114\0\u0114";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[96];
+    int [] result = new int[95];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -152,30 +152,30 @@ class Lexer implements java_cup.runtime.Scanner {
     "\11\7\23\0\2\7\4\0\2\7\4\0\13\7\1\77"+
     "\3\7\56\0\1\100\56\0\1\100\56\0\1\101\56\0"+
     "\1\102\54\0\1\103\55\0\1\104\55\0\1\105\63\0"+
-    "\1\106\23\0\1\66\54\0\1\54\47\0\1\107\61\0"+
-    "\1\110\1\111\46\0\2\61\4\0\2\61\4\0\17\61"+
-    "\26\0\1\112\52\0\2\7\4\0\2\7\4\0\4\7"+
-    "\1\113\12\7\23\0\2\7\4\0\2\7\4\0\2\7"+
-    "\1\114\14\7\23\0\2\7\4\0\2\7\4\0\2\7"+
-    "\1\115\14\7\23\0\2\7\4\0\2\7\4\0\5\7"+
-    "\1\116\11\7\23\0\2\7\4\0\2\7\4\0\11\7"+
-    "\1\117\5\7\23\0\2\7\4\0\2\7\4\0\4\7"+
-    "\1\120\12\7\23\0\2\7\4\0\2\7\4\0\1\121"+
-    "\16\7\23\0\2\7\4\0\2\7\4\0\1\122\16\7"+
-    "\23\0\2\7\4\0\2\7\4\0\1\123\16\7\23\0"+
-    "\2\7\4\0\2\7\4\0\5\7\1\124\11\7\23\0"+
-    "\2\7\4\0\2\7\4\0\14\7\1\125\2\7\23\0"+
-    "\2\7\4\0\2\7\4\0\7\7\1\126\7\7\23\0"+
-    "\2\7\4\0\2\7\4\0\1\7\1\127\15\7\23\0"+
-    "\2\7\4\0\2\7\4\0\10\7\1\130\6\7\23\0"+
-    "\2\7\4\0\2\7\4\0\1\7\1\131\15\7\23\0"+
-    "\2\7\4\0\1\132\1\7\4\0\17\7\23\0\2\7"+
-    "\4\0\2\7\4\0\5\7\1\133\11\7\23\0\2\7"+
-    "\4\0\2\7\4\0\6\7\1\134\10\7\23\0\2\7"+
-    "\4\0\2\7\4\0\7\7\1\135\7\7\23\0\2\7"+
-    "\4\0\2\7\4\0\2\7\1\136\14\7\23\0\2\7"+
-    "\4\0\2\7\4\0\1\7\1\137\15\7\23\0\2\7"+
-    "\4\0\2\7\4\0\6\7\1\140\10\7\22\0";
+    "\1\106\23\0\1\107\54\0\1\54\47\0\1\110\61\0"+
+    "\2\55\46\0\2\61\4\0\2\61\4\0\17\61\26\0"+
+    "\1\111\52\0\2\7\4\0\2\7\4\0\4\7\1\112"+
+    "\12\7\23\0\2\7\4\0\2\7\4\0\2\7\1\113"+
+    "\14\7\23\0\2\7\4\0\2\7\4\0\2\7\1\114"+
+    "\14\7\23\0\2\7\4\0\2\7\4\0\5\7\1\115"+
+    "\11\7\23\0\2\7\4\0\2\7\4\0\11\7\1\116"+
+    "\5\7\23\0\2\7\4\0\2\7\4\0\4\7\1\117"+
+    "\12\7\23\0\2\7\4\0\2\7\4\0\1\120\16\7"+
+    "\23\0\2\7\4\0\2\7\4\0\1\121\16\7\23\0"+
+    "\2\7\4\0\2\7\4\0\1\122\16\7\23\0\2\7"+
+    "\4\0\2\7\4\0\5\7\1\123\11\7\23\0\2\7"+
+    "\4\0\2\7\4\0\14\7\1\124\2\7\23\0\2\7"+
+    "\4\0\2\7\4\0\7\7\1\125\7\7\23\0\2\7"+
+    "\4\0\2\7\4\0\1\7\1\126\15\7\23\0\2\7"+
+    "\4\0\2\7\4\0\10\7\1\127\6\7\23\0\2\7"+
+    "\4\0\2\7\4\0\1\7\1\130\15\7\23\0\2\7"+
+    "\4\0\1\131\1\7\4\0\17\7\23\0\2\7\4\0"+
+    "\2\7\4\0\5\7\1\132\11\7\23\0\2\7\4\0"+
+    "\2\7\4\0\6\7\1\133\10\7\23\0\2\7\4\0"+
+    "\2\7\4\0\7\7\1\134\7\7\23\0\2\7\4\0"+
+    "\2\7\4\0\2\7\1\135\14\7\23\0\2\7\4\0"+
+    "\2\7\4\0\1\7\1\136\15\7\23\0\2\7\4\0"+
+    "\2\7\4\0\6\7\1\137\10\7\22\0";
 
   private static int [] zzUnpackTrans() {
     int [] result = new int[2576];
@@ -218,10 +218,10 @@ class Lexer implements java_cup.runtime.Scanner {
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
     "\5\0\1\11\2\1\1\11\1\1\1\11\3\1\1\11"+
     "\17\1\1\11\1\1\11\11\2\1\3\11\3\1\1\0"+
-    "\1\1\3\11\11\1\13\11\26\1";
+    "\1\1\3\11\11\1\12\11\26\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[96];
+    int [] result = new int[95];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -690,252 +690,247 @@ class Lexer implements java_cup.runtime.Scanner {
                         errores.add(err);
             } 
             // fall through
-          case 51: break;
+          case 50: break;
           case 2: 
-            { System.out.println("Id: " + yytext());return new Symbol(Sym.IDE, yycolumn, yyline, yytext());
+            { return new Symbol(Sym.IDE, yycolumn, yyline, yytext());
+            } 
+            // fall through
+          case 51: break;
+          case 3: 
+            { return new Symbol(Sym.NUM, yycolumn, yyline, yytext());
             } 
             // fall through
           case 52: break;
-          case 3: 
-            { System.out.println("Number: "+yytext());return new Symbol(Sym.NUM, yycolumn, yyline, yytext());
+          case 4: 
+            { str = "";yybegin(CONSTSTR);
             } 
             // fall through
           case 53: break;
-          case 4: 
-            { str = "";yybegin(CONSTSTR);/*System.out.println("ESTR: "+str);return new Symbol(Sym.CONSTSTR, yycolumn, yyline, str);*/
+          case 5: 
+            { return new Symbol(Sym.MOD, yycolumn, yyline, yytext());
             } 
             // fall through
           case 54: break;
-          case 5: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.MOD, yycolumn, yyline, yytext());
+          case 6: 
+            { return new Symbol(Sym.OPDIV, yycolumn, yyline, yytext());
             } 
             // fall through
           case 55: break;
-          case 6: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.OPDIV, yycolumn, yyline, yytext());
+          case 7: 
+            { return new Symbol(Sym.OPMULT, yycolumn, yyline, yytext());
             } 
             // fall through
           case 56: break;
-          case 7: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.OPMULT, yycolumn, yyline, yytext());
-            } 
-            // fall through
-          case 57: break;
           case 8: 
             { 
             } 
             // fall through
-          case 58: break;
+          case 57: break;
           case 9: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.OPSUM, yycolumn, yyline, yytext());
+            { return new Symbol(Sym.OPSUM, yycolumn, yyline, yytext());
+            } 
+            // fall through
+          case 58: break;
+          case 10: 
+            { return new Symbol(Sym.OPASIG, yycolumn, yyline, yytext());
             } 
             // fall through
           case 59: break;
-          case 10: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.OPASIG, yycolumn, yyline, yytext());
+          case 11: 
+            { return new Symbol(Sym.AMP, yycolumn, yyline, yytext());
             } 
             // fall through
           case 60: break;
-          case 11: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.AMP, yycolumn, yyline, yytext());
+          case 12: 
+            { return new Symbol(Sym.OPGRA, yycolumn, yyline, yytext());
             } 
             // fall through
           case 61: break;
-          case 12: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.OPGRA, yycolumn, yyline, yytext());
+          case 13: 
+            { return new Symbol(Sym.OPLESS, yycolumn, yyline, yytext());
             } 
             // fall through
           case 62: break;
-          case 13: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.OPLESS, yycolumn, yyline, yytext());
+          case 14: 
+            { return new Symbol(Sym.OPCOND, yycolumn, yyline, yytext());
             } 
             // fall through
           case 63: break;
-          case 14: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.OPCOND, yycolumn, yyline, yytext());
+          case 15: 
+            { return new Symbol(Sym.KEYINIT, yycolumn, yyline, yytext());
             } 
             // fall through
           case 64: break;
-          case 15: 
-            { System.out.println("Delimeter: " + yytext());return new Symbol(Sym.KEYINIT, yycolumn, yyline, yytext());
+          case 16: 
+            { return new Symbol(Sym.KEYFIN, yycolumn, yyline, yytext());
             } 
             // fall through
           case 65: break;
-          case 16: 
-            { System.out.println("Delimeter: " + yytext());return new Symbol(Sym.KEYFIN, yycolumn, yyline, yytext());
+          case 17: 
+            { return new Symbol(Sym.PARINIT, yycolumn, yyline, yytext());
             } 
             // fall through
           case 66: break;
-          case 17: 
-            { System.out.println("Delimeter: " + yytext());return new Symbol(Sym.PARINIT, yycolumn, yyline, yytext());
+          case 18: 
+            { return new Symbol(Sym.PARFIN, yycolumn, yyline, yytext());
             } 
             // fall through
           case 67: break;
-          case 18: 
-            { System.out.println("Delimeter: " + yytext());return new Symbol(Sym.PARFIN, yycolumn, yyline, yytext());
+          case 19: 
+            { return new Symbol(Sym.COMMA, yycolumn, yyline, yytext());
             } 
             // fall through
           case 68: break;
-          case 19: 
-            { System.out.println("Delimeter: " + yytext());return new Symbol(Sym.COMMA, yycolumn, yyline, yytext());
+          case 20: 
+            { return new Symbol(Sym.SEMICOLON, yycolumn, yyline, yytext());
             } 
             // fall through
           case 69: break;
-          case 20: 
-            { System.out.println("Delimeter: " + yytext());return new Symbol(Sym.SEMICOLON, yycolumn, yyline, yytext());
+          case 21: 
+            { return new Symbol(Sym.COLON, yycolumn, yyline, yytext());
             } 
             // fall through
           case 70: break;
-          case 21: 
-            { System.out.println("Delimeter: " + yytext());return new Symbol(Sym.COLON, yycolumn, yyline, yytext());
-            } 
-            // fall through
-          case 71: break;
           case 22: 
             { System.out.print(yytext());
             } 
             // fall through
-          case 72: break;
+          case 71: break;
           case 23: 
             { System.out.println(yytext());
             } 
             // fall through
-          case 73: break;
+          case 72: break;
           case 24: 
             { yybegin(1);
             } 
             // fall through
-          case 74: break;
+          case 73: break;
           case 25: 
             { str += yytext();
             } 
             // fall through
-          case 75: break;
+          case 74: break;
           case 26: 
-            { System.out.println("str = "+str);yybegin(1);return new Symbol(Sym.CONSTSTR, yycolumn, yyline, str);
+            { yybegin(1);return new Symbol(Sym.CONSTSTR, yycolumn, yyline, str);
             } 
             // fall through
-          case 76: break;
+          case 75: break;
           case 27: 
             { System.out.println("ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn);
             } 
             // fall through
-          case 77: break;
+          case 76: break;
           case 28: 
             { System.out.println("linecomment");yybegin(COMMENTLINE);
             } 
             // fall through
-          case 78: break;
+          case 77: break;
           case 29: 
             { System.out.println("initcomment");yybegin(COMMENTPAR);
             } 
             // fall through
-          case 79: break;
+          case 78: break;
           case 30: 
-            { System.out.println("condition: "+yytext());return new Symbol(Sym.IF, yycolumn, yyline, yytext());
+            { return new Symbol(Sym.IF, yycolumn, yyline, yytext());
+            } 
+            // fall through
+          case 79: break;
+          case 31: 
+            { return new Symbol(Sym.OPINC, yycolumn, yyline, yytext());
             } 
             // fall through
           case 80: break;
-          case 31: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.OPINC, yycolumn, yyline, yytext());
+          case 32: 
+            { return new Symbol(Sym.OPCOMP, yycolumn, yyline, yytext());
             } 
             // fall through
           case 81: break;
-          case 32: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.OPCOMP, yycolumn, yyline, yytext());
+          case 33: 
+            { return new Symbol(Sym.AND, yycolumn, yyline, yytext());
             } 
             // fall through
           case 82: break;
-          case 33: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.AND, yycolumn, yyline, yytext());
+          case 34: 
+            { return new Symbol(Sym.OPDIF, yycolumn, yyline, yytext());
             } 
             // fall through
           case 83: break;
-          case 34: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.OPDIF, yycolumn, yyline, yytext());
+          case 35: 
+            { return new Symbol(Sym.OPGRAEP, yycolumn, yyline, yytext());
             } 
             // fall through
           case 84: break;
-          case 35: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.OPGRAEP, yycolumn, yyline, yytext());
+          case 36: 
+            { return new Symbol(Sym.OPLESSEQ, yycolumn, yyline, yytext());
             } 
             // fall through
           case 85: break;
-          case 36: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.OPLESSEQ, yycolumn, yyline, yytext());
+          case 37: 
+            { return new Symbol(Sym.OR, yycolumn, yyline, yytext());
             } 
             // fall through
           case 86: break;
-          case 37: 
-            { System.out.println("operador: " + yytext());return new Symbol(Sym.OR, yycolumn, yyline, yytext());
+          case 38: 
+            { String err = "ERROR "+yytext()+" Linea: "+yyline+" Columna: "+yycolumn; errores.add(err);
             } 
             // fall through
           case 87: break;
-          case 38: 
+          case 39: 
             { str += yytext().charAt(1);
             } 
             // fall through
           case 88: break;
-          case 39: 
-            { System.out.println("%d");str += yytext();
+          case 40: 
+            { return new Symbol(Sym.CONSTCHAR, yycolumn, yyline, yytext());
             } 
             // fall through
           case 89: break;
-          case 40: 
-            { System.out.println("%c");str += yytext();
+          case 41: 
+            { return new Symbol(Sym.INTEGER, yycolumn, yyline, yytext());
             } 
             // fall through
           case 90: break;
-          case 41: 
-            { System.out.println("constchar: "+yytext());return new Symbol(Sym.CONSTCHAR, yycolumn, yyline, yytext());
+          case 42: 
+            { return new Symbol(Sym.FOR, yycolumn, yyline, yytext());
             } 
             // fall through
           case 91: break;
-          case 42: 
-            { System.out.println("Entero: "+yytext()); return new Symbol(Sym.INTEGER, yycolumn, yyline, yytext());
+          case 43: 
+            { return new Symbol(Sym.CHARACTER, yycolumn, yyline, yytext());
             } 
             // fall through
           case 92: break;
-          case 43: 
-            { System.out.println("cicle: "+yytext());return new Symbol(Sym.FOR, yycolumn, yyline, yytext());
+          case 44: 
+            { return new Symbol(Sym.ELSE, yycolumn, yyline, yytext());
             } 
             // fall through
           case 93: break;
-          case 44: 
-            { System.out.println("Caracter: "+yytext());return new Symbol(Sym.CHARACTER, yycolumn, yyline, yytext());
+          case 45: 
+            { return new Symbol(Sym.VOID, yycolumn, yyline, yytext());
             } 
             // fall through
           case 94: break;
-          case 45: 
-            { System.out.println("condition: "+yytext());return new Symbol(Sym.ELSE, yycolumn, yyline, yytext());
+          case 46: 
+            { return new Symbol(Sym.SCANF, yycolumn, yyline, yytext());
             } 
             // fall through
           case 95: break;
-          case 46: 
-            { System.out.println("reservada: "+yytext());return new Symbol(Sym.VOID, yycolumn, yyline, yytext());
+          case 47: 
+            { return new Symbol(Sym.WHILE, yycolumn, yyline, yytext());
             } 
             // fall through
           case 96: break;
-          case 47: 
-            { System.out.println("comando: "+yytext());return new Symbol(Sym.SCANF, yycolumn, yyline, yytext());
+          case 48: 
+            { return new Symbol(Sym.RETURN, yycolumn, yyline, yytext());
             } 
             // fall through
           case 97: break;
-          case 48: 
-            { System.out.println("cicle: "+yytext());return new Symbol(Sym.WHILE, yycolumn, yyline, yytext());
+          case 49: 
+            { return new Symbol(Sym.PRINTF, yycolumn, yyline, yytext());
             } 
             // fall through
           case 98: break;
-          case 49: 
-            { System.out.println("reservada: "+yytext());return new Symbol(Sym.RETURN, yycolumn, yyline, yytext());
-            } 
-            // fall through
-          case 99: break;
-          case 50: 
-            { System.out.println("comando: "+yytext());return new Symbol(Sym.PRINTF, yycolumn, yyline, yytext());
-            } 
-            // fall through
-          case 100: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }
