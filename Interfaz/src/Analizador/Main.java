@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.Scanner;
@@ -222,7 +223,7 @@ public class Main extends javax.swing.JFrame {
             if (l.isEmpty() && lexi.isEmpty() && errores_semanticos.isEmpty()) {
                 this.TextErrores.append("Compilado sin errores!");
                 //codigo intermedio
-                
+
             }
             for (int i = 0; i < lexi.size(); i++) {
                 this.TextErrores.append(lexi.get(i) + "\n");
@@ -318,8 +319,9 @@ public class Main extends javax.swing.JFrame {
                         if (verificar_variable(id)) {
                             //System.out.println("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");
                             this.errores_semanticos.add("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");
+                        } else {
+                            this.tabla.add(new Variable(tipo, id, this.ambito_actual));
                         }
-                        this.tabla.add(new Variable(tipo, id, this.ambito_actual));
                         if (tipo.contains("*")) {
                             tipo = tipo.substring(0, tipo.length() - 1);
                         }
@@ -347,15 +349,40 @@ public class Main extends javax.swing.JFrame {
                             ArrayList<Variable> v = parametros(hijo, new ArrayList<>());
                             Funcion func = (new Funcion(tipo_f, id_f));
                             func.agregar_params(v);
+
+                            boolean verificar = false;
+                            String ambito1 = "", id1 = "";
+                            for (int i = 0; i < v.size() - 1; i++) {
+                                for (int j = i + 1; j < v.size(); j++) {
+                                    if (v.get(i).id.equals(v.get(j).id) && v.get(i).ambito.equals(v.get(j).ambito)) {
+                                        verificar = true;
+                                        ambito1 = v.get(i).ambito;
+                                        id1 = v.get(i).id;
+                                    }
+                                }
+                            }
+
+                            if (verificar) {
+                                System.out.println("Hay parametros que se llaman igual");
+                            } else {
+                                System.out.println("No hay parametros que se llamen igual");
+                            }
+
                             if (verificar_funcion(id_f)) {
-                                this.funciones.add(func);
+                                if (!verificar) {
+                                    this.funciones.add(func);
+                                    for (Variable variable : v) {
+                                        tabla.add(variable);
+                                    }
+                                } else {
+                                    this.errores_semanticos.add("La variable "+id1+" fue definida más de una vez en la función "+ambito1);
+                                }
+
                             } else {
                                 //System.out.println("La funcion " + id_f + " fue declarada más de una vez.");
                                 this.errores_semanticos.add("La funcion " + id_f + " fue declarada más de una vez.");
                             }
-                            for (Variable variable : v) {
-                                tabla.add(variable);
-                            }
+
                             tipo_f = "";
                             id_f = "";
                         }
@@ -473,15 +500,15 @@ public class Main extends javax.swing.JFrame {
                         }
                         this.return_flag = false;
                     }
-                    if(this.printf_flag){
-                        if(!tipo_1.equals(this.printf_tipo)){
+                    if (this.printf_flag) {
+                        if (!tipo_1.equals(this.printf_tipo)) {
                             this.errores_semanticos.add("El tipo del printf en la funcion " + this.ambito_actual + " no corresponde.");
                         }
                         this.printf_flag = false;
                     }
-                    if(this.asig_flag){
+                    if (this.asig_flag) {
                         System.out.println("TIPOOOO = " + this.asig_tipo);
-                        if(!tipo_1.equals(this.asig_tipo)){
+                        if (!tipo_1.equals(this.asig_tipo)) {
                             this.errores_semanticos.add("El tipo de la asignacion en la funcion " + this.ambito_actual + " no corresponde.");
                         }
                         this.asig_flag = false;
@@ -515,21 +542,21 @@ public class Main extends javax.swing.JFrame {
             } else if (nodo.getVal().equals("return")) {
                 this.return_flag = true;
                 recorrer(nodo.getHijos().get(0));
-            }else if(nodo.getVal().equals("Printf")){
+            } else if (nodo.getVal().equals("Printf")) {
                 String cadena = nodo.getHijos().get(0).getVal();
                 String acum = "";
                 this.printf_tipo = "";
                 int cont = 0;
                 for (int i = 0; i < cadena.length(); i++) {
-                    if(cadena.charAt(i) == '%'){
+                    if (cadena.charAt(i) == '%') {
                         acum += '%';
-                    }else if(cadena.charAt(i) == 'd' || cadena.charAt(i) == 'c'){
-                        if(acum.length() > 0){
+                    } else if (cadena.charAt(i) == 'd' || cadena.charAt(i) == 'c') {
+                        if (acum.length() > 0) {
                             cont++;
                             acum = "";
-                            if(cadena.charAt(i) == 'd'){
+                            if (cadena.charAt(i) == 'd') {
                                 this.printf_tipo = "int";
-                            }else{
+                            } else {
                                 this.printf_tipo = "char";
                             }
                         }
@@ -537,45 +564,45 @@ public class Main extends javax.swing.JFrame {
                 }
                 if (cont > 1) {
                     this.errores_semanticos.add("Printf en la funcion " + this.ambito_actual + " espera más parametros de los que requiere.");
-                }else if(cont == 0 && !nodo.getHijos().get(1).getVal().equals("#")){
+                } else if (cont == 0 && !nodo.getHijos().get(1).getVal().equals("#")) {
                     this.errores_semanticos.add("Printf en la funcion " + this.ambito_actual + " contiene más parámetros de lo esperado.");
-                }else if(cont == 1 && nodo.getHijos().get(1).getVal().equals("#")){
+                } else if (cont == 1 && nodo.getHijos().get(1).getVal().equals("#")) {
                     this.errores_semanticos.add("Printf en la funcion " + this.ambito_actual + " no contiene el parámetro esperado.");
-                }else{
+                } else {
                     this.printf_flag = true;
                     recorrer(nodo.getHijos().get(1));
                 }
-            }else if(nodo.getVal().equals("Scanf")){
+            } else if (nodo.getVal().equals("Scanf")) {
                 String cadena = nodo.getHijos().get(0).getVal();
                 String ampersant = nodo.getHijos().get(1).getVal();
                 String id = nodo.getHijos().get(2).getHijos().get(0).getVal();
                 String tipo_scan = "";
-                if(cadena.equals("%d") || cadena.equals("%c")){
-                    if(cadena.equals("%d")){
+                if (cadena.equals("%d") || cadena.equals("%c")) {
+                    if (cadena.equals("%d")) {
                         tipo_scan = "int";
-                    }else{
+                    } else {
                         tipo_scan = "char";
                     }
-                    if(ampersant.equals("#")){
+                    if (ampersant.equals("#")) {
                         tipo_scan += "*";
                     }
-                    if(verificar_variable(id)){
+                    if (verificar_variable(id)) {
                         System.out.println("TIPO DE " + id + " " + tipo_var(id));
                         System.out.println("Tipo DE scanf" + tipo_scan);
-                        if(!tipo_scan.equals(tipo_var(id))){
+                        if (!tipo_scan.equals(tipo_var(id))) {
                             this.errores_semanticos.add("Los tipos en el scanf de la funcion " + this.ambito_actual + " no concuerdan");
                         }
-                    }else{
+                    } else {
                         this.errores_semanticos.add("La variable " + id + " en el Scanf en la funcion " + this.ambito_actual + " no existe");
                     }
-                }else{
+                } else {
                     this.errores_semanticos.add("Scanf en la funcion " + this.ambito_actual + " debe ser %d o %c");
                 }
-            }else if(nodo.getVal().equals("Asig")){
+            } else if (nodo.getVal().equals("Asig")) {
                 String variable = nodo.getHijos().get(0).getHijos().get(0).getVal();
-                if(!verificar_variables_exp(variable)){
+                if (!verificar_variables_exp(variable)) {
                     this.errores_semanticos.add("La variable " + variable + " No existe o no está en la funcion " + this.ambito_actual);
-                }else{
+                } else {
                     this.asig_flag = true;
                     this.asig_tipo = tipo_var(variable);
                     recorrer(nodo.getHijos().get(1));
