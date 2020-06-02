@@ -221,6 +221,8 @@ public class Main extends javax.swing.JFrame {
             //************
             if (l.isEmpty() && lexi.isEmpty() && errores_semanticos.isEmpty()) {
                 this.TextErrores.append("Compilado sin errores!");
+                //codigo intermedio
+                
             }
             for (int i = 0; i < lexi.size(); i++) {
                 this.TextErrores.append(lexi.get(i) + "\n");
@@ -475,6 +477,14 @@ public class Main extends javax.swing.JFrame {
                         if(!tipo_1.equals(this.printf_tipo)){
                             this.errores_semanticos.add("El tipo del printf en la funcion " + this.ambito_actual + " no corresponde.");
                         }
+                        this.printf_flag = false;
+                    }
+                    if(this.asig_flag){
+                        System.out.println("TIPOOOO = " + this.asig_tipo);
+                        if(!tipo_1.equals(this.asig_tipo)){
+                            this.errores_semanticos.add("El tipo de la asignacion en la funcion " + this.ambito_actual + " no corresponde.");
+                        }
+                        this.asig_flag = false;
                     }
                 }
 
@@ -560,6 +570,15 @@ public class Main extends javax.swing.JFrame {
                     }
                 }else{
                     this.errores_semanticos.add("Scanf en la funcion " + this.ambito_actual + " debe ser %d o %c");
+                }
+            }else if(nodo.getVal().equals("Asig")){
+                String variable = nodo.getHijos().get(0).getHijos().get(0).getVal();
+                if(!verificar_variables_exp(variable)){
+                    this.errores_semanticos.add("La variable " + variable + " No existe o no está en la funcion " + this.ambito_actual);
+                }else{
+                    this.asig_flag = true;
+                    this.asig_tipo = tipo_var(variable);
+                    recorrer(nodo.getHijos().get(1));
                 }
             } else {
                 for (TreeNode hijo : nodo.getHijos()) {
@@ -847,8 +866,10 @@ public class Main extends javax.swing.JFrame {
     ArrayList<ArrayList<String>> funccall = new ArrayList();
     String ambito_actual = "";
     String tipo_actual = "";
+    String asig_tipo = "";
     boolean return_flag = false;
     boolean printf_flag = false;
+    boolean asig_flag = false;
     String printf_tipo = "";
     //Intermedio
     ArrayList<Cuadruplo> cuadruplos = new ArrayList();
