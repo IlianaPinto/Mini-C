@@ -193,12 +193,14 @@ public class Main extends javax.swing.JFrame {
             switch (m) {
                 case 0:
                     System.out.println("No existe main");//*******
+                    this.errores_semanticos.add("No existe main.");
                     break;
                 case 1:
                     System.out.println("Bien");//*******
                     break;
                 default:
                     System.out.println("Hay más de 1 main");//*******
+                    this.errores_semanticos.add("Hay más de 1 main.");
                     break;
             }
 
@@ -375,7 +377,7 @@ public class Main extends javax.swing.JFrame {
                                         tabla.add(variable);
                                     }
                                 } else {
-                                    this.errores_semanticos.add("La variable "+id1+" fue definida más de una vez en la función "+ambito1);
+                                    this.errores_semanticos.add("La variable " + id1 + " fue definida más de una vez en la función " + ambito1);
                                 }
 
                             } else {
@@ -438,9 +440,14 @@ public class Main extends javax.swing.JFrame {
                     for (int i = 0; i < this.variables.size(); i++) {
                         String v = this.variables.get(i);
                         boolean pointer = false;
+                        boolean ampersant = false;
                         if (v.charAt(0) == '*') {
                             v = v.substring(1);
                             pointer = true;
+                        }
+                        if (v.charAt(0) == '&') {
+                            v = v.substring(1);
+                            ampersant = true;
                         }
                         for (int j = 0; j < this.tabla.size(); j++) {
                             if (v.equals(this.tabla.get(j).getId()) && (this.tabla.get(j).getAmbito().equals(this.ambito_actual) || this.tabla.get(j).getAmbito().equals("1Global"))) {
@@ -452,6 +459,15 @@ public class Main extends javax.swing.JFrame {
                                     } else {
                                         //System.out.println("Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
                                         this.errores_semanticos.add("Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
+                                    }
+                                } else if (ampersant) {
+                                    if (!this.tabla.get(j).getTipo().contains("*")) {
+                                        Variable vai = new Variable(this.tabla.get(j).getTipo(), this.tabla.get(j).getId(), this.tabla.get(j).getAmbito());
+                                        vai.setTipo(vai.getTipo() + "*");
+                                        tipos.add(vai);
+                                    } else {
+                                        //System.out.println("Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
+                                        this.errores_semanticos.add("Está intentando usar & en una variable es pointer " + this.tabla.get(j).getId());
                                     }
                                 } else {
                                     tipos.add(this.tabla.get(j));
@@ -568,6 +584,8 @@ public class Main extends javax.swing.JFrame {
                     this.errores_semanticos.add("Printf en la funcion " + this.ambito_actual + " contiene más parámetros de lo esperado.");
                 } else if (cont == 1 && nodo.getHijos().get(1).getVal().equals("#")) {
                     this.errores_semanticos.add("Printf en la funcion " + this.ambito_actual + " no contiene el parámetro esperado.");
+                } else if (cont == 0 && nodo.getHijos().get(1).getVal().equals("#")) {
+
                 } else {
                     this.printf_flag = true;
                     recorrer(nodo.getHijos().get(1));
@@ -666,7 +684,7 @@ public class Main extends javax.swing.JFrame {
 
     public boolean verificar_variables_exp(String v) {
         boolean ret = false;
-        if (v.charAt(0) == '*') {
+        if (v.charAt(0) == '*' || v.charAt(0) == '&') {
             v = v.substring(1);
         }
         for (int i = 0; i < this.tabla.size(); i++) {
@@ -683,7 +701,7 @@ public class Main extends javax.swing.JFrame {
                 if (hijo.getHijos().get(0).getVal().equals("*")) {
                     this.variables.add("*" + hijo.getHijos().get(1).getVal());
                 } else if (hijo.getHijos().get(0).getVal().equals("&")) {
-                    this.variables.add(hijo.getHijos().get(1).getVal());
+                    this.variables.add("&" + hijo.getHijos().get(1).getVal());
                 } else {
                     this.variables.add(hijo.getHijos().get(0).getVal());
                 }
