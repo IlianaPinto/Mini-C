@@ -175,7 +175,7 @@ public class Main extends javax.swing.JFrame {
             //File file = new File("C:\\Users\\HP\\Desktop\\Periodo actual\\Compi\\Mini-C\\Interfaz\\src\\Analizador\\prb.txt");
             Lexer lexer = new Lexer(new FileReader(fichero));
             ASintactico p = new ASintactico(lexer);
-            System.out.println("**************************************************");
+            //System.out.println("**************************************************");
             p.parse();
             System.out.println("**************************************************");
             this.TextErrores.setText("");
@@ -205,7 +205,7 @@ public class Main extends javax.swing.JFrame {
             }
 
             for (int i = 0; i < tabla.size(); i++) {
-                System.out.println("Variable: Tipo = " + tabla.get(i).getTipo() + " , Id = " + tabla.get(i).getId() + " , Ambito = " + tabla.get(i).getAmbito());
+                System.out.println("Variable: Tipo = " + tabla.get(i).getTipo() + " , Id = " + tabla.get(i).getId() + " , Ambito = " + tabla.get(i).getAmbito() + " , Offset = " + tabla.get(i).getOffset());
             }
             for (int i = 0; i < funciones.size(); i++) {
                 System.out.println("Funcion: Tipo = " + funciones.get(i).getTipo() + " , Id = " + funciones.get(i).getId());
@@ -225,7 +225,11 @@ public class Main extends javax.swing.JFrame {
             if (l.isEmpty() && lexi.isEmpty() && errores_semanticos.isEmpty()) {
                 this.TextErrores.append("Compilado sin errores!");
                 //codigo intermedio
-
+                codigo_intermedio(p.Tree);
+                System.out.println("****** semantico ******");
+                for (int i = 0; i < this.exp_intermedio.size(); i++) {
+                    System.out.println("[ " + this.exp_intermedio.get(i) + " ]");
+                }
             }
             for (int i = 0; i < lexi.size(); i++) {
                 this.TextErrores.append(lexi.get(i) + "\n");
@@ -322,7 +326,12 @@ public class Main extends javax.swing.JFrame {
                             //System.out.println("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");
                             this.errores_semanticos.add("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");
                         } else {
-                            this.tabla.add(new Variable(tipo, id, this.ambito_actual));
+                            this.tabla.add(new Variable(tipo, id, this.ambito_actual, this.offset));
+                            if (tipo.equals("char")) {
+                                this.offset += 1;
+                            } else {
+                                this.offset += 4;
+                            }
                         }
                         if (tipo.contains("*")) {
                             tipo = tipo.substring(0, tipo.length() - 1);
@@ -333,6 +342,7 @@ public class Main extends javax.swing.JFrame {
             } else if (nodo.getVal().equals("Funcion")) {
                 String tipo_f = "";
                 String id_f = "";
+                this.offset = 0;
                 for (TreeNode hijo : nodo.getHijos()) {
                     if (hijo.getVal().equals("Tipo")) {
                         tipo_f = hijo.getHijos().get(0).getVal();
@@ -367,7 +377,7 @@ public class Main extends javax.swing.JFrame {
                             if (verificar) {
                                 System.out.println("Hay parametros que se llaman igual");
                             } else {
-                                System.out.println("No hay parametros que se llamen igual");
+                                //System.out.println("No hay parametros que se llamen igual");
                             }
 
                             if (verificar_funcion(id_f)) {
@@ -523,7 +533,6 @@ public class Main extends javax.swing.JFrame {
                         this.printf_flag = false;
                     }
                     if (this.asig_flag) {
-                        System.out.println("TIPOOOO = " + this.asig_tipo);
                         if (!tipo_1.equals(this.asig_tipo)) {
                             this.errores_semanticos.add("El tipo de la asignacion en la funcion " + this.ambito_actual + " no corresponde.");
                         }
@@ -547,8 +556,9 @@ public class Main extends javax.swing.JFrame {
                         if (verificar_variable_global(id)) {
                             //System.out.println("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");
                             this.errores_semanticos.add("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");
+                        } else {
+                            this.tabla.add(new Variable(tipo, id, "1Global"));
                         }
-                        this.tabla.add(new Variable(tipo, id, "1Global"));
                         if (tipo.contains("*")) {
                             tipo = tipo.substring(0, tipo.length() - 1);
                         }
@@ -640,6 +650,12 @@ public class Main extends javax.swing.JFrame {
                     Variable v = new Variable(hijo.getHijos().get(0).getVal(), "", this.ambito_actual);
                     if (!"#".equals(hijo.getHijos().get(1).getVal())) {
                         v.setTipo(v.getTipo() + "*");
+                    }
+                    v.setOffset(this.offset);
+                    if (v.getTipo().equals("char")) {
+                        this.offset += 1;
+                    } else {
+                        this.offset += 4;
                     }
                     arr.add(v);
                 } else if (hijo.getVal().equals("ID")) {
@@ -851,6 +867,86 @@ public class Main extends javax.swing.JFrame {
     }
 
     //Codigo intermedio
+    public void codigo_intermedio(TreeNode tn) {
+        TreeNode nodo = tn;
+        if (nodo != null) {
+            switch (nodo.getVal()) {
+                case "Exp":
+                    this.exp_intermedio.clear();
+                    expresion_arreglo(nodo);
+
+                    break;
+                default:
+                    nodo.getHijos().forEach((hijo) -> {
+                        codigo_intermedio(hijo);
+                    });
+            }
+        }
+    }
+
+    public void expresion_arreglo(TreeNode tn) {
+        TreeNode nodo = tn;
+        if (nodo != null) {
+            switch (nodo.getVal()) {
+                case "ID":
+                    if (nodo.getHijos().get(0).getVal().equals("*") || nodo.getHijos().get(0).getVal().equals("&")) {
+                        this.exp_intermedio.add(nodo.getHijos().get(1).getVal());
+                    } else {
+                        this.exp_intermedio.add(nodo.getHijos().get(0).getVal());
+                    }
+                    break;
+                case "Num":
+                    this.exp_intermedio.add(nodo.getHijos().get(0).getVal());
+                    break;
+                case "Constchar":
+                    this.exp_intermedio.add(nodo.getHijos().get(0).getVal());
+                    break;
+                case "Exp":
+                    this.exp_intermedio.add("(");
+                    for (TreeNode hijo : nodo.getHijos()) {
+                        expresion_arreglo(hijo);
+                    }
+                    this.exp_intermedio.add(")");
+                    break;
+                default:
+                    if (!nodo.getVal().equals("#")) {
+                        this.exp_intermedio.add(nodo.getVal());
+                        for (TreeNode hijo : nodo.getHijos()) {
+                            expresion_arreglo(hijo);
+                        }
+                    }
+            }
+        }
+
+    }
+
+    public void operacion() {
+        String acum = "";
+
+        while (this.exp_intermedio.size() != 1) {
+            for (int i = 0; i < this.exp_intermedio.size(); i++) {
+                if (this.exp_intermedio.get(i).equals("+") || this.exp_intermedio.get(i).equals("-")) {
+                    if (acum.contains("*") || acum.contains("/") || acum.contains("+") || acum.contains("-")) {
+
+                    } else {
+                        acum += this.exp_intermedio.get(i);
+                    }
+                } else if (this.exp_intermedio.get(i).equals("*") || this.exp_intermedio.get(i).equals("/")) {
+
+                } else {
+                    acum += this.exp_intermedio.get(i);
+                }
+            }
+
+        }
+
+    }
+
+    public String generarTemp() {
+        this.cont_temp++;
+        return "t" + this.cont_temp;
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -916,6 +1012,9 @@ public class Main extends javax.swing.JFrame {
     boolean printf_flag = false;
     boolean asig_flag = false;
     String printf_tipo = "";
+    int offset = 0;
     //Intermedio
     ArrayList<Cuadruplo> cuadruplos = new ArrayList();
+    ArrayList<String> exp_intermedio = new ArrayList();
+    int cont_temp = 0;
 }

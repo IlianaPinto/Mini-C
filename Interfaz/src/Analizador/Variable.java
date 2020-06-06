@@ -14,11 +14,27 @@ public class Variable {
     public String tipo;
     public String id;
     public String ambito;
+    public int offset;
 
     public Variable(String tipo, String id, String ambito) {
         this.tipo = tipo;
         this.id = id;
         this.ambito = ambito;
+    }
+    
+    public Variable(String tipo, String id, String ambito, int offset) {
+        this.tipo = tipo;
+        this.id = id;
+        this.ambito = ambito;
+        this.offset = offset;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
     }
 
     public String getTipo() {
