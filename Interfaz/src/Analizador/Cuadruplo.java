@@ -53,6 +53,11 @@ public class Cuadruplo {
     public void setResultado(String resultado) {
         this.resultado = resultado;
     }
+
+    @Override
+    public String toString() {
+        return "Cuadruplo-> " + "Op: " + operador + ", arg1: " + argumento1 + ", arg2: " + argumento2 + ", res: " + resultado;
+    }
     
     
 }

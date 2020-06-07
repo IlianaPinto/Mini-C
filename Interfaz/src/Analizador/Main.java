@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.Scanner;
@@ -225,10 +226,13 @@ public class Main extends javax.swing.JFrame {
             if (l.isEmpty() && lexi.isEmpty() && errores_semanticos.isEmpty()) {
                 this.TextErrores.append("Compilado sin errores!");
                 //codigo intermedio
+                this.cuadruplos.clear();
+                this.cont_temp = 0;
                 codigo_intermedio(p.Tree);
                 System.out.println("****** semantico ******");
-                for (int i = 0; i < this.exp_intermedio.size(); i++) {
-                    System.out.println("[ " + this.exp_intermedio.get(i) + " ]");
+                System.out.println("*******CUADRUPLOS*******");
+                for (int i = 0; i < this.cuadruplos.size(); i++) {
+                    System.out.println(this.cuadruplos.get(i).toString());
                 }
             }
             for (int i = 0; i < lexi.size(); i++) {
@@ -874,8 +878,14 @@ public class Main extends javax.swing.JFrame {
                 case "Exp":
                     this.exp_intermedio.clear();
                     expresion_arreglo(nodo);
-
+                    this.exp_intermedio.remove(this.exp_intermedio.size()-1);
+                    this.exp_intermedio.remove(0);
+                    operacion();
                     break;
+                case "Asig":
+                    this.int_asig_flag = true;
+                    this.int_asig_value = nodo.getHijos().get(0).getHijos().get(0).getVal();
+                    //codigo_intermedio(nodo.getHijos().get(1));
                 default:
                     nodo.getHijos().forEach((hijo) -> {
                         codigo_intermedio(hijo);
@@ -922,24 +932,61 @@ public class Main extends javax.swing.JFrame {
 
     public void operacion() {
         String acum = "";
-
-        while (this.exp_intermedio.size() != 1) {
-            for (int i = 0; i < this.exp_intermedio.size(); i++) {
-                if (this.exp_intermedio.get(i).equals("+") || this.exp_intermedio.get(i).equals("-")) {
-                    if (acum.contains("*") || acum.contains("/") || acum.contains("+") || acum.contains("-")) {
-
-                    } else {
-                        acum += this.exp_intermedio.get(i);
-                    }
-                } else if (this.exp_intermedio.get(i).equals("*") || this.exp_intermedio.get(i).equals("/")) {
-
+        Stack<String> s = new Stack();
+        for (int i = 0; i < this.exp_intermedio.size(); i++) {
+            if (this.exp_intermedio.get(i).equals("+") || this.exp_intermedio.get(i).equals("-")) {
+                if (s.size() >= 3) {
+                    String op, arg1, arg2, res;
+                    res = generarTemp();
+                    arg2 = s.pop();
+                    op = s.pop();
+                    arg1 = s.pop();
+                    s.push(res);
+                    this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
+                    i--;
                 } else {
-                    acum += this.exp_intermedio.get(i);
+                    s.push(this.exp_intermedio.get(i));
                 }
+            } else if (this.exp_intermedio.get(i).equals("*") || this.exp_intermedio.get(i).equals("/")) {
+                if (s.size() >= 3) {
+                    String temp = s.pop();
+                    if (s.peek().equals("+") || s.peek().equals("-")) {
+                        s.push(temp);
+                        s.push(this.exp_intermedio.get(i));
+                    } else {
+                        s.push(temp);
+                        String op, arg1, arg2, res;
+                        res = generarTemp();
+                        arg2 = s.pop();
+                        op = s.pop();
+                        arg1 = s.pop();
+                        s.push(res);
+                        this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
+                        i--;
+                    }
+                } else {
+                    s.push(this.exp_intermedio.get(i));
+                }
+            } else {
+                s.push(this.exp_intermedio.get(i));
             }
-
         }
-
+        while (s.size() > 1) {
+            if (s.size() >= 3) {
+                String op, arg1, arg2, res;
+                res = generarTemp();
+                arg2 = s.pop();
+                op = s.pop();
+                arg1 = s.pop();
+                s.push(res);
+                this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
+            }
+        }
+        if(this.int_asig_flag){
+            this.cuadruplos.add(new Cuadruplo("=", s.pop(), "", this.int_asig_value));
+            this.int_asig_flag = false;
+            this.int_asig_value = "";
+        }
     }
 
     public String generarTemp() {
@@ -1017,4 +1064,6 @@ public class Main extends javax.swing.JFrame {
     ArrayList<Cuadruplo> cuadruplos = new ArrayList();
     ArrayList<String> exp_intermedio = new ArrayList();
     int cont_temp = 0;
+    boolean int_asig_flag = false;
+    String int_asig_value = "";
 }
