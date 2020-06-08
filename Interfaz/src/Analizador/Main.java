@@ -878,14 +878,14 @@ public class Main extends javax.swing.JFrame {
                 case "Exp":
                     this.exp_intermedio.clear();
                     expresion_arreglo(nodo);
-                    this.exp_intermedio.remove(this.exp_intermedio.size()-1);
+                    this.exp_intermedio.remove(this.exp_intermedio.size() - 1);
                     this.exp_intermedio.remove(0);
                     operacion();
                     break;
                 case "Asig":
                     this.int_asig_flag = true;
                     this.int_asig_value = nodo.getHijos().get(0).getHijos().get(0).getVal();
-                    //codigo_intermedio(nodo.getHijos().get(1));
+                //codigo_intermedio(nodo.getHijos().get(1));
                 default:
                     nodo.getHijos().forEach((hijo) -> {
                         codigo_intermedio(hijo);
@@ -937,13 +937,20 @@ public class Main extends javax.swing.JFrame {
             if (this.exp_intermedio.get(i).equals("+") || this.exp_intermedio.get(i).equals("-")) {
                 if (s.size() >= 3) {
                     String op, arg1, arg2, res;
-                    res = generarTemp();
                     arg2 = s.pop();
                     op = s.pop();
                     arg1 = s.pop();
-                    s.push(res);
-                    this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
-                    i--;
+                    if (arg2.equals("(") || op.equals("(") || arg1.equals("(")) {
+                        s.push(arg1);
+                        s.push(op);
+                        s.push(arg2);
+                        s.push(this.exp_intermedio.get(i));
+                    } else {
+                        res = generarTemp();
+                        s.push(res);
+                        this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
+                        i--;
+                    }
                 } else {
                     s.push(this.exp_intermedio.get(i));
                 }
@@ -956,16 +963,39 @@ public class Main extends javax.swing.JFrame {
                     } else {
                         s.push(temp);
                         String op, arg1, arg2, res;
-                        res = generarTemp();
                         arg2 = s.pop();
                         op = s.pop();
                         arg1 = s.pop();
-                        s.push(res);
-                        this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
-                        i--;
+                        if (arg2.equals("(") || op.equals("(") || arg1.equals("(")) {
+                            s.push(arg1);
+                            s.push(op);
+                            s.push(arg2);
+                            s.push(this.exp_intermedio.get(i));
+                        } else {
+                            res = generarTemp();
+                            s.push(res);
+                            this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
+                            i--;
+                        }
                     }
                 } else {
                     s.push(this.exp_intermedio.get(i));
+                }
+            } else if (this.exp_intermedio.get(i).equals(")")) {
+                String temp = s.pop();
+                if (s.peek().equals("(")) {
+                    s.pop();
+                    s.push(temp);
+                } else {
+                    s.push(temp);
+                    String op, arg1, arg2, res;
+                    arg2 = s.pop();
+                    op = s.pop();
+                    arg1 = s.pop();
+                    res = generarTemp();
+                    s.push(res);
+                    this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
+                    i--;
                 }
             } else {
                 s.push(this.exp_intermedio.get(i));
@@ -982,7 +1012,7 @@ public class Main extends javax.swing.JFrame {
                 this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
             }
         }
-        if(this.int_asig_flag){
+        if (this.int_asig_flag) {
             this.cuadruplos.add(new Cuadruplo("=", s.pop(), "", this.int_asig_value));
             this.int_asig_flag = false;
             this.int_asig_value = "";
