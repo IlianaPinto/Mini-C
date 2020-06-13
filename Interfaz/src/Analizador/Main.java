@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import java_cup.runtime.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -56,8 +57,10 @@ public class Main extends javax.swing.JFrame {
         TextErrores = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         titulo = new javax.swing.JLabel();
-        jTabbedPane2 = new javax.swing.JTabbedPane();
-        jTabbedPane3 = new javax.swing.JTabbedPane();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        table_cuadruplos = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Compilador Mini-C");
@@ -154,8 +157,60 @@ public class Main extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("tab1", jPanel1);
-        jTabbedPane1.addTab("tab2", jTabbedPane2);
-        jTabbedPane1.addTab("tab3", jTabbedPane3);
+
+        jPanel2.setBackground(new java.awt.Color(51, 51, 51));
+
+        table_cuadruplos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Op", "Arg1", "Arg2", "Result"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(table_cuadruplos);
+
+        jLabel2.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Cuadruplos:");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(44, 44, 44)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 577, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(48, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(49, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("tab4", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -188,7 +243,8 @@ public class Main extends javax.swing.JFrame {
             funciones.clear();
             decfunciones.clear();
             errores_semanticos.clear();
-            recorrer(p.Tree);
+            TreeNode root = p.Tree;
+            recorrer(root);
 
             int m = verificar_main();
             switch (m) {
@@ -228,10 +284,13 @@ public class Main extends javax.swing.JFrame {
                 //codigo intermedio
                 this.cuadruplos.clear();
                 this.cont_temp = 0;
-                codigo_intermedio(p.Tree);
-                System.out.println("****** semantico ******");
+                codigo_intermedio(root);
                 System.out.println("*******CUADRUPLOS*******");
+
+                DefaultTableModel model = (DefaultTableModel) table_cuadruplos.getModel();
+                model.setRowCount(0);
                 for (int i = 0; i < this.cuadruplos.size(); i++) {
+                    model.addRow(this.cuadruplos.get(i).retorno_tabla());
                     System.out.println(this.cuadruplos.get(i).toString());
                 }
             }
@@ -440,6 +499,7 @@ public class Main extends javax.swing.JFrame {
             } else if (nodo.getVal().equals("Exp")) {
                 this.variables.clear();
                 this.constantes.clear();
+                this.operadores.clear();
                 variables_expresion(nodo);
                 boolean ambitos = true;
                 for (int i = 0; i < this.variables.size(); i++) {
@@ -447,6 +507,36 @@ public class Main extends javax.swing.JFrame {
                         //System.out.println("La variable " + variables.get(i) + " No existe o no está en la funcion " + this.ambito_actual);
                         this.errores_semanticos.add("La variable " + variables.get(i) + " No existe o no está en la funcion " + this.ambito_actual);
                         ambitos = false;
+                    }
+                }
+                boolean rel = false;
+                if (this.operadores.size() > 0) {
+                    String first = this.operadores.get(0);
+                    if (!(first.equals("*") || first.equals("/") || first.equals("+") || first.equals("-"))) {
+                        rel = true;
+                    }
+                }
+                boolean type = false;
+                if (rel) {
+                    for (int i = 1; i < this.operadores.size(); i++) {
+                        String j = this.operadores.get(i);
+                        if (j.equals("*") || j.equals("/") || j.equals("+") || j.equals("-")) {
+                            type = true;
+                        }
+                    }
+                } else {
+                    for (int i = 1; i < this.operadores.size(); i++) {
+                        String j = this.operadores.get(i);
+                        if (!(j.equals("*") || j.equals("/") || j.equals("+") || j.equals("-"))) {
+                            type = true;
+                        }
+                    }
+                }
+                if(type){
+                    this.errores_semanticos.add("Expresión en la función " + this.ambito_actual + " combina aritmeticas y booleanas");
+                }else{
+                    if(rel){
+                        nodo.setVal("ExpBool");
                     }
                 }
                 if (ambitos) {
@@ -795,6 +885,9 @@ public class Main extends javax.swing.JFrame {
                 }
 
             } else {
+                if (!(hijo.getVal().equals("Exp"))) {
+                    this.operadores.add(hijo.getVal());
+                }
                 variables_expresion(hijo);
             }
         }
@@ -875,12 +968,22 @@ public class Main extends javax.swing.JFrame {
         TreeNode nodo = tn;
         if (nodo != null) {
             switch (nodo.getVal()) {
+                case "Funcion":
+                    String nombre = nodo.getHijos().get(1).getHijos().get(0).getVal();
+                    this.cuadruplos.add(new Cuadruplo("Func", nombre, "", ""));
+                    nodo.getHijos().forEach((hijo) -> {
+                        codigo_intermedio(hijo);
+                    });
+                    break;
                 case "Exp":
                     this.exp_intermedio.clear();
                     expresion_arreglo(nodo);
                     this.exp_intermedio.remove(this.exp_intermedio.size() - 1);
                     this.exp_intermedio.remove(0);
                     operacion();
+                    break;
+                case "ExpBool":
+                    System.out.println("SIMON");
                     break;
                 case "Asig":
                     this.int_asig_flag = true;
@@ -1066,12 +1169,14 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton bt_probar;
     private javax.swing.JButton bt_seleccionar;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTabbedPane jTabbedPane3;
+    private javax.swing.JTable table_cuadruplos;
     private javax.swing.JLabel titulo;
     // End of variables declaration//GEN-END:variables
     File fichero;
@@ -1081,6 +1186,7 @@ public class Main extends javax.swing.JFrame {
     ArrayList<Funcion> decfunciones = new ArrayList();
     ArrayList<String> variables = new ArrayList();
     ArrayList<String> constantes = new ArrayList();
+    ArrayList<String> operadores = new ArrayList();
     ArrayList<ArrayList<String>> funccall = new ArrayList();
     String ambito_actual = "";
     String tipo_actual = "";

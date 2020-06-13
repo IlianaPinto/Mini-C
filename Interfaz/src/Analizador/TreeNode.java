@@ -51,6 +51,10 @@ public class TreeNode {
     public void setPadre(TreeNode tn) {
         this.padre = tn;
     }
+    
+    public void setVal(String v){
+        this.val = v;
+    }
 
     public void print() {
         String pad = "";

@@ -53,6 +53,11 @@ public class Cuadruplo {
     public void setResultado(String resultado) {
         this.resultado = resultado;
     }
+    
+    public String[] retorno_tabla(){
+        String[] row = {operador, argumento1, argumento2, resultado};
+        return row;
+    }
 
     @Override
     public String toString() {
