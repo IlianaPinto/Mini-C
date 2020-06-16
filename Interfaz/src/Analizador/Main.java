@@ -532,10 +532,10 @@ public class Main extends javax.swing.JFrame {
                         }
                     }
                 }
-                if(type){
+                if (type) {
                     this.errores_semanticos.add("Expresión en la función " + this.ambito_actual + " combina aritmeticas y booleanas");
-                }else{
-                    if(rel){
+                } else {
+                    if (rel) {
                         nodo.setVal("ExpBool");
                     }
                 }
@@ -553,8 +553,10 @@ public class Main extends javax.swing.JFrame {
                             v = v.substring(1);
                             ampersant = true;
                         }
+                        boolean global = true;
                         for (int j = 0; j < this.tabla.size(); j++) {
-                            if (v.equals(this.tabla.get(j).getId()) && (this.tabla.get(j).getAmbito().equals(this.ambito_actual) || this.tabla.get(j).getAmbito().equals("1Global"))) {
+                            if (v.equals(this.tabla.get(j).getId()) && (this.tabla.get(j).getAmbito().equals(this.ambito_actual))) {
+                                global = false;
                                 if (pointer) {
                                     if (this.tabla.get(j).getTipo().contains("*")) {
                                         Variable vai = new Variable(this.tabla.get(j).getTipo(), this.tabla.get(j).getId(), this.tabla.get(j).getAmbito());
@@ -577,6 +579,35 @@ public class Main extends javax.swing.JFrame {
                                     tipos.add(this.tabla.get(j));
                                 }
 
+                            }
+                        }
+                        if (global) {
+                            for (int j = 0; j < this.tabla.size(); j++) {
+                                if (v.equals(this.tabla.get(j).getId()) && (this.tabla.get(j).getAmbito().equals("1Global"))) {
+                                    global = false;
+                                    if (pointer) {
+                                        if (this.tabla.get(j).getTipo().contains("*")) {
+                                            Variable vai = new Variable(this.tabla.get(j).getTipo(), this.tabla.get(j).getId(), this.tabla.get(j).getAmbito());
+                                            vai.setTipo(vai.getTipo().substring(0, vai.getTipo().length() - 1));
+                                            tipos.add(vai);
+                                        } else {
+                                            //System.out.println("Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
+                                            this.errores_semanticos.add("Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
+                                        }
+                                    } else if (ampersant) {
+                                        if (!this.tabla.get(j).getTipo().contains("*")) {
+                                            Variable vai = new Variable(this.tabla.get(j).getTipo(), this.tabla.get(j).getId(), this.tabla.get(j).getAmbito());
+                                            vai.setTipo(vai.getTipo() + "*");
+                                            tipos.add(vai);
+                                        } else {
+                                            //System.out.println("Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
+                                            this.errores_semanticos.add("Está intentando usar & en una variable es pointer " + this.tabla.get(j).getId());
+                                        }
+                                    } else {
+                                        tipos.add(this.tabla.get(j));
+                                    }
+
+                                }
                             }
                         }
                     }

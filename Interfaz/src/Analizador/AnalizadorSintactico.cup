@@ -588,7 +588,7 @@ declarations::= declaration:decla declarations:d
     RESULT = new TreeNode("#", null, token);
 :};
 
-decid::= decid:d COMMA typeap:a IDE:i decasig:de
+decid::= decid:d COMMA typeap:a IDE:i 
 {:
     token++;
     TreeNode tn = new TreeNode("Dec", null, token);
@@ -603,10 +603,10 @@ decid::= decid:d COMMA typeap:a IDE:i decasig:de
     token++;
     id.agregarHijo(i, token);
     tn.agregarHijo(id);
-    tn.agregarHijo(de);
+    //tn.agregarHijo(de);
     RESULT = tn;
 :} 
-| type:t IDE:i decasig:d 
+| type:t IDE:i  
 {:
     token++;
     TreeNode tn = new TreeNode("D", null, token);
@@ -616,11 +616,11 @@ decid::= decid:d COMMA typeap:a IDE:i decasig:de
     token++;
     id.agregarHijo(i, token);
     tn.agregarHijo(id);
-    tn.agregarHijo(d);
+    //tn.agregarHijo(d);
     RESULT = tn;
 :};
 
-decasig::= OPASIG:o values:v 
+/*decasig::= OPASIG:o values:v 
 {://Aqui habian finalexpresions
     token++;
     TreeNode tn = new TreeNode(o, null, token);
@@ -633,7 +633,7 @@ decasig::= OPASIG:o values:v
 {: 
     token++;
     RESULT = new TreeNode("#", null, token);
-:} ;
+:} ;*/
 
 values::= NUM:n
 {:
@@ -829,7 +829,7 @@ funcdec::= PARINIT:pi par:p PARFIN:pf funcb:fb
     RESULT = tn;
 :};
 
-declaration2::= declaration2:d COMMA typeap:ta IDE:i declaration3:de
+declaration2::= declaration2:d COMMA typeap:ta IDE:i 
 {:
     token++;
     TreeNode tn = new TreeNode("Dec", null, token);
@@ -842,28 +842,14 @@ declaration2::= declaration2:d COMMA typeap:ta IDE:i declaration3:de
     id.agregarHijo(i, token);
     tn.agregarHijo(ta);
     tn.agregarHijo(id);
-    tn.agregarHijo(de);
     RESULT = tn;
 :}
-| declaration3:de
-{:
-    RESULT = de;
-:};
-
-declaration3::= OPASIG:o values:v
-{:
-    token++;
-    TreeNode tn = new TreeNode("Asig", null, token);
-    token++;
-    tn.agregarHijo(o, token);
-    tn.agregarHijo(v);
-    RESULT = tn;
-:}
-|
+| 
 {:
     token++;
     RESULT = new TreeNode("#", null, token);
-:} ;
+:};
+
 
 //Funccall
 funccall::= IDE:i PARINIT paramsI:p PARFIN  
