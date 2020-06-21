@@ -1035,6 +1035,18 @@ public class Main extends javax.swing.JFrame {
                 case "ID":
                     if (nodo.getHijos().get(0).getVal().equals("*") || nodo.getHijos().get(0).getVal().equals("&")) {
                         this.exp_intermedio.add(nodo.getHijos().get(1).getVal());
+                    } else if(nodo.getHijos().get(1).getVal().equals("++")){
+                        this.exp_intermedio.add("(");
+                        this.exp_intermedio.add(nodo.getHijos().get(0).getVal());
+                        this.exp_intermedio.add("+");
+                        this.exp_intermedio.add("1");
+                        this.exp_intermedio.add(")");
+                    } else if(nodo.getHijos().get(1).getVal().equals("--")){
+                        this.exp_intermedio.add("(");
+                        this.exp_intermedio.add(nodo.getHijos().get(0).getVal());
+                        this.exp_intermedio.add("-");
+                        this.exp_intermedio.add("1");
+                        this.exp_intermedio.add(")");
                     } else {
                         this.exp_intermedio.add(nodo.getHijos().get(0).getVal());
                     }
@@ -1042,7 +1054,7 @@ public class Main extends javax.swing.JFrame {
                 case "Num":
                     this.exp_intermedio.add(nodo.getHijos().get(0).getVal());
                     break;
-                case "Constchar":
+                case "ConstChar":
                     this.exp_intermedio.add(nodo.getHijos().get(0).getVal());
                     break;
                 case "Exp":
@@ -1051,6 +1063,10 @@ public class Main extends javax.swing.JFrame {
                         expresion_arreglo(hijo);
                     }
                     this.exp_intermedio.add(")");
+                    break;
+                case "Funccall":
+                    System.out.println("A ver");
+                    this.exp_intermedio.add(nodo.getHijos().get(0).getHijos().get(0).getVal());
                     break;
                 default:
                     if (!nodo.getVal().equals("#")) {
