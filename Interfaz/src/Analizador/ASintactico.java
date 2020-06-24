@@ -32,7 +32,7 @@ public class ASintactico extends java_cup.runtime.lr_parser {
   /** Production table. */
   protected static final short _production_table[][] = 
     unpackFromStrings(new String[] {
-    "\000\132\000\002\002\004\000\002\002\003\000\002\003" +
+    "\000\130\000\002\002\004\000\002\002\003\000\002\003" +
     "\004\000\002\003\004\000\002\003\004\000\002\003\004" +
     "\000\002\003\004\000\002\003\004\000\002\003\004\000" +
     "\002\003\004\000\002\003\002\000\002\011\012\000\002" +
@@ -45,21 +45,21 @@ public class ASintactico extends java_cup.runtime.lr_parser {
     "\000\002\021\005\000\002\021\010\000\002\021\002\000" +
     "\002\022\004\000\002\022\004\000\002\022\004\000\002" +
     "\022\004\000\002\022\003\000\002\022\003\000\002\022" +
-    "\003\000\002\022\005\000\002\045\003\000\002\045\002" +
+    "\003\000\002\022\005\000\002\044\003\000\002\044\002" +
     "\000\002\023\003\000\002\023\003\000\002\023\003\000" +
     "\002\023\003\000\002\023\003\000\002\023\003\000\002" +
     "\023\003\000\002\023\003\000\002\023\003\000\002\025" +
     "\004\000\002\025\004\000\002\026\003\000\002\026\002" +
-    "\000\002\027\004\000\002\047\004\000\002\047\002\000" +
-    "\002\030\006\000\002\030\004\000\002\050\003\000\002" +
-    "\050\003\000\002\037\003\000\002\037\003\000\002\034" +
-    "\003\000\002\034\002\000\002\035\004\000\002\036\004" +
-    "\000\002\036\005\000\002\036\003\000\002\036\002\000" +
-    "\002\046\003\000\002\046\002\000\002\032\004\000\002" +
-    "\033\004\000\002\033\002\000\002\042\003\000\002\042" +
-    "\004\000\002\041\005\000\002\041\003\000\002\043\006" +
-    "\000\002\043\003\000\002\040\006\000\002\040\004\000" +
-    "\002\051\006\000\002\051\002\000\002\044\006" });
+    "\000\002\027\004\000\002\046\004\000\002\046\002\000" +
+    "\002\030\006\000\002\030\004\000\002\036\003\000\002" +
+    "\036\003\000\002\033\003\000\002\033\002\000\002\034" +
+    "\004\000\002\035\004\000\002\035\005\000\002\035\003" +
+    "\000\002\035\002\000\002\045\003\000\002\045\002\000" +
+    "\002\031\004\000\002\032\004\000\002\032\002\000\002" +
+    "\041\003\000\002\041\004\000\002\040\005\000\002\040" +
+    "\003\000\002\042\006\000\002\042\003\000\002\037\006" +
+    "\000\002\037\004\000\002\047\006\000\002\047\002\000" +
+    "\002\043\006" });
 
   /** Access to production table. */
   public short[][] production_table() {return _production_table;}
@@ -71,21 +71,21 @@ public class ASintactico extends java_cup.runtime.lr_parser {
     "\002\000\014\002\000\003\014\004\006\005\005\006\011" +
     "\001\002\000\012\021\uffc8\022\uffc8\026\uffc8\031\046\001" +
     "\002\000\012\021\uffc8\022\uffc8\026\uffc8\031\046\001\002" +
-    "\000\014\002\uffb2\003\uffb2\004\uffb2\005\uffb2\006\uffb2\001" +
-    "\002\000\004\002\251\001\002\000\004\026\uffc0\001\002" +
-    "\000\004\026\015\001\002\000\004\026\uffbf\001\002\000" +
-    "\014\002\uffaf\003\uffaf\004\uffaf\005\uffaf\006\uffaf\001\002" +
-    "\000\010\020\020\022\uffa9\023\uffa9\001\002\000\006\022" +
-    "\245\023\246\001\002\000\014\002\uffb0\003\uffb0\004\uffb0" +
-    "\005\uffb0\006\uffb0\001\002\000\010\004\006\005\005\021" +
-    "\uffbd\001\002\000\004\021\032\001\002\000\010\021\uffb8" +
-    "\022\024\026\025\001\002\000\004\021\uffbe\001\002\000" +
-    "\006\004\006\005\005\001\002\000\006\021\uffb9\022\027" +
-    "\001\002\000\004\021\uffbc\001\002\000\006\004\006\005" +
-    "\005\001\002\000\004\021\uffba\001\002\000\004\021\uffbb" +
+    "\000\014\002\uffb4\003\uffb4\004\uffb4\005\uffb4\006\uffb4\001" +
+    "\002\000\004\002\251\001\002\000\004\026\uffc2\001\002" +
+    "\000\004\026\015\001\002\000\004\026\uffc1\001\002\000" +
+    "\014\002\uffb1\003\uffb1\004\uffb1\005\uffb1\006\uffb1\001\002" +
+    "\000\010\020\017\022\uffab\023\uffab\001\002\000\006\022" +
+    "\245\023\246\001\002\000\010\004\006\005\005\021\uffbf" +
+    "\001\002\000\014\002\uffb2\003\uffb2\004\uffb2\005\uffb2\006" +
+    "\uffb2\001\002\000\004\021\032\001\002\000\010\021\uffba" +
+    "\022\024\026\025\001\002\000\004\021\uffc0\001\002\000" +
+    "\006\004\006\005\005\001\002\000\006\021\uffbb\022\027" +
+    "\001\002\000\004\021\uffbe\001\002\000\006\004\006\005" +
+    "\005\001\002\000\004\021\uffbc\001\002\000\004\021\uffbd" +
     "\001\002\000\006\016\035\023\033\001\002\000\014\002" +
-    "\uffad\003\uffad\004\uffad\005\uffad\006\uffad\001\002\000\014" +
-    "\002\uffac\003\uffac\004\uffac\005\uffac\006\uffac\001\002\000" +
+    "\uffaf\003\uffaf\004\uffaf\005\uffaf\006\uffaf\001\002\000\014" +
+    "\002\uffae\003\uffae\004\uffae\005\uffae\006\uffae\001\002\000" +
     "\030\003\uffc5\004\006\005\005\007\uffc5\010\uffc5\011\uffc5" +
     "\012\uffc5\014\uffc5\015\uffc5\017\uffc5\026\uffc5\001\002\000" +
     "\004\026\244\001\002\000\024\003\063\007\066\010\054" +
@@ -192,22 +192,22 @@ public class ASintactico extends java_cup.runtime.lr_parser {
     "\024\uffe1\033\uffe1\001\002\000\044\021\uffde\022\uffde\023" +
     "\uffde\024\uffde\031\uffde\032\uffde\033\uffde\036\uffde\037\uffde" +
     "\040\uffde\041\uffde\042\uffde\043\uffde\044\uffde\045\uffde\046" +
-    "\uffde\050\uffde\001\002\000\022\020\101\021\uffb6\025\067" +
+    "\uffde\050\uffde\001\002\000\022\020\101\021\uffb8\025\067" +
     "\026\071\027\074\031\077\034\070\047\100\001\002\000" +
     "\044\021\uffd6\022\uffd6\023\uffd6\024\uffd6\031\uffd6\032\uffd6" +
     "\033\uffd6\036\uffd6\037\uffd6\040\uffd6\041\uffd6\042\uffd6\043" +
     "\uffd6\044\uffd6\045\uffd6\046\uffd6\050\uffd6\001\002\000\004" +
-    "\021\uffb7\001\002\000\004\021\156\001\002\000\006\021" +
-    "\uffb3\022\153\001\002\000\020\020\101\025\067\026\071" +
+    "\021\uffb9\001\002\000\004\021\156\001\002\000\006\021" +
+    "\uffb5\022\153\001\002\000\020\020\101\025\067\026\071" +
     "\027\074\031\077\034\070\047\100\001\002\000\004\021" +
-    "\uffb5\001\002\000\004\021\uffb4\001\002\000\044\021\uffa8" +
-    "\022\uffa8\023\uffa8\024\uffa8\031\uffa8\032\uffa8\033\uffa8\036" +
-    "\uffa8\037\uffa8\040\uffa8\041\uffa8\042\uffa8\043\uffa8\044\uffa8" +
-    "\045\uffa8\046\uffa8\050\uffa8\001\002\000\044\021\uffdd\022" +
+    "\uffb7\001\002\000\004\021\uffb6\001\002\000\044\021\uffaa" +
+    "\022\uffaa\023\uffaa\024\uffaa\031\uffaa\032\uffaa\033\uffaa\036" +
+    "\uffaa\037\uffaa\040\uffaa\041\uffaa\042\uffaa\043\uffaa\044\uffaa" +
+    "\045\uffaa\046\uffaa\050\uffaa\001\002\000\044\021\uffdd\022" +
     "\uffdd\023\uffdd\024\uffdd\031\uffdd\032\uffdd\033\uffdd\036\uffdd" +
     "\037\uffdd\040\uffdd\041\uffdd\042\uffdd\043\uffdd\044\uffdd\045" +
     "\uffdd\046\uffdd\050\uffdd\001\002\000\004\017\ufffc\001\002" +
-    "\000\014\002\uffae\003\uffae\004\uffae\005\uffae\006\uffae\001" +
+    "\000\014\002\uffb0\003\uffb0\004\uffb0\005\uffb0\006\uffb0\001" +
     "\002\000\004\017\ufff8\001\002\000\004\017\ufffd\001\002" +
     "\000\004\017\ufffa\001\002\000\020\020\101\025\067\026" +
     "\071\027\074\031\077\034\070\047\100\001\002\000\004" +
@@ -256,12 +256,12 @@ public class ASintactico extends java_cup.runtime.lr_parser {
     "\000\024\003\ufff2\007\ufff2\010\ufff2\011\ufff2\012\ufff2\014" +
     "\ufff2\015\ufff2\017\ufff2\026\ufff2\001\002\000\004\017\uffff" +
     "\001\002\000\006\022\uffc3\023\uffc3\001\002\000\006\026" +
-    "\uffc8\031\046\001\002\000\014\002\uffab\003\uffab\004\uffab" +
-    "\005\uffab\006\uffab\001\002\000\004\026\250\001\002\000" +
-    "\006\022\uffaa\023\uffaa\001\002\000\004\002\001\001\002" +
+    "\uffc8\031\046\001\002\000\014\002\uffad\003\uffad\004\uffad" +
+    "\005\uffad\006\uffad\001\002\000\004\026\250\001\002\000" +
+    "\006\022\uffac\023\uffac\001\002\000\004\002\001\001\002" +
     "\000\010\021\uffcb\022\uffcb\026\uffcb\001\002\000\010\021" +
-    "\uffca\022\uffca\026\uffca\001\002\000\014\002\uffb1\003\uffb1" +
-    "\004\uffb1\005\uffb1\006\uffb1\001\002" });
+    "\uffca\022\uffca\026\uffca\001\002\000\014\002\uffb3\003\uffb3" +
+    "\004\uffb3\005\uffb3\006\uffb3\001\002" });
 
   /** Access to parse-action table. */
   public short[][] action_table() {return _action_table;}
@@ -269,21 +269,21 @@ public class ASintactico extends java_cup.runtime.lr_parser {
   /** <code>reduce_goto</code> table. */
   protected static final short[][] _reduce_table = 
     unpackFromStrings(new String[] {
-    "\000\252\000\014\002\007\025\012\037\011\041\006\042" +
-    "\003\001\001\000\010\025\012\037\011\041\253\001\001" +
+    "\000\252\000\014\002\007\025\012\036\011\040\006\041" +
+    "\003\001\001\000\010\025\012\036\011\040\253\001\001" +
     "\000\004\026\252\001\001\000\004\026\251\001\001\000" +
     "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
-    "\001\001\000\002\001\001\000\002\001\001\000\006\040" +
-    "\016\051\015\001\001\000\002\001\001\000\002\001\001" +
-    "\000\010\025\021\034\020\035\022\001\001\000\002\001" +
-    "\001\000\004\036\025\001\001\000\002\001\001\000\006" +
-    "\025\021\035\030\001\001\000\002\001\001\000\002\001" +
-    "\001\000\006\025\021\035\027\001\001\000\002\001\001" +
-    "\000\002\001\001\000\004\043\033\001\001\000\002\001" +
+    "\001\001\000\002\001\001\000\002\001\001\000\006\037" +
+    "\017\047\015\001\001\000\002\001\001\000\010\025\021" +
+    "\033\020\034\022\001\001\000\002\001\001\000\002\001" +
+    "\001\000\004\035\025\001\001\000\002\001\001\000\006" +
+    "\025\021\034\030\001\001\000\002\001\001\000\002\001" +
+    "\001\000\006\025\021\034\027\001\001\000\002\001\001" +
+    "\000\002\001\001\000\004\042\033\001\001\000\002\001" +
     "\001\000\002\001\001\000\012\025\035\027\040\030\037" +
-    "\047\036\001\001\000\002\001\001\000\020\003\063\006" +
+    "\046\036\001\001\000\002\001\001\000\020\003\063\006" +
     "\061\010\056\011\047\012\052\014\060\024\064\001\001" +
-    "\000\002\001\001\000\012\025\035\027\040\030\037\047" +
+    "\000\002\001\001\000\012\025\035\027\040\030\037\046" +
     "\041\001\001\000\002\001\001\000\004\026\044\001\001" +
     "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
     "\002\001\001\000\020\003\242\006\061\010\056\011\047" +
@@ -298,34 +298,34 @@ public class ASintactico extends java_cup.runtime.lr_parser {
     "\000\020\003\161\006\061\010\056\011\047\012\052\014" +
     "\060\024\064\001\001\000\002\001\001\000\020\003\157" +
     "\006\061\010\056\011\047\012\052\014\060\024\064\001" +
-    "\001\000\014\004\074\016\101\020\075\022\072\044\071" +
-    "\001\001\000\002\001\001\000\002\001\001\000\004\045" +
+    "\001\000\014\004\074\016\101\020\075\022\072\043\071" +
+    "\001\001\000\002\001\001\000\002\001\001\000\004\044" +
     "\144\001\001\000\002\001\001\000\006\021\123\023\115" +
     "\001\001\000\002\001\001\000\002\001\001\000\004\017" +
     "\107\001\001\000\002\001\001\000\002\001\001\000\012" +
-    "\016\103\020\075\022\072\044\071\001\001\000\002\001" +
+    "\016\103\020\075\022\072\043\071\001\001\000\002\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
     "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
-    "\010\020\111\022\072\044\071\001\001\000\004\017\112" +
+    "\010\020\111\022\072\043\071\001\001\000\004\017\112" +
     "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
-    "\001\000\006\022\142\044\071\001\001\000\002\001\001" +
+    "\001\000\006\022\142\043\071\001\001\000\002\001\001" +
     "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
-    "\002\001\001\000\002\001\001\000\006\022\140\044\071" +
-    "\001\001\000\002\001\001\000\006\022\136\044\071\001" +
-    "\001\000\002\001\001\000\006\022\131\044\071\001\001" +
+    "\002\001\001\000\002\001\001\000\006\022\140\043\071" +
+    "\001\001\000\002\001\001\000\006\022\136\043\071\001" +
+    "\001\000\002\001\001\000\006\022\131\043\071\001\001" +
     "\000\006\021\132\023\115\001\001\000\002\001\001\000" +
-    "\006\022\134\044\071\001\001\000\006\021\135\023\115" +
+    "\006\022\134\043\071\001\001\000\006\021\135\023\115" +
     "\001\001\000\002\001\001\000\006\021\137\023\115\001" +
     "\001\000\002\001\001\000\006\021\141\023\115\001\001" +
     "\000\002\001\001\000\006\021\143\023\115\001\001\000" +
     "\002\001\001\000\002\001\001\000\016\016\151\020\075" +
-    "\022\072\032\147\044\071\046\150\001\001\000\002\001" +
-    "\001\000\002\001\001\000\002\001\001\000\004\033\153" +
-    "\001\001\000\014\016\151\020\075\022\072\032\154\044" +
+    "\022\072\031\147\043\071\045\150\001\001\000\002\001" +
+    "\001\000\002\001\001\000\002\001\001\000\004\032\153" +
+    "\001\001\000\014\016\151\020\075\022\072\031\154\043" +
     "\071\001\001\000\002\001\001\000\002\001\001\000\002" +
     "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
-    "\000\012\016\165\020\075\022\072\044\071\001\001\000" +
+    "\000\012\016\165\020\075\022\072\043\071\001\001\000" +
     "\002\001\001\000\002\001\001\000\020\003\170\006\061" +
     "\010\056\011\047\012\052\014\060\024\064\001\001\000" +
     "\002\001\001\000\004\005\173\001\001\000\004\011\174" +
@@ -335,18 +335,18 @@ public class ASintactico extends java_cup.runtime.lr_parser {
     "\001\000\002\001\001\000\002\001\001\000\004\015\205" +
     "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
     "\001\000\002\001\001\000\002\001\001\000\014\004\212" +
-    "\016\101\020\075\022\072\044\071\001\001\000\002\001" +
+    "\016\101\020\075\022\072\043\071\001\001\000\002\001" +
     "\001\000\016\004\215\007\214\016\101\020\075\022\072" +
-    "\044\071\001\001\000\014\004\216\016\101\020\075\022" +
-    "\072\044\071\001\001\000\002\001\001\000\012\016\217" +
-    "\020\075\022\072\044\071\001\001\000\002\001\001\000" +
+    "\043\071\001\001\000\014\004\216\016\101\020\075\022" +
+    "\072\043\071\001\001\000\002\001\001\000\012\016\217" +
+    "\020\075\022\072\043\071\001\001\000\002\001\001\000" +
     "\002\001\001\000\020\003\222\006\061\010\056\011\047" +
     "\012\052\014\060\024\064\001\001\000\002\001\001\000" +
     "\002\001\001\000\002\001\001\000\002\001\001\000\004" +
-    "\013\230\001\001\000\012\016\233\020\075\022\072\044" +
+    "\013\230\001\001\000\012\016\233\020\075\022\072\043" +
     "\071\001\001\000\002\001\001\000\002\001\001\000\002" +
     "\001\001\000\002\001\001\000\012\016\235\020\075\022" +
-    "\072\044\071\001\001\000\002\001\001\000\002\001\001" +
+    "\072\043\071\001\001\000\002\001\001\000\002\001\001" +
     "\000\020\003\240\006\061\010\056\011\047\012\052\014" +
     "\060\024\064\001\001\000\002\001\001\000\002\001\001" +
     "\000\002\001\001\000\002\001\001\000\004\026\246\001" +
@@ -1374,7 +1374,7 @@ class CUP$ASintactico$actions {
     token++;
     RESULT = new TreeNode(o, null, token);
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("increment",35, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("increment",34, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
@@ -1386,7 +1386,7 @@ class CUP$ASintactico$actions {
     token++;
     RESULT = new TreeNode("#", null, token);
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("increment",35, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("increment",34, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
@@ -1635,7 +1635,7 @@ class CUP$ASintactico$actions {
     }
     RESULT = tn;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("declarations",37, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("declarations",36, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
@@ -1647,7 +1647,7 @@ class CUP$ASintactico$actions {
     token++;
     RESULT = new TreeNode("#", null, token);
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("declarations",37, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("declarations",36, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
@@ -1712,37 +1712,7 @@ class CUP$ASintactico$actions {
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 63: // values ::= NUM 
-            {
-              TreeNode RESULT =null;
-		int nleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).left;
-		int nright = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).right;
-		String n = (String)((java_cup.runtime.Symbol) CUP$ASintactico$stack.peek()).value;
-		
-    token++;
-    RESULT = new TreeNode(n, null, token);
-
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("values",38, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
-            }
-          return CUP$ASintactico$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 64: // values ::= CONSTCHAR 
-            {
-              TreeNode RESULT =null;
-		int cleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).left;
-		int cright = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).right;
-		String c = (String)((java_cup.runtime.Symbol) CUP$ASintactico$stack.peek()).value;
-		
-    token++;
-    RESULT = new TreeNode(c, null, token);
-
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("values",38, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
-            }
-          return CUP$ASintactico$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 65: // typev ::= VOID 
+          case 63: // typev ::= VOID 
             {
               TreeNode RESULT =null;
 		int vleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).left;
@@ -1755,12 +1725,12 @@ class CUP$ASintactico$actions {
     tn.agregarHijo(v, token);
     RESULT = tn;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("typev",29, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("typev",28, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 66: // typev ::= type 
+          case 64: // typev ::= type 
             {
               TreeNode RESULT =null;
 		int tleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).left;
@@ -1769,12 +1739,12 @@ class CUP$ASintactico$actions {
 		  
     RESULT = t;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("typev",29, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("typev",28, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 67: // par ::= paramst 
+          case 65: // par ::= paramst 
             {
               TreeNode RESULT =null;
 		int pleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).left;
@@ -1785,24 +1755,24 @@ class CUP$ASintactico$actions {
     RESULT = p;
 
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("par",26, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("par",25, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 68: // par ::= 
+          case 66: // par ::= 
             {
               TreeNode RESULT =null;
 		
     token++;
     RESULT = new TreeNode("#", null, token);
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("par",26, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("par",25, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 69: // paramst ::= type paramst2 
+          case 67: // paramst ::= type paramst2 
             {
               TreeNode RESULT =null;
 		int tleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)).left;
@@ -1818,12 +1788,12 @@ class CUP$ASintactico$actions {
         tn.agregarHijo(p);
         RESULT = tn;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramst",27, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramst",26, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 70: // paramst2 ::= COMMA paramst 
+          case 68: // paramst2 ::= COMMA paramst 
             {
               TreeNode RESULT =null;
 		int pleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).left;
@@ -1832,12 +1802,12 @@ class CUP$ASintactico$actions {
 		  
     RESULT =  p;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramst2",28, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramst2",27, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 71: // paramst2 ::= IDE COMMA paramst 
+          case 69: // paramst2 ::= IDE COMMA paramst 
             {
               TreeNode RESULT =null;
 		int ileft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-2)).left;
@@ -1855,12 +1825,12 @@ class CUP$ASintactico$actions {
     tn.agregarHijo(p);
     RESULT = tn;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramst2",28, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-2)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramst2",27, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-2)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 72: // paramst2 ::= IDE 
+          case 70: // paramst2 ::= IDE 
             {
               TreeNode RESULT =null;
 		int ileft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).left;
@@ -1873,24 +1843,24 @@ class CUP$ASintactico$actions {
     tn.agregarHijo(i, token);
     RESULT = tn;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramst2",28, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramst2",27, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 73: // paramst2 ::= 
+          case 71: // paramst2 ::= 
             {
               TreeNode RESULT =null;
 		 
     token++;
     RESULT = new TreeNode("#", null, token);
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramst2",28, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramst2",27, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 74: // paramsI ::= params 
+          case 72: // paramsI ::= params 
             {
               TreeNode RESULT =null;
 		int pleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).left;
@@ -1900,24 +1870,24 @@ class CUP$ASintactico$actions {
     parNum++;
     RESULT = p;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramsI",36, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramsI",35, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 75: // paramsI ::= 
+          case 73: // paramsI ::= 
             {
               TreeNode RESULT =null;
 		
     token++;
     RESULT = new TreeNode("#", null, token);
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramsI",36, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramsI",35, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 76: // params ::= finalexpression paramsb 
+          case 74: // params ::= finalexpression paramsb 
             {
               TreeNode RESULT =null;
 		int fleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)).left;
@@ -1933,12 +1903,12 @@ class CUP$ASintactico$actions {
     tn.agregarHijo(p);
     RESULT = tn;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("params",24, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("params",23, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 77: // paramsb ::= COMMA params 
+          case 75: // paramsb ::= COMMA params 
             {
               TreeNode RESULT =null;
 		int pleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).left;
@@ -1947,24 +1917,24 @@ class CUP$ASintactico$actions {
 		
     RESULT = p;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramsb",25, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramsb",24, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 78: // paramsb ::= 
+          case 76: // paramsb ::= 
             {
               TreeNode RESULT =null;
 		
     token++;
     RESULT = new TreeNode("#", null, token);
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramsb",25, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("paramsb",24, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 79: // funcs ::= func 
+          case 77: // funcs ::= func 
             {
               TreeNode RESULT =null;
 		int fleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()).left;
@@ -1976,12 +1946,12 @@ class CUP$ASintactico$actions {
     tn.agregarHijo(f);
     RESULT = tn;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funcs",32, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funcs",31, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 80: // funcs ::= funcs func 
+          case 78: // funcs ::= funcs func 
             {
               TreeNode RESULT =null;
 		int fsleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)).left;
@@ -1997,12 +1967,12 @@ class CUP$ASintactico$actions {
     tn.agregarHijo(f);
     RESULT = tn;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funcs",32, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funcs",31, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 81: // func ::= typev IDE funcdec 
+          case 79: // func ::= typev IDE funcdec 
             {
               TreeNode RESULT =null;
 		int tleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-2)).left;
@@ -2030,12 +2000,12 @@ class CUP$ASintactico$actions {
     }*/
     RESULT = f;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("func",31, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-2)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("func",30, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-2)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 82: // func ::= error 
+          case 80: // func ::= error 
             {
               TreeNode RESULT =null;
 		
@@ -2047,12 +2017,12 @@ class CUP$ASintactico$actions {
     System.err.println("No se esperaba ese token");
     System.err.println(RESULT);
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("func",31, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("func",30, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 83: // funcb ::= KEYINIT declarations statement KEYFIN 
+          case 81: // funcb ::= KEYINIT declarations statement KEYFIN 
             {
               TreeNode RESULT =null;
 		int declaleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-2)).left;
@@ -2071,24 +2041,24 @@ class CUP$ASintactico$actions {
     tn.agregarHijo(st);
     RESULT = tn;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funcb",33, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-3)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funcb",32, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-3)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 84: // funcb ::= SEMICOLON 
+          case 82: // funcb ::= SEMICOLON 
             {
               TreeNode RESULT =null;
 		
     token++;
     RESULT = new TreeNode("#", null, token);
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funcb",33, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funcb",32, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 85: // funcdec ::= PARINIT par PARFIN funcb 
+          case 83: // funcdec ::= PARINIT par PARFIN funcb 
             {
               TreeNode RESULT =null;
 		int pileft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-3)).left;
@@ -2117,12 +2087,12 @@ class CUP$ASintactico$actions {
     }
     RESULT = tn;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funcdec",30, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-3)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funcdec",29, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-3)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 86: // funcdec ::= declaration2 SEMICOLON 
+          case 84: // funcdec ::= declaration2 SEMICOLON 
             {
               TreeNode RESULT =null;
 		int dleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)).left;
@@ -2136,12 +2106,12 @@ class CUP$ASintactico$actions {
     }
     RESULT = tn;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funcdec",30, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funcdec",29, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-1)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 87: // declaration2 ::= declaration2 COMMA typeap IDE 
+          case 85: // declaration2 ::= declaration2 COMMA typeap IDE 
             {
               TreeNode RESULT =null;
 		int dleft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-3)).left;
@@ -2167,24 +2137,24 @@ class CUP$ASintactico$actions {
     tn.agregarHijo(id);
     RESULT = tn;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("declaration2",39, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-3)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("declaration2",37, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-3)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 88: // declaration2 ::= 
+          case 86: // declaration2 ::= 
             {
               TreeNode RESULT =null;
 		
     token++;
     RESULT = new TreeNode("#", null, token);
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("declaration2",39, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("declaration2",37, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 89: // funccall ::= IDE PARINIT paramsI PARFIN 
+          case 87: // funccall ::= IDE PARINIT paramsI PARFIN 
             {
               TreeNode RESULT =null;
 		int ileft = ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-3)).left;
@@ -2204,7 +2174,7 @@ class CUP$ASintactico$actions {
     tn.agregarHijo(p);
     RESULT = tn;
 
-              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funccall",34, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-3)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
+              CUP$ASintactico$result = parser.getSymbolFactory().newSymbol("funccall",33, ((java_cup.runtime.Symbol)CUP$ASintactico$stack.elementAt(CUP$ASintactico$top-3)), ((java_cup.runtime.Symbol)CUP$ASintactico$stack.peek()), RESULT);
             }
           return CUP$ASintactico$result;
 

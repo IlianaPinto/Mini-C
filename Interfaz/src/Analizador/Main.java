@@ -16,6 +16,8 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -1006,6 +1008,27 @@ public class Main extends javax.swing.JFrame {
                         codigo_intermedio(hijo);
                     });
                     break;
+                case "Statement":
+                    nodo.setSiguiente(nuevaEtiqueta());
+                    nodo.getHijos().forEach((hijo) -> {
+                        codigo_intermedio(hijo);
+                    });
+                    break;
+                case "IF":
+                    if (nodo.getHijos().get(2).getVal().equals("#")) {
+                        nodo.getHijos().get(0).setVerdadero(nuevaEtiqueta());
+                        nodo.getHijos().get(0).setFalso(nodo.padre.getSiguiente());
+                        nodo.getHijos().forEach((hijo) -> {
+                            codigo_intermedio(hijo);
+                        });
+                    } else {
+                        nodo.getHijos().get(0).setVerdadero(nuevaEtiqueta());
+                        nodo.getHijos().get(0).setFalso(nuevaEtiqueta());
+                        nodo.getHijos().forEach((hijo) -> {
+                            codigo_intermedio(hijo);
+                        });
+                    }
+                    break;
                 case "Exp":
                     this.exp_intermedio.clear();
                     expresion_arreglo(nodo);
@@ -1014,7 +1037,19 @@ public class Main extends javax.swing.JFrame {
                     operacion();
                     break;
                 case "ExpBool":
-                    System.out.println("SIMON");
+                    this.exp_bool.clear();
+                    bool_arreglo(nodo);
+                    this.exp_bool.remove(this.exp_bool.size() - 1);
+                    this.exp_bool.remove(0);
+                    for (int i = 0; i < this.exp_bool.size(); i++) {
+                        System.out.println("[" + this.exp_bool.get(i) + "]");
+                    }
+                    TreeNode root = arbol_bool();
+                    root.setVerdadero(nodo.getVerdadero());
+                    root.setFalso(nodo.getFalso());
+                    print_bool(root);
+                    generar_expbool(root);
+
                     break;
                 case "Asig":
                     this.int_asig_flag = true;
@@ -1035,13 +1070,13 @@ public class Main extends javax.swing.JFrame {
                 case "ID":
                     if (nodo.getHijos().get(0).getVal().equals("*") || nodo.getHijos().get(0).getVal().equals("&")) {
                         this.exp_intermedio.add(nodo.getHijos().get(1).getVal());
-                    } else if(nodo.getHijos().get(1).getVal().equals("++")){
+                    } else if (nodo.getHijos().get(1).getVal().equals("++")) {
                         this.exp_intermedio.add("(");
                         this.exp_intermedio.add(nodo.getHijos().get(0).getVal());
                         this.exp_intermedio.add("+");
                         this.exp_intermedio.add("1");
                         this.exp_intermedio.add(")");
-                    } else if(nodo.getHijos().get(1).getVal().equals("--")){
+                    } else if (nodo.getHijos().get(1).getVal().equals("--")) {
                         this.exp_intermedio.add("(");
                         this.exp_intermedio.add(nodo.getHijos().get(0).getVal());
                         this.exp_intermedio.add("-");
@@ -1078,6 +1113,221 @@ public class Main extends javax.swing.JFrame {
             }
         }
 
+    }
+
+    public void bool_arreglo(TreeNode tn) {
+        TreeNode nodo = tn;
+        if (nodo != null) {
+            switch (nodo.getVal()) {
+                case "ID":
+                    if (nodo.getHijos().get(0).getVal().equals("*") || nodo.getHijos().get(0).getVal().equals("&")) {
+                        this.exp_bool.add(nodo.getHijos().get(1).getVal());
+                    } else {
+                        this.exp_bool.add(nodo.getHijos().get(0).getVal());
+                    }
+                    break;
+                case "Num":
+                    this.exp_bool.add(nodo.getHijos().get(0).getVal());
+                    break;
+                case "ConstChar":
+                    this.exp_bool.add(nodo.getHijos().get(0).getVal());
+                    break;
+                case "Exp":
+                case "ExpBool":
+                    this.exp_bool.add("(");
+                    for (TreeNode hijo : nodo.getHijos()) {
+                        bool_arreglo(hijo);
+                    }
+                    this.exp_bool.add(")");
+                    break;
+                default:
+                    if (!nodo.getVal().equals("#")) {
+                        this.exp_bool.add(nodo.getVal());
+                        for (TreeNode hijo : nodo.getHijos()) {
+                            bool_arreglo(hijo);
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
+    public TreeNode arbol_bool() {
+        int contadOR = 0;
+        int cont = 0;
+        TreeNode E = new TreeNode("E", null, ++cont);
+        for (int i = 0; i < this.exp_bool.size(); i++) {
+            switch (this.exp_bool.get(i)) {
+                case "||":
+                    if (contadOR == 0) {
+                        agregar(E, new TreeNode("E", null, ++cont));
+                        agregar(E, new TreeNode("E", null, ++cont));
+                        agregar(E, new TreeNode("||", null, ++cont));
+                        agregar(E, new TreeNode("E", null, ++cont));
+                        contadOR++;
+                    } else {
+                        agregar(E, new TreeNode("E", null, ++cont));
+                        agregar(E, new TreeNode("||", null, ++cont));
+                        agregar(E, new TreeNode("E", null, ++cont));
+                    }
+                    break;
+                case "&&":
+                    if (contadOR == 0) {
+                        agregar(E, new TreeNode("E", null, ++cont));
+                        agregar(E, new TreeNode("&&", null, ++cont));
+                        agregar(E, new TreeNode("E", null, ++cont));
+                    } else {
+                        agregar(E, new TreeNode("&&", null, ++cont));
+                        agregar(E, new TreeNode("E", null, ++cont));
+                    }
+                    contadOR = 0;
+                    break;
+                default:
+            }
+        }
+        int contV = 1;
+        TreeNode a1 = new TreeNode("E", null, 0), a2 = new TreeNode("E", null, 0), a3;
+        for (int i = 0; i < this.exp_bool.size(); i++) {
+            if (!(this.exp_bool.get(i).equals("&&") || this.exp_bool.get(i).equals("||"))) {
+                switch (contV) {
+                    case 1:
+                        a1 = new TreeNode(this.exp_bool.get(i), null, ++cont);
+                        contV++;
+                        break;
+                    case 2:
+                        a2 = new TreeNode(this.exp_bool.get(i), null, ++cont);
+                        contV++;
+                        break;
+                    case 3:
+                        a3 = new TreeNode(this.exp_bool.get(i), null, ++cont);
+                        this.agrega = true;
+                        agregar_hoja(E, a1, a2, a3);
+                        contV = 1;
+                        break;
+                }
+            }
+        }
+        return E;
+    }
+
+    public void agregar(TreeNode tn, TreeNode value) {
+        TreeNode nodo = tn;
+        switch (value.getVal()) {
+            case "E":
+                if (nodo.getHijos().isEmpty()) {
+                    nodo.agregarHijo(value);
+                } else {
+                    switch (nodo.getHijos().size()) {
+                        case 2:
+                            nodo.agregarHijo(value);
+                            break;
+                        case 1:
+                            agregar(nodo.getHijos().get(0), value);
+                            break;
+                        case 3:
+                            agregar(nodo.getHijos().get(2), value);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
+            case "||":
+                if (!nodo.getHijos().isEmpty()) {
+                    if (nodo.getHijos().size() == 1) {
+                        if (!nodo.getHijos().get(0).getHijos().isEmpty()) {
+                            agregar(nodo.getHijos().get(0), value);
+                        } else {
+                            nodo.agregarHijo(value);
+                        }
+                    } else {
+                        agregar(nodo.getHijos().get(2), value);
+                    }
+                }
+                break;
+            case "&&":
+                if (nodo.getHijos().size() == 1) {
+                    nodo.agregarHijo(value);
+                } else {
+                    agregar(nodo.getHijos().get(2), value);
+                }
+                break;
+            default:
+        }
+    }
+
+    public void agregar_hoja(TreeNode tn, TreeNode a1, TreeNode a2, TreeNode a3) {
+        TreeNode nodo = tn;
+
+        if (nodo.getHijos().isEmpty() && nodo.getVal().equals("E") && this.agrega) {
+            nodo.agregarHijo(a1);
+            nodo.agregarHijo(a2);
+            nodo.agregarHijo(a3);
+            this.agrega = false;
+        } else {
+            for (TreeNode hijo : nodo.getHijos()) {
+                agregar_hoja(hijo, a1, a2, a3);
+            }
+        }
+    }
+
+    public void generar_expbool(TreeNode tn) {
+        TreeNode nodo = tn;
+        if (nodo != null) {
+
+            if (!nodo.getHijos().isEmpty()) {
+                if (nodo.getHijos().size() == 1) {
+                    nodo.getHijos().get(0).setVerdadero(nodo.getVerdadero());
+                    nodo.getHijos().get(0).setFalso(nodo.getFalso());
+                    generar_expbool(nodo.getHijos().get(0));
+                } else {
+                    switch (nodo.getHijos().get(1).getVal()) {
+                        case "&&":
+                            nodo.getHijos().get(0).setVerdadero(nuevaEtiqueta());
+                            nodo.getHijos().get(0).setFalso(nodo.getFalso());
+                            generar_expbool(nodo.getHijos().get(0));
+
+                            this.cuadruplos.add(new Cuadruplo("ETIQ", nodo.getHijos().get(0).getVerdadero(), "", ""));
+                            nodo.getHijos().get(2).setVerdadero(nodo.getVerdadero());
+                            nodo.getHijos().get(2).setFalso(nodo.getFalso());
+
+                            generar_expbool(nodo.getHijos().get(2));
+                            break;
+                        case "||":
+                            nodo.getHijos().get(0).setVerdadero(nodo.getVerdadero());
+                            nodo.getHijos().get(0).setFalso(nuevaEtiqueta());
+                            generar_expbool(nodo.getHijos().get(0));
+
+                            this.cuadruplos.add(new Cuadruplo("ETIQ", nodo.getHijos().get(0).getFalso(), "", ""));
+                            nodo.getHijos().get(2).setVerdadero(nodo.getVerdadero());
+                            nodo.getHijos().get(2).setFalso(nodo.getFalso());
+
+                            generar_expbool(nodo.getHijos().get(2));
+                            break;
+                        default:
+                            String operador = nodo.getHijos().get(1).getVal();
+                            String arg1 = nodo.getHijos().get(0).getVal();
+                            String arg2 = nodo.getHijos().get(2).getVal();
+                            this.cuadruplos.add(new Cuadruplo("IF" + operador, arg1, arg2, nodo.getVerdadero()));
+                            this.cuadruplos.add(new Cuadruplo("GOTO", nodo.getFalso(), "", ""));
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void print_bool(TreeNode tn) {
+        TreeNode nodo = tn;
+        if (nodo != null) {
+            System.out.println("Nodo: " + nodo.getVal() + "" + nodo.id);
+            for (TreeNode h : nodo.getHijos()) {
+                System.out.println("    hijo: " + h.getVal() + "" + h.id);
+            }
+            for (TreeNode hijo : nodo.getHijos()) {
+                print_bool(hijo);
+            }
+        }
     }
 
     public void operacion() {
@@ -1174,6 +1424,11 @@ public class Main extends javax.swing.JFrame {
         return "t" + this.cont_temp;
     }
 
+    public String nuevaEtiqueta() {
+        this.cont_etiq++;
+        return "etiq" + this.cont_etiq;
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -1246,7 +1501,10 @@ public class Main extends javax.swing.JFrame {
     //Intermedio
     ArrayList<Cuadruplo> cuadruplos = new ArrayList();
     ArrayList<String> exp_intermedio = new ArrayList();
+    ArrayList<String> exp_bool = new ArrayList();
     int cont_temp = 0;
+    int cont_etiq = 0;
     boolean int_asig_flag = false;
+    boolean agrega = true;
     String int_asig_value = "";
 }

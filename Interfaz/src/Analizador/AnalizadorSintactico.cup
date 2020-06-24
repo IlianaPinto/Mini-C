@@ -74,8 +74,8 @@ terminal String         INTEGER, CHARACTER, VOID, RETURN, FOR, WHILE, IF, ELSE, 
 
 non terminal TreeNode   INICIO, statement, exp, t, for, forid, while, if, printf, printfp, scanf, amp,
                         finalexpression, arp, ta, tap, fa, oprel, asig, type, typeap, declaration,
-                        decid, decasig, params, paramsb, par, paramst, paramst2, typev, funcdec,
-                        func, funcs, funcb, funccall, increment, paramsI, declarations, values, declaration2, declaration3;
+                        decid, params, paramsb, par, paramst, paramst2, typev, funcdec,
+                        func, funcs, funcb, funccall, increment, paramsI, declarations, declaration2;
 
 precedence nonassoc ELSE;
 
@@ -633,7 +633,7 @@ decid::= decid:d COMMA typeap:a IDE:i
 {: 
     token++;
     RESULT = new TreeNode("#", null, token);
-:} ;*/
+:} ;
 
 values::= NUM:n
 {:
@@ -644,7 +644,7 @@ values::= NUM:n
 {:
     token++;
     RESULT = new TreeNode(c, null, token);
-:};
+:};*/
 
 //Parámetros
 typev::= VOID:v
