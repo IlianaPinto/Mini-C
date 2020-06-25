@@ -21,6 +21,7 @@ public class TreeNode {
     public ArrayList<TreeNode> hijos = new ArrayList<>();
     //Intermedio
     public String siguiente;
+    public String comienzo;
     public String verdadero;
     public String falso;
 
@@ -42,6 +43,14 @@ public class TreeNode {
 
     public String getFalso() {
         return falso;
+    }
+
+    public String getComienzo() {
+        return comienzo;
+    }
+
+    public void setComienzo(String comienzo) {
+        this.comienzo = comienzo;
     }
 
     public void setFalso(String falso) {

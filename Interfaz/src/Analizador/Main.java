@@ -158,7 +158,7 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("tab1", jPanel1);
+        jTabbedPane1.addTab("Compilador", jPanel1);
 
         jPanel2.setBackground(new java.awt.Color(51, 51, 51));
 
@@ -212,7 +212,7 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap(49, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("tab4", jPanel2);
+        jTabbedPane1.addTab("Cuádruplos", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -286,6 +286,7 @@ public class Main extends javax.swing.JFrame {
                 //codigo intermedio
                 this.cuadruplos.clear();
                 this.cont_temp = 0;
+                this.cont_etiq = 0;
                 codigo_intermedio(root);
                 System.out.println("*******CUADRUPLOS*******");
 
@@ -1012,22 +1013,39 @@ public class Main extends javax.swing.JFrame {
                     nodo.setSiguiente(nuevaEtiqueta());
                     nodo.getHijos().forEach((hijo) -> {
                         codigo_intermedio(hijo);
+                        if (hijo.getVal().equals("IF") || hijo.getVal().equals("While")) {
+                            this.cuadruplos.add(new Cuadruplo("ETIQ", nodo.getSiguiente(), "", ""));
+                            nodo.setSiguiente(nuevaEtiqueta());
+                        }
                     });
                     break;
                 case "IF":
                     if (nodo.getHijos().get(2).getVal().equals("#")) {
                         nodo.getHijos().get(0).setVerdadero(nuevaEtiqueta());
                         nodo.getHijos().get(0).setFalso(nodo.padre.getSiguiente());
-                        nodo.getHijos().forEach((hijo) -> {
-                            codigo_intermedio(hijo);
-                        });
+                        codigo_intermedio(nodo.getHijos().get(0));
+                        this.cuadruplos.add(new Cuadruplo("ETIQ", nodo.getHijos().get(0).getVerdadero(), "", ""));
+                        codigo_intermedio(nodo.getHijos().get(1));
                     } else {
                         nodo.getHijos().get(0).setVerdadero(nuevaEtiqueta());
                         nodo.getHijos().get(0).setFalso(nuevaEtiqueta());
-                        nodo.getHijos().forEach((hijo) -> {
-                            codigo_intermedio(hijo);
-                        });
+                        codigo_intermedio(nodo.getHijos().get(0));
+                        this.cuadruplos.add(new Cuadruplo("ETIQ", nodo.getHijos().get(0).getVerdadero(), "", ""));
+                        codigo_intermedio(nodo.getHijos().get(1));
+                        this.cuadruplos.add(new Cuadruplo("GOTO", nodo.padre.getSiguiente(), "", ""));
+                        this.cuadruplos.add(new Cuadruplo("ETIQ", nodo.getHijos().get(0).getFalso(), "", ""));
+                        codigo_intermedio(nodo.getHijos().get(2));
                     }
+                    break;
+                case "While":
+                    nodo.setComienzo(nuevaEtiqueta());
+                    nodo.getHijos().get(0).setVerdadero(nuevaEtiqueta());
+                    nodo.getHijos().get(0).setFalso(nodo.padre.getSiguiente());     //pasar etiquetas al hijo
+                    this.cuadruplos.add(new Cuadruplo("ETIQ", nodo.getComienzo(), "", ""));    // crear etiqueta comienzo
+                    codigo_intermedio(nodo.getHijos().get(0));
+                    this.cuadruplos.add(new Cuadruplo("ETIQ", nodo.getHijos().get(0).getVerdadero(), "", ""));    // crear etiqueta verdadera
+                    codigo_intermedio(nodo.getHijos().get(1));
+                    this.cuadruplos.add(new Cuadruplo("GOTO", nodo.getComienzo(), "", ""));
                     break;
                 case "Exp":
                     this.exp_intermedio.clear();
@@ -1049,7 +1067,22 @@ public class Main extends javax.swing.JFrame {
                     root.setFalso(nodo.getFalso());
                     print_bool(root);
                     generar_expbool(root);
-
+                    break;
+                case "Scanf":
+                    this.cuadruplos.add(new Cuadruplo("Scanf", nodo.getHijos().get(0).getVal(), nodo.getHijos().get(2).getHijos().get(0).getVal(), ""));
+                    break;
+                case "Printf":
+                    if (nodo.getHijos().get(1).getVal().equals("#")) {
+                        this.cuadruplos.add(new Cuadruplo("Print", nodo.getHijos().get(0).getVal(), "", ""));
+                    } else {
+                        this.int_print_flag = true;
+                        this.int_print_value = nodo.getHijos().get(0).getVal();
+                        codigo_intermedio(nodo.getHijos().get(1));
+                    }
+                    break;
+                case "return":
+                    this.int_ret_flag = true;
+                    codigo_intermedio(nodo.getHijos().get(0));
                     break;
                 case "Asig":
                     this.int_asig_flag = true;
@@ -1417,6 +1450,15 @@ public class Main extends javax.swing.JFrame {
             this.int_asig_flag = false;
             this.int_asig_value = "";
         }
+        if (this.int_ret_flag) {
+            this.cuadruplos.add(new Cuadruplo("RET", s.pop(), "", ""));
+            this.int_ret_flag = false;
+        }
+        if (this.int_print_flag) {
+            this.cuadruplos.add(new Cuadruplo("Print", this.int_print_value, s.pop(), ""));
+            this.int_ret_flag = false;
+            this.int_print_value = "";
+        }
     }
 
     public String generarTemp() {
@@ -1505,6 +1547,9 @@ public class Main extends javax.swing.JFrame {
     int cont_temp = 0;
     int cont_etiq = 0;
     boolean int_asig_flag = false;
+    boolean int_ret_flag = false;
+    boolean int_print_flag = false;
     boolean agrega = true;
     String int_asig_value = "";
+    String int_print_value = "";
 }
