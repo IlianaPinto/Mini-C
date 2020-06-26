@@ -1013,7 +1013,7 @@ public class Main extends javax.swing.JFrame {
                     nodo.setSiguiente(nuevaEtiqueta());
                     nodo.getHijos().forEach((hijo) -> {
                         codigo_intermedio(hijo);
-                        if (hijo.getVal().equals("IF") || hijo.getVal().equals("While")) {
+                        if (hijo.getVal().equals("IF") || hijo.getVal().equals("While") || hijo.getVal().equals("For")) {
                             this.cuadruplos.add(new Cuadruplo("ETIQ", nodo.getSiguiente(), "", ""));
                             nodo.setSiguiente(nuevaEtiqueta());
                         }
@@ -1046,6 +1046,21 @@ public class Main extends javax.swing.JFrame {
                     this.cuadruplos.add(new Cuadruplo("ETIQ", nodo.getHijos().get(0).getVerdadero(), "", ""));    // crear etiqueta verdadera
                     codigo_intermedio(nodo.getHijos().get(1));
                     this.cuadruplos.add(new Cuadruplo("GOTO", nodo.getComienzo(), "", ""));
+                    break;
+                case "For":
+                    nodo.setComienzo(nuevaEtiqueta());
+                    codigo_intermedio(nodo.getHijos().get(0));
+                    nodo.getHijos().get(1).setVerdadero(nuevaEtiqueta());
+                    nodo.getHijos().get(1).setFalso(nodo.padre.getSiguiente());
+                    this.cuadruplos.add(new Cuadruplo("ETIQ", nodo.getComienzo(), "", ""));
+                    codigo_intermedio(nodo.getHijos().get(1));
+                    String etiq_exp = nuevaEtiqueta();
+                    this.cuadruplos.add(new Cuadruplo("ETIQ", etiq_exp, "", ""));
+                    codigo_intermedio(nodo.getHijos().get(2));
+                    this.cuadruplos.add(new Cuadruplo("GOTO", nodo.getComienzo(), "", ""));
+                    this.cuadruplos.add(new Cuadruplo("ETIQ", nodo.getHijos().get(1).getVerdadero(), "", ""));
+                    codigo_intermedio(nodo.getHijos().get(3));
+                    this.cuadruplos.add(new Cuadruplo("GOTO", etiq_exp, "", ""));
                     break;
                 case "Exp":
                     this.exp_intermedio.clear();
@@ -1104,17 +1119,17 @@ public class Main extends javax.swing.JFrame {
                     if (nodo.getHijos().get(0).getVal().equals("*") || nodo.getHijos().get(0).getVal().equals("&")) {
                         this.exp_intermedio.add(nodo.getHijos().get(1).getVal());
                     } else if (nodo.getHijos().get(1).getVal().equals("++")) {
-                        this.exp_intermedio.add("(");
-                        this.exp_intermedio.add(nodo.getHijos().get(0).getVal());
-                        this.exp_intermedio.add("+");
-                        this.exp_intermedio.add("1");
-                        this.exp_intermedio.add(")");
+                        //this.exp_intermedio.add("(");
+                        this.exp_intermedio.add(nodo.getHijos().get(0).getVal() + "++");
+                        //this.exp_intermedio.add("+");
+                        //this.exp_intermedio.add("1");
+                        //this.exp_intermedio.add(")");
                     } else if (nodo.getHijos().get(1).getVal().equals("--")) {
-                        this.exp_intermedio.add("(");
-                        this.exp_intermedio.add(nodo.getHijos().get(0).getVal());
-                        this.exp_intermedio.add("-");
-                        this.exp_intermedio.add("1");
-                        this.exp_intermedio.add(")");
+                        //this.exp_intermedio.add("(");
+                        this.exp_intermedio.add(nodo.getHijos().get(0).getVal() + "--");
+                        //this.exp_intermedio.add("-");
+                        //this.exp_intermedio.add("1");
+                        //this.exp_intermedio.add(")");
                     } else {
                         this.exp_intermedio.add(nodo.getHijos().get(0).getVal());
                     }
@@ -1379,6 +1394,29 @@ public class Main extends javax.swing.JFrame {
                         s.push(arg2);
                         s.push(this.exp_intermedio.get(i));
                     } else {
+                        //
+                        if (arg1.contains("++")) {
+                            String temp = generarTemp();
+                            arg1 = arg1.substring(0, arg1.length() - 2);
+                            this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp));
+                            this.cuadruplos.add(new Cuadruplo("=", temp, "", arg1));
+                        } else if (arg1.contains("--")) {
+                            String temp = generarTemp();
+                            arg1 = arg1.substring(0, arg1.length() - 2);
+                            this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp));
+                            this.cuadruplos.add(new Cuadruplo("=", temp, "", arg1));
+                        }
+                        if (arg2.contains("++")) {
+                            String temp = generarTemp();
+                            arg2 = arg2.substring(0, arg2.length() - 2);
+                            this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp));
+                            this.cuadruplos.add(new Cuadruplo("=", temp, "", arg2));
+                        } else if (arg2.contains("--")) {
+                            String temp = generarTemp();
+                            arg2 = arg2.substring(0, arg2.length() - 2);
+                            this.cuadruplos.add(new Cuadruplo("", arg2, "1", temp));
+                            this.cuadruplos.add(new Cuadruplo("=", temp, "", arg2));
+                        }
                         res = generarTemp();
                         s.push(res);
                         this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
@@ -1405,6 +1443,29 @@ public class Main extends javax.swing.JFrame {
                             s.push(arg2);
                             s.push(this.exp_intermedio.get(i));
                         } else {
+                            //
+                            if (arg1.contains("++")) {
+                                String temp1 = generarTemp();
+                                arg1 = arg1.substring(0, arg1.length() - 2);
+                                this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp1));
+                                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                            } else if (arg1.contains("--")) {
+                                String temp1 = generarTemp();
+                                arg1 = arg1.substring(0, arg1.length() - 2);
+                                this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp1));
+                                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                            }
+                            if (arg2.contains("++")) {
+                                String temp1 = generarTemp();
+                                arg2 = arg2.substring(0, arg2.length() - 2);
+                                this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp1));
+                                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                            } else if (arg2.contains("--")) {
+                                String temp1 = generarTemp();
+                                arg2 = arg2.substring(0, arg2.length() - 2);
+                                this.cuadruplos.add(new Cuadruplo("-", arg2, "1", temp1));
+                                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                            }
                             res = generarTemp();
                             s.push(res);
                             this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
@@ -1425,6 +1486,29 @@ public class Main extends javax.swing.JFrame {
                     arg2 = s.pop();
                     op = s.pop();
                     arg1 = s.pop();
+                    //
+                    if (arg1.contains("++")) {
+                        String temp1 = generarTemp();
+                        arg1 = arg1.substring(0, arg1.length() - 2);
+                        this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp1));
+                        this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                    } else if (arg1.contains("--")) {
+                        String temp1 = generarTemp();
+                        arg1 = arg1.substring(0, arg1.length() - 2);
+                        this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp1));
+                        this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                    }
+                    if (arg2.contains("++")) {
+                        String temp1 = generarTemp();
+                        arg2 = arg2.substring(0, arg2.length() - 2);
+                        this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp1));
+                        this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                    } else if (arg2.contains("--")) {
+                        String temp1 = generarTemp();
+                        arg2 = arg2.substring(0, arg2.length() - 2);
+                        this.cuadruplos.add(new Cuadruplo("-", arg2, "1", temp1));
+                        this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                    }
                     res = generarTemp();
                     s.push(res);
                     this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
@@ -1437,12 +1521,52 @@ public class Main extends javax.swing.JFrame {
         while (s.size() > 1) {
             if (s.size() >= 3) {
                 String op, arg1, arg2, res;
-                res = generarTemp();
+
                 arg2 = s.pop();
                 op = s.pop();
                 arg1 = s.pop();
+                //
+                if (arg1.contains("++")) {
+                    String temp1 = generarTemp();
+                    arg1 = arg1.substring(0, arg1.length() - 2);
+                    this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp1));
+                    this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                } else if (arg1.contains("--")) {
+                    String temp1 = generarTemp();
+                    arg1 = arg1.substring(0, arg1.length() - 2);
+                    this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp1));
+                    this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                }
+                if (arg2.contains("++")) {
+                    String temp1 = generarTemp();
+                    arg2 = arg2.substring(0, arg2.length() - 2);
+                    this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp1));
+                    this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                } else if (arg2.contains("--")) {
+                    String temp1 = generarTemp();
+                    arg2 = arg2.substring(0, arg2.length() - 2);
+                    this.cuadruplos.add(new Cuadruplo("-", arg2, "1", temp1));
+                    this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                }
+                res = generarTemp();
                 s.push(res);
                 this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
+            }
+        }
+        //
+        if (s.size() == 1) {
+            if (s.peek().contains("++")) {
+                String temp1 = generarTemp();
+                String arg = s.pop();
+                arg = arg.substring(0, arg.length() - 2);
+                this.cuadruplos.add(new Cuadruplo("+", arg, "1", temp1));
+                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg));
+            } else if (s.peek().contains("--")) {
+                String temp1 = generarTemp();
+                String arg = s.pop();
+                arg = arg.substring(0, arg.length() - 2);
+                this.cuadruplos.add(new Cuadruplo("-", arg, "1", temp1));
+                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg));
             }
         }
         if (this.int_asig_flag) {
@@ -1456,7 +1580,7 @@ public class Main extends javax.swing.JFrame {
         }
         if (this.int_print_flag) {
             this.cuadruplos.add(new Cuadruplo("Print", this.int_print_value, s.pop(), ""));
-            this.int_ret_flag = false;
+            this.int_print_flag = false;
             this.int_print_value = "";
         }
     }

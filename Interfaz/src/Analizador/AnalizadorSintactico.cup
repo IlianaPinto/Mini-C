@@ -206,14 +206,7 @@ if::= IF PARINIT finalexpression:f PARFIN KEYINIT statement:s KEYFIN t:t1
     RESULT = tn;
 :};
 
-t::= ELSE if:i
-{:
-    token++;
-    TreeNode tn = new TreeNode("Else", null, token);
-    tn.agregarHijo(i);
-    RESULT = tn;
-:}
-| ELSE KEYINIT statement:st KEYFIN 
+t::= ELSE KEYINIT statement:st KEYFIN 
 {:
     token++;
     TreeNode tn = new TreeNode("Else", null, token);
@@ -248,7 +241,7 @@ for::= FOR PARINIT forid:f exp:e finalexpression:fe PARFIN KEYINIT statement:st 
     RESULT = tn;
 :};
 
-forid::= exp:e 
+forid::= asig:e 
 {:
     RESULT = e;
 :};
