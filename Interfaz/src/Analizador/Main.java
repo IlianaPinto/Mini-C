@@ -868,8 +868,11 @@ public class Main extends javax.swing.JFrame {
                     this.errores_semanticos.add("La funcion " + f + " no existe");
                 }
                 this.funccall.clear();
+                this.funccall.add(new ArrayList());//cambie esto
                 funcion(hijo.getHijos().get(1));
-
+                if (this.funccall.get(0).isEmpty()) {//puse esto
+                    this.funccall.clear();
+                }
                 ArrayList<String> argumentos = new ArrayList<>();
                 for (int i = 0; i < this.funccall.size(); i++) {
                     String tipo = "";
@@ -930,7 +933,7 @@ public class Main extends javax.swing.JFrame {
     public void funcion(TreeNode root) {
         if (!root.getHijos().isEmpty()) {
             for (TreeNode hijo : root.getHijos()) {
-                if (hijo.getVal().equals("Exp")) {
+                if (hijo.getVal().equals("par")) {//puse esto
                     this.funccall.add(new ArrayList<>());
                     funcion(hijo);
                 } else if (hijo.getVal().equals("Num")) {
@@ -1067,6 +1070,10 @@ public class Main extends javax.swing.JFrame {
                     expresion_arreglo(nodo);
                     this.exp_intermedio.remove(this.exp_intermedio.size() - 1);
                     this.exp_intermedio.remove(0);
+                    for (int i = 0; i < this.exp_intermedio.size(); i++) {
+                        System.out.print("[" + this.exp_intermedio.get(i) + "]");
+                    }
+                    System.out.println("");
                     operacion();
                     break;
                 case "ExpBool":
@@ -1148,8 +1155,13 @@ public class Main extends javax.swing.JFrame {
                     this.exp_intermedio.add(")");
                     break;
                 case "Funccall":
-                    System.out.println("A ver");
-                    this.exp_intermedio.add(nodo.getHijos().get(0).getHijos().get(0).getVal());
+                    this.exp_intermedio.add("1f_" + nodo.getHijos().get(0).getHijos().get(0).getVal());
+                    int size = this.exp_intermedio.size();
+                    params_exp(nodo.getHijos().get(1));
+                    if (size != this.exp_intermedio.size()) {
+                        this.exp_intermedio.remove(this.exp_intermedio.size() - 1);
+                    }
+                    this.exp_intermedio.add("2f");
                     break;
                 default:
                     if (!nodo.getVal().equals("#")) {
@@ -1380,59 +1392,55 @@ public class Main extends javax.swing.JFrame {
 
     public void operacion() {
         String acum = "";
+        String func_name = "";
         Stack<String> s = new Stack();
+        boolean isFunc = false;
+        ArrayList<String> param = new ArrayList();
         for (int i = 0; i < this.exp_intermedio.size(); i++) {
-            if (this.exp_intermedio.get(i).equals("+") || this.exp_intermedio.get(i).equals("-")) {
-                if (s.size() >= 3) {
-                    String op, arg1, arg2, res;
-                    arg2 = s.pop();
-                    op = s.pop();
-                    arg1 = s.pop();
-                    if (arg2.equals("(") || op.equals("(") || arg1.equals("(")) {
-                        s.push(arg1);
-                        s.push(op);
-                        s.push(arg2);
-                        s.push(this.exp_intermedio.get(i));
-                    } else {
-                        //
-                        if (arg1.contains("++")) {
-                            String temp = generarTemp();
-                            arg1 = arg1.substring(0, arg1.length() - 2);
-                            this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp));
-                            this.cuadruplos.add(new Cuadruplo("=", temp, "", arg1));
-                        } else if (arg1.contains("--")) {
-                            String temp = generarTemp();
-                            arg1 = arg1.substring(0, arg1.length() - 2);
-                            this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp));
-                            this.cuadruplos.add(new Cuadruplo("=", temp, "", arg1));
+            if (s.size() > 0) {
+                System.out.println("pila = " + s.peek());
+            }
+            if (this.exp_intermedio.get(i).startsWith("1f_")) {
+                isFunc = true;
+                func_name = this.exp_intermedio.get(i).substring(3, this.exp_intermedio.get(i).length());
+
+            }
+            if (isFunc) {
+                switch (this.exp_intermedio.get(i)) {
+                    case ",":
+                        String temporal = parametro_func(param);
+                        param.clear();
+                        this.cuadruplos.add(new Cuadruplo("param", temporal, "", ""));
+                        break;
+                    case "2f":
+                        if (!param.isEmpty()) {
+                            String temporal2 = parametro_func(param);
+                            param.clear();
+                            this.cuadruplos.add(new Cuadruplo("param", temporal2, "", ""));
+                            this.cuadruplos.add(new Cuadruplo("call", func_name, "", ""));
+                            String nuevoTemp = generarTemp();
+                            this.cuadruplos.add(new Cuadruplo("=", "RET", "", nuevoTemp));
+                            s.push(nuevoTemp);
+                            isFunc = false;
+                            func_name = "";
+                        }else{
+                            this.cuadruplos.add(new Cuadruplo("call", func_name, "", ""));
+                            String nuevoTemp = generarTemp();
+                            this.cuadruplos.add(new Cuadruplo("=", "RET", "", nuevoTemp));
+                            s.push(nuevoTemp);
+                            isFunc = false;
+                            func_name = "";
                         }
-                        if (arg2.contains("++")) {
-                            String temp = generarTemp();
-                            arg2 = arg2.substring(0, arg2.length() - 2);
-                            this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp));
-                            this.cuadruplos.add(new Cuadruplo("=", temp, "", arg2));
-                        } else if (arg2.contains("--")) {
-                            String temp = generarTemp();
-                            arg2 = arg2.substring(0, arg2.length() - 2);
-                            this.cuadruplos.add(new Cuadruplo("", arg2, "1", temp));
-                            this.cuadruplos.add(new Cuadruplo("=", temp, "", arg2));
+                        break;
+                    default:
+                        if (!this.exp_intermedio.get(i).startsWith("1f_")) {
+                            param.add(this.exp_intermedio.get(i));
                         }
-                        res = generarTemp();
-                        s.push(res);
-                        this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
-                        i--;
-                    }
-                } else {
-                    s.push(this.exp_intermedio.get(i));
+                        break;
                 }
-            } else if (this.exp_intermedio.get(i).equals("*") || this.exp_intermedio.get(i).equals("/")) {
-                if (s.size() >= 3) {
-                    String temp = s.pop();
-                    if (s.peek().equals("+") || s.peek().equals("-")) {
-                        s.push(temp);
-                        s.push(this.exp_intermedio.get(i));
-                    } else {
-                        s.push(temp);
+            } else {
+                if (this.exp_intermedio.get(i).equals("+") || this.exp_intermedio.get(i).equals("-")) {
+                    if (s.size() >= 3) {
                         String op, arg1, arg2, res;
                         arg2 = s.pop();
                         op = s.pop();
@@ -1445,77 +1453,127 @@ public class Main extends javax.swing.JFrame {
                         } else {
                             //
                             if (arg1.contains("++")) {
-                                String temp1 = generarTemp();
+                                String temp = generarTemp();
                                 arg1 = arg1.substring(0, arg1.length() - 2);
-                                this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp1));
-                                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                                this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp));
+                                this.cuadruplos.add(new Cuadruplo("=", temp, "", arg1));
                             } else if (arg1.contains("--")) {
-                                String temp1 = generarTemp();
+                                String temp = generarTemp();
                                 arg1 = arg1.substring(0, arg1.length() - 2);
-                                this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp1));
-                                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                                this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp));
+                                this.cuadruplos.add(new Cuadruplo("=", temp, "", arg1));
                             }
                             if (arg2.contains("++")) {
-                                String temp1 = generarTemp();
+                                String temp = generarTemp();
                                 arg2 = arg2.substring(0, arg2.length() - 2);
-                                this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp1));
-                                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                                this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp));
+                                this.cuadruplos.add(new Cuadruplo("=", temp, "", arg2));
                             } else if (arg2.contains("--")) {
-                                String temp1 = generarTemp();
+                                String temp = generarTemp();
                                 arg2 = arg2.substring(0, arg2.length() - 2);
-                                this.cuadruplos.add(new Cuadruplo("-", arg2, "1", temp1));
-                                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                                this.cuadruplos.add(new Cuadruplo("", arg2, "1", temp));
+                                this.cuadruplos.add(new Cuadruplo("=", temp, "", arg2));
                             }
                             res = generarTemp();
                             s.push(res);
                             this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
                             i--;
                         }
+                    } else {
+                        s.push(this.exp_intermedio.get(i));
+                    }
+                } else if (this.exp_intermedio.get(i).equals("*") || this.exp_intermedio.get(i).equals("/")) {
+                    if (s.size() >= 3) {
+                        String temp = s.pop();
+                        if (s.peek().equals("+") || s.peek().equals("-")) {
+                            s.push(temp);
+                            s.push(this.exp_intermedio.get(i));
+                        } else {
+                            s.push(temp);
+                            String op, arg1, arg2, res;
+                            arg2 = s.pop();
+                            op = s.pop();
+                            arg1 = s.pop();
+                            if (arg2.equals("(") || op.equals("(") || arg1.equals("(")) {
+                                s.push(arg1);
+                                s.push(op);
+                                s.push(arg2);
+                                s.push(this.exp_intermedio.get(i));
+                            } else {
+                                //
+                                if (arg1.contains("++")) {
+                                    String temp1 = generarTemp();
+                                    arg1 = arg1.substring(0, arg1.length() - 2);
+                                    this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp1));
+                                    this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                                } else if (arg1.contains("--")) {
+                                    String temp1 = generarTemp();
+                                    arg1 = arg1.substring(0, arg1.length() - 2);
+                                    this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp1));
+                                    this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                                }
+                                if (arg2.contains("++")) {
+                                    String temp1 = generarTemp();
+                                    arg2 = arg2.substring(0, arg2.length() - 2);
+                                    this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp1));
+                                    this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                                } else if (arg2.contains("--")) {
+                                    String temp1 = generarTemp();
+                                    arg2 = arg2.substring(0, arg2.length() - 2);
+                                    this.cuadruplos.add(new Cuadruplo("-", arg2, "1", temp1));
+                                    this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                                }
+                                res = generarTemp();
+                                s.push(res);
+                                this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
+                                i--;
+                            }
+                        }
+                    } else {
+                        s.push(this.exp_intermedio.get(i));
+                    }
+                } else if (this.exp_intermedio.get(i).equals(")")) {
+                    String temp = s.pop();
+                    if (s.peek().equals("(")) {
+                        s.pop();
+                        s.push(temp);
+                    } else {
+                        s.push(temp);
+                        String op, arg1, arg2, res;
+                        arg2 = s.pop();
+                        op = s.pop();
+                        arg1 = s.pop();
+                        //
+                        if (arg1.contains("++")) {
+                            String temp1 = generarTemp();
+                            arg1 = arg1.substring(0, arg1.length() - 2);
+                            this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp1));
+                            this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                        } else if (arg1.contains("--")) {
+                            String temp1 = generarTemp();
+                            arg1 = arg1.substring(0, arg1.length() - 2);
+                            this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp1));
+                            this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                        }
+                        if (arg2.contains("++")) {
+                            String temp1 = generarTemp();
+                            arg2 = arg2.substring(0, arg2.length() - 2);
+                            this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp1));
+                            this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                        } else if (arg2.contains("--")) {
+                            String temp1 = generarTemp();
+                            arg2 = arg2.substring(0, arg2.length() - 2);
+                            this.cuadruplos.add(new Cuadruplo("-", arg2, "1", temp1));
+                            this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                        }
+                        res = generarTemp();
+                        s.push(res);
+                        this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
+                        i--;
                     }
                 } else {
                     s.push(this.exp_intermedio.get(i));
                 }
-            } else if (this.exp_intermedio.get(i).equals(")")) {
-                String temp = s.pop();
-                if (s.peek().equals("(")) {
-                    s.pop();
-                    s.push(temp);
-                } else {
-                    s.push(temp);
-                    String op, arg1, arg2, res;
-                    arg2 = s.pop();
-                    op = s.pop();
-                    arg1 = s.pop();
-                    //
-                    if (arg1.contains("++")) {
-                        String temp1 = generarTemp();
-                        arg1 = arg1.substring(0, arg1.length() - 2);
-                        this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp1));
-                        this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
-                    } else if (arg1.contains("--")) {
-                        String temp1 = generarTemp();
-                        arg1 = arg1.substring(0, arg1.length() - 2);
-                        this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp1));
-                        this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
-                    }
-                    if (arg2.contains("++")) {
-                        String temp1 = generarTemp();
-                        arg2 = arg2.substring(0, arg2.length() - 2);
-                        this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp1));
-                        this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
-                    } else if (arg2.contains("--")) {
-                        String temp1 = generarTemp();
-                        arg2 = arg2.substring(0, arg2.length() - 2);
-                        this.cuadruplos.add(new Cuadruplo("-", arg2, "1", temp1));
-                        this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
-                    }
-                    res = generarTemp();
-                    s.push(res);
-                    this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
-                    i--;
-                }
-            } else {
-                s.push(this.exp_intermedio.get(i));
             }
         }
         while (s.size() > 1) {
@@ -1582,6 +1640,246 @@ public class Main extends javax.swing.JFrame {
             this.cuadruplos.add(new Cuadruplo("Print", this.int_print_value, s.pop(), ""));
             this.int_print_flag = false;
             this.int_print_value = "";
+        }
+    }
+
+    public String parametro_func(ArrayList<String> array) {
+        String acum = "";
+        Stack<String> s = new Stack();
+        for (int i = 0; i < array.size(); i++) {
+            if (array.get(i).equals("+") || array.get(i).equals("-")) {
+                if (s.size() >= 3) {
+                    String op, arg1, arg2, res;
+                    arg2 = s.pop();
+                    op = s.pop();
+                    arg1 = s.pop();
+                    if (arg2.equals("(") || op.equals("(") || arg1.equals("(")) {
+                        s.push(arg1);
+                        s.push(op);
+                        s.push(arg2);
+                        s.push(array.get(i));
+                    } else {
+                        //
+                        if (arg1.contains("++")) {
+                            String temp = generarTemp();
+                            arg1 = arg1.substring(0, arg1.length() - 2);
+                            this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp));
+                            this.cuadruplos.add(new Cuadruplo("=", temp, "", arg1));
+                        } else if (arg1.contains("--")) {
+                            String temp = generarTemp();
+                            arg1 = arg1.substring(0, arg1.length() - 2);
+                            this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp));
+                            this.cuadruplos.add(new Cuadruplo("=", temp, "", arg1));
+                        }
+                        if (arg2.contains("++")) {
+                            String temp = generarTemp();
+                            arg2 = arg2.substring(0, arg2.length() - 2);
+                            this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp));
+                            this.cuadruplos.add(new Cuadruplo("=", temp, "", arg2));
+                        } else if (arg2.contains("--")) {
+                            String temp = generarTemp();
+                            arg2 = arg2.substring(0, arg2.length() - 2);
+                            this.cuadruplos.add(new Cuadruplo("", arg2, "1", temp));
+                            this.cuadruplos.add(new Cuadruplo("=", temp, "", arg2));
+                        }
+                        res = generarTemp();
+                        s.push(res);
+                        this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
+                        i--;
+                    }
+                } else {
+                    s.push(array.get(i));
+                }
+            } else if (array.get(i).equals("*") || array.get(i).equals("/")) {
+                if (s.size() >= 3) {
+                    String temp = s.pop();
+                    if (s.peek().equals("+") || s.peek().equals("-")) {
+                        s.push(temp);
+                        s.push(array.get(i));
+                    } else {
+                        s.push(temp);
+                        String op, arg1, arg2, res;
+                        arg2 = s.pop();
+                        op = s.pop();
+                        arg1 = s.pop();
+                        if (arg2.equals("(") || op.equals("(") || arg1.equals("(")) {
+                            s.push(arg1);
+                            s.push(op);
+                            s.push(arg2);
+                            s.push(array.get(i));
+                        } else {
+                            //
+                            if (arg1.contains("++")) {
+                                String temp1 = generarTemp();
+                                arg1 = arg1.substring(0, arg1.length() - 2);
+                                this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp1));
+                                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                            } else if (arg1.contains("--")) {
+                                String temp1 = generarTemp();
+                                arg1 = arg1.substring(0, arg1.length() - 2);
+                                this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp1));
+                                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                            }
+                            if (arg2.contains("++")) {
+                                String temp1 = generarTemp();
+                                arg2 = arg2.substring(0, arg2.length() - 2);
+                                this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp1));
+                                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                            } else if (arg2.contains("--")) {
+                                String temp1 = generarTemp();
+                                arg2 = arg2.substring(0, arg2.length() - 2);
+                                this.cuadruplos.add(new Cuadruplo("-", arg2, "1", temp1));
+                                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                            }
+                            res = generarTemp();
+                            s.push(res);
+                            this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
+                            i--;
+                        }
+                    }
+                } else {
+                    s.push(array.get(i));
+                }
+            } else if (array.get(i).equals(")")) {
+                String temp = s.pop();
+                if (s.peek().equals("(")) {
+                    s.pop();
+                    s.push(temp);
+                } else {
+                    s.push(temp);
+                    String op, arg1, arg2, res;
+                    arg2 = s.pop();
+                    op = s.pop();
+                    arg1 = s.pop();
+                    //
+                    if (arg1.contains("++")) {
+                        String temp1 = generarTemp();
+                        arg1 = arg1.substring(0, arg1.length() - 2);
+                        this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp1));
+                        this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                    } else if (arg1.contains("--")) {
+                        String temp1 = generarTemp();
+                        arg1 = arg1.substring(0, arg1.length() - 2);
+                        this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp1));
+                        this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                    }
+                    if (arg2.contains("++")) {
+                        String temp1 = generarTemp();
+                        arg2 = arg2.substring(0, arg2.length() - 2);
+                        this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp1));
+                        this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                    } else if (arg2.contains("--")) {
+                        String temp1 = generarTemp();
+                        arg2 = arg2.substring(0, arg2.length() - 2);
+                        this.cuadruplos.add(new Cuadruplo("-", arg2, "1", temp1));
+                        this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                    }
+                    res = generarTemp();
+                    s.push(res);
+                    this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
+                    i--;
+                }
+            } else {
+                s.push(array.get(i));
+            }
+        }
+        while (s.size() > 1) {
+            if (s.size() >= 3) {
+                String op, arg1, arg2, res;
+
+                arg2 = s.pop();
+                op = s.pop();
+                arg1 = s.pop();
+                //
+                if (arg1.contains("++")) {
+                    String temp1 = generarTemp();
+                    arg1 = arg1.substring(0, arg1.length() - 2);
+                    this.cuadruplos.add(new Cuadruplo("+", arg1, "1", temp1));
+                    this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                } else if (arg1.contains("--")) {
+                    String temp1 = generarTemp();
+                    arg1 = arg1.substring(0, arg1.length() - 2);
+                    this.cuadruplos.add(new Cuadruplo("-", arg1, "1", temp1));
+                    this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg1));
+                }
+                if (arg2.contains("++")) {
+                    String temp1 = generarTemp();
+                    arg2 = arg2.substring(0, arg2.length() - 2);
+                    this.cuadruplos.add(new Cuadruplo("+", arg2, "1", temp1));
+                    this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                } else if (arg2.contains("--")) {
+                    String temp1 = generarTemp();
+                    arg2 = arg2.substring(0, arg2.length() - 2);
+                    this.cuadruplos.add(new Cuadruplo("-", arg2, "1", temp1));
+                    this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg2));
+                }
+                res = generarTemp();
+                s.push(res);
+                this.cuadruplos.add(new Cuadruplo(op, arg1, arg2, res));
+            }
+        }
+        //
+        if (s.size() == 1) {
+            if (s.peek().contains("++")) {
+                String temp1 = generarTemp();
+                String arg = s.pop();
+                arg = arg.substring(0, arg.length() - 2);
+                this.cuadruplos.add(new Cuadruplo("+", arg, "1", temp1));
+                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg));
+            } else if (s.peek().contains("--")) {
+                String temp1 = generarTemp();
+                String arg = s.pop();
+                arg = arg.substring(0, arg.length() - 2);
+                this.cuadruplos.add(new Cuadruplo("-", arg, "1", temp1));
+                this.cuadruplos.add(new Cuadruplo("=", temp1, "", arg));
+            }
+        }
+        return s.pop();
+    }
+
+    public void params_exp(TreeNode tn) {
+        if (!tn.getHijos().isEmpty()) {
+            for (TreeNode hijo : tn.getHijos()) {
+                switch (hijo.getVal()) {
+                    case "Exp":
+                        if (!hijo.padre.getVal().equals("par")) {
+                            this.exp_intermedio.add("(");
+                        }
+                        params_exp(hijo);
+                        if (hijo.padre.getVal().equals("par")) {
+                            this.exp_intermedio.add(",");
+                        } else {
+                            this.exp_intermedio.add(")");
+                        }
+
+                        break;
+                    case "ID":
+                        if (hijo.getHijos().get(0).getVal().equals("*") || hijo.getHijos().get(0).getVal().equals("&")) {
+                            this.exp_intermedio.add(hijo.getHijos().get(1).getVal());
+                        } else if (hijo.getHijos().get(1).getVal().equals("++")) {
+                            this.exp_intermedio.add(hijo.getHijos().get(0).getVal() + "++");
+                        } else if (hijo.getHijos().get(1).getVal().equals("--")) {
+                            this.exp_intermedio.add(hijo.getHijos().get(0).getVal() + "--");
+                        } else {
+                            this.exp_intermedio.add(hijo.getHijos().get(0).getVal());
+                        }
+                        break;
+                    case "Num":
+                        this.exp_intermedio.add(hijo.getHijos().get(0).getVal());
+                        break;
+                    case "ConstChar":
+                        this.exp_intermedio.add(hijo.getHijos().get(0).getVal());
+                        break;
+                    case "par":
+                        params_exp(hijo);
+                        break;
+                    default:
+                        if (!hijo.getVal().equals("#")) {
+                            this.exp_intermedio.add(hijo.getVal());
+                            params_exp(hijo);
+                        }
+                }
+            }
         }
     }
 
