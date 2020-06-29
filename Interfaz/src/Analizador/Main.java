@@ -63,6 +63,9 @@ public class Main extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         table_cuadruplos = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        ta_codigo_final = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Compilador Mini-C");
@@ -214,6 +217,31 @@ public class Main extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Cuádruplos", jPanel2);
 
+        jPanel3.setBackground(new java.awt.Color(51, 51, 51));
+
+        ta_codigo_final.setColumns(20);
+        ta_codigo_final.setRows(5);
+        jScrollPane4.setViewportView(ta_codigo_final);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(44, 44, 44)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(45, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(36, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Codigo final", jPanel3);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -287,6 +315,7 @@ public class Main extends javax.swing.JFrame {
                 this.cuadruplos.clear();
                 this.cont_temp = 0;
                 this.cont_etiq = 0;
+                this.mensajes.clear();
                 codigo_intermedio(root);
                 System.out.println("*******CUADRUPLOS*******");
 
@@ -296,6 +325,9 @@ public class Main extends javax.swing.JFrame {
                     model.addRow(this.cuadruplos.get(i).retorno_tabla());
                     System.out.println(this.cuadruplos.get(i).toString());
                 }
+
+                //codigo final
+                codigo_final();
             }
             for (int i = 0; i < lexi.size(); i++) {
                 this.TextErrores.append(lexi.get(i) + "\n");
@@ -1070,9 +1102,6 @@ public class Main extends javax.swing.JFrame {
                     expresion_arreglo(nodo);
                     this.exp_intermedio.remove(this.exp_intermedio.size() - 1);
                     this.exp_intermedio.remove(0);
-                    for (int i = 0; i < this.exp_intermedio.size(); i++) {
-                        System.out.print("[" + this.exp_intermedio.get(i) + "]");
-                    }
                     System.out.println("");
                     operacion();
                     break;
@@ -1081,9 +1110,6 @@ public class Main extends javax.swing.JFrame {
                     bool_arreglo(nodo);
                     this.exp_bool.remove(this.exp_bool.size() - 1);
                     this.exp_bool.remove(0);
-                    for (int i = 0; i < this.exp_bool.size(); i++) {
-                        System.out.println("[" + this.exp_bool.get(i) + "]");
-                    }
                     TreeNode root = arbol_bool();
                     root.setVerdadero(nodo.getVerdadero());
                     root.setFalso(nodo.getFalso());
@@ -1100,6 +1126,33 @@ public class Main extends javax.swing.JFrame {
                         this.int_print_flag = true;
                         this.int_print_value = nodo.getHijos().get(0).getVal();
                         codigo_intermedio(nodo.getHijos().get(1));
+                    }
+                    String primera = "";
+                    String segunda = "";
+                    if (nodo.getHijos().get(0).getVal().contains("%d")) {
+                        int d = nodo.getHijos().get(0).getVal().indexOf("%d");
+                        if (d + 2 > nodo.getHijos().get(0).getVal().length()) {
+                            segunda = "";
+                        } else {
+                            segunda = nodo.getHijos().get(0).getVal().substring(d + 2, nodo.getHijos().get(0).getVal().length());
+                        }
+                        primera = nodo.getHijos().get(0).getVal().substring(0, d);
+                    }
+                    boolean existe_p = false;
+                    boolean existe_s = false;
+                    for (int i = 0; i < this.mensajes.size(); i++) {
+                        if (primera.equals(this.mensajes.get(i))) {
+                            existe_p = true;
+                        }
+                        if (segunda.equals(this.mensajes.get(i))) {
+                            existe_s = true;
+                        }
+                    }
+                    if (!existe_p && !primera.equals("%d") && !primera.equals("")) {
+                        this.mensajes.add(primera);
+                    }
+                    if (!existe_s && !segunda.isEmpty()) {
+                        this.mensajes.add(segunda);
                     }
                     break;
                 case "return":
@@ -1397,9 +1450,7 @@ public class Main extends javax.swing.JFrame {
         boolean isFunc = false;
         ArrayList<String> param = new ArrayList();
         for (int i = 0; i < this.exp_intermedio.size(); i++) {
-            if (s.size() > 0) {
-                System.out.println("pila = " + s.peek());
-            }
+            
             if (this.exp_intermedio.get(i).startsWith("1f_")) {
                 isFunc = true;
                 func_name = this.exp_intermedio.get(i).substring(3, this.exp_intermedio.get(i).length());
@@ -1423,7 +1474,7 @@ public class Main extends javax.swing.JFrame {
                             s.push(nuevoTemp);
                             isFunc = false;
                             func_name = "";
-                        }else{
+                        } else {
                             this.cuadruplos.add(new Cuadruplo("call", func_name, "", ""));
                             String nuevoTemp = generarTemp();
                             this.cuadruplos.add(new Cuadruplo("=", "RET", "", nuevoTemp));
@@ -1885,12 +1936,310 @@ public class Main extends javax.swing.JFrame {
 
     public String generarTemp() {
         this.cont_temp++;
-        return "t" + this.cont_temp;
+        return "#t" + this.cont_temp;
     }
 
     public String nuevaEtiqueta() {
         this.cont_etiq++;
         return "etiq" + this.cont_etiq;
+    }
+
+    //Codigo final
+    public void codigo_final() {
+        ArrayList<Temporal> temporales = new ArrayList();
+        for (int i = 0; i < 10; i++) {
+            temporales.add(new Temporal(i, "", false));
+        }
+        this.ta_codigo_final.setText("");
+        String code = "";
+        code += ".data\n";
+        for (int i = 0; i < this.tabla.size(); i++) {
+            if (this.tabla.get(i).getAmbito().equals("1Global")) {
+                code += "_" + this.tabla.get(i).getId() + ":      .word 0\n";
+            }
+        }
+        for (int i = 0; i < this.mensajes.size(); i++) {
+            code += "_msg" + (i + 1) + ":     .asciiz \"" + this.mensajes.get(i) + "\"\n";
+        }
+        code += "   .text\n"
+                + "   .globl main\n";
+        //recorrer
+        for (Cuadruplo cuad : this.cuadruplos) {
+            switch (cuad.getOperador()) {
+                case "Func":
+                    if (cuad.getArgumento1().equals("main")) {
+                        code += "main:\n";
+                    } else {
+                        code += "_" + cuad.getArgumento1() + ":\n";
+                    }
+                    break;
+                case "Print":
+                    int valor = 0;
+                    for (int i = 0; i < this.mensajes.size(); i++) {
+                        if (cuad.getArgumento1().equals(this.mensajes.get(i))) {
+                            valor = i + 1;
+                        }
+                    }
+
+                    if (!cuad.getArgumento2().isEmpty()) {//debemos verificar si es numero
+                        if (cuad.getArgumento1().contains("%d")) {
+                            int d = 0;
+                            String primera = "";
+                            String segunda = "";
+                            if (cuad.getArgumento1().contains("%d")) {
+                                d = cuad.getArgumento1().indexOf("%d");
+                                if (d + 2 > cuad.getArgumento1().length()) {
+                                    segunda = "";
+                                } else {
+                                    segunda = cuad.getArgumento1().substring(d + 2, cuad.getArgumento1().length());
+                                }
+                                primera = cuad.getArgumento1().substring(0, d);
+                            }
+                            if (d == 0) {
+                                if (cuad.getArgumento2().matches("[0-9]+")) {
+                                    code += "       li $v0, 1\n"
+                                            + "       li $a0, " + cuad.getArgumento2() + "\n"
+                                            + "       syscall\n";
+                                } else {
+                                    code += "       li $v0, 1\n"
+                                            + "       lw $a0, _" + cuad.getArgumento2() + "\n"
+                                            + "       syscall\n";
+                                }
+                                if (!segunda.isEmpty()) {
+                                    int msg = 0;
+                                    for (int i = 0; i < this.mensajes.size(); i++) {
+                                        if (this.mensajes.get(i).equals(segunda)) {
+                                            msg = i;
+                                        }
+                                    }
+                                    code += "       li $v0, 4\n"
+                                            + "       la $a0, _msg" + (msg + 1) + "\n"
+                                            + "       syscall\n";
+                                }
+
+                            } else if (d == cuad.getArgumento1().length() - 2) {
+                                if (!primera.isEmpty()) {
+                                    int msg = 0;
+                                    for (int i = 0; i < this.mensajes.size(); i++) {
+                                        if (this.mensajes.get(i).equals(primera)) {
+                                            msg = i;
+                                        }
+                                    }
+                                    code += "       li $v0, 4\n"
+                                            + "       la $a0, _msg" + (msg + 1) + "\n"
+                                            + "       syscall\n";
+                                }
+                                if (cuad.getArgumento2().matches("[0-9]+")) {
+                                    code += "       li $v0, 1\n"
+                                            + "       li $a0, " + cuad.getArgumento2() + "\n"
+                                            + "       syscall\n";
+                                } else {
+                                    code += "       li $v0, 1\n"
+                                            + "       lw $a0, _" + cuad.getArgumento2() + "\n"
+                                            + "       syscall\n";
+                                }
+                            } else {
+                                int msg = 0;
+                                for (int i = 0; i < this.mensajes.size(); i++) {
+                                    if (this.mensajes.get(i).equals(primera)) {
+                                        msg = i;
+                                    }
+                                }
+                                code += "       li $v0, 4\n"
+                                        + "       la $a0, _msg" + (msg + 1) + "\n"
+                                        + "       syscall\n";
+                                if (cuad.getArgumento2().matches("[0-9]+")) {
+                                    code += "       li $v0, 1\n"
+                                            + "       li $a0, " + cuad.getArgumento2() + "\n"
+                                            + "       syscall\n";
+                                } else {
+                                    code += "       li $v0, 1\n"
+                                            + "       lw $a0, _" + cuad.getArgumento2() + "\n"
+                                            + "       syscall\n";
+                                }
+                                int msg2 = 0;
+                                for (int i = 0; i < this.mensajes.size(); i++) {
+                                    if (this.mensajes.get(i).equals(segunda)) {
+                                        msg2 = i;
+                                    }
+                                }
+                                code += "       li $v0, 4\n"
+                                        + "       la $a0, _msg" + (msg2 + 1) + "\n"
+                                        + "       syscall\n";
+                            }
+                        }
+                    } else {
+                        code += "       li $v0, 4\n"
+                                + "       la $a0, _msg" + valor + "\n"
+                                + "       syscall\n";
+                    }
+                    break;
+                case "ETIQ":
+                    code += "_" + cuad.getArgumento1() + ":\n";
+                    break;
+                case "GOTO":
+                    code += "       b _" + cuad.getArgumento1() + "\n";
+                    break;
+                case "*":
+                case "+":
+                case "-":
+                case "/":
+                    String numero = "[0-9]+";
+                    int t1 = 0;
+                    int t2 = 0;
+                    if (cuad.getArgumento1().contains("#t") && cuad.getArgumento2().contains("#t")) {
+                        for (int i = 0; i < 10; i++) {
+                            if (cuad.getArgumento1().equals(temporales.get(i).activado)) {
+                                t1 = i;
+                            }
+                            if (cuad.getArgumento2().equals(temporales.get(i).activado)) {
+                                t2 = i;
+                            }
+                        }
+                    } else if (cuad.getArgumento1().contains("#t")) {
+                        boolean chosen = false;
+                        for (int i = 0; i < 10; i++) {
+                            if (cuad.getArgumento1().equals(temporales.get(i).activado)) {
+                                t1 = i;
+                            }
+                            if (!temporales.get(i).isVivo() && !chosen) {
+                                t2 = i;
+                                temporales.get(i).setVivo(true);
+                                chosen = true;
+                            }
+                        }
+                        if (cuad.getArgumento2().matches(numero)) {
+                            code += "       li $t" + t2 + ", " + cuad.getArgumento2() + "\n";
+                        } else {
+                            code += "       lw $t" + t2 + ", _" + cuad.getArgumento2() + "\n";
+                        }
+                    } else if (cuad.getArgumento2().contains("#t")) {
+                        boolean chosen = false;
+                        for (int i = 0; i < 10; i++) {
+                            if (cuad.getArgumento2().equals(temporales.get(i).activado)) {
+                                t2 = i;
+                            }
+                            if (!temporales.get(i).isVivo() && !chosen) {
+                                t1 = i;
+                                temporales.get(i).setVivo(true);
+                                chosen = true;
+                            }
+                        }
+                        if (cuad.getArgumento1().matches(numero)) {
+                            code += "       li $t" + t1 + ", " + cuad.getArgumento1() + "\n";
+                        } else {
+                            code += "       lw $t" + t1 + ", _" + cuad.getArgumento1() + "\n";
+                        }
+
+                    } else {
+                        for (int i = 0; i < 10; i++) {
+                            if (!temporales.get(i).isVivo()) {
+                                t1 = i;
+                                temporales.get(i).setVivo(true);
+                                break;
+                            }
+                        }
+                        for (int i = 0; i < 10; i++) {
+                            if (!temporales.get(i).isVivo()) {
+                                t2 = i;
+                                temporales.get(i).setVivo(true);
+                                break;
+                            }
+                        }
+                        if (cuad.getArgumento1().matches(numero)) {
+                            code += "       li $t" + t1 + ", " + cuad.getArgumento1() + "\n";
+                        } else {
+                            code += "       lw $t" + t1 + ", _" + cuad.getArgumento1() + "\n";
+                        }
+                        if (cuad.getArgumento2().matches(numero)) {
+                            code += "       li $t" + t2 + ", " + cuad.getArgumento2() + "\n";
+                        } else {
+                            code += "       lw $t" + t2 + ", _" + cuad.getArgumento2() + "\n";
+                        }
+                    }
+                    int t3 = 0;
+                    for (int i = 0; i < 10; i++) {
+                        if (!temporales.get(i).isVivo()) {
+                            t3 = i;
+                            temporales.get(i).setVivo(true);
+                            temporales.get(i).setActivado(cuad.getResultado());
+                            break;
+                        }
+                    }
+                    if (cuad.getOperador().equals("+")) {
+                        code += "       add $t" + t3 + ", $t" + t1 + ", $t" + t2 + "\n";
+                    } else if (cuad.getOperador().equals("-")) {
+                        code += "       sub $t" + t3 + ", $t" + t1 + ", $t" + t2 + "\n";
+                    } else if (cuad.getOperador().equals("*")) {
+                        code += "       mul $t" + t3 + ", $t" + t1 + ", $t" + t2 + "\n";
+                    } else if (cuad.getOperador().equals("/")) {
+                        code += "       div $t" + t3 + ", $t" + t1 + ", $t" + t2 + "\n";
+                    }
+                    temporales.get(t1).setVivo(false);
+                    temporales.get(t1).setActivado("");
+                    temporales.get(t2).setVivo(false);
+                    temporales.get(t2).setActivado("");
+                    break;
+                case "=":
+                    String num = "[0-9]+";
+                    boolean did = false;
+                    int asig = 0;
+                    int ntemp = 0;
+                    for (int i = 0; i < 10; i++) {
+                        if (temporales.get(i).isVivo()) {
+                            asig = i;
+                            did = true;
+                        }
+                    }
+                    for (int i = 0; i < 10; i++) {
+                        if (!temporales.get(i).isVivo()) {
+                            ntemp = i;
+                            break;
+                        }
+                    }
+                    if (did) {
+                        code += "       sw $t" + asig + ", _" + cuad.getResultado() + "\n";
+                        temporales.get(asig).setVivo(false);
+                        temporales.get(asig).setActivado("");
+                    } else if (cuad.getArgumento1().matches(num)) {
+                        code += "       li $t" + ntemp + ", " + cuad.getArgumento1() + "\n";
+                        code += "       sw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                    } else {
+                        code += "       lw $t" + ntemp + ", " + cuad.getArgumento1() + "\n";
+                        code += "       sw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                    }
+                    break;
+                default:
+                    if (cuad.getOperador().contains("IF")) {
+                        String op = cuad.getOperador().substring(2, cuad.getOperador().length());
+                        switch (op) {
+                            case ">":
+                                code += "       mayor\n";
+                                break;
+                            case "<":
+                                code += "       menor\n";
+                                break;
+                            case ">=":
+                                code += "       mayor igual\n";
+                                break;
+                            case "<=":
+                                code += "       menor igual\n";
+                                break;
+                            case "==":
+                                code += "       igual\n";
+                                break;
+                            case "!=":
+                                code += "       desigual\n";
+                                break;
+                            default:
+                                code += "       nada\n";
+                        }
+                    }
+            }
+        }
+        code += "       li $v0,10\n"
+                + "       syscall";
+        this.ta_codigo_final.append(code);
     }
 
     /**
@@ -1938,10 +2287,13 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextArea ta_codigo_final;
     private javax.swing.JTable table_cuadruplos;
     private javax.swing.JLabel titulo;
     // End of variables declaration//GEN-END:variables
@@ -1974,4 +2326,6 @@ public class Main extends javax.swing.JFrame {
     boolean agrega = true;
     String int_asig_value = "";
     String int_print_value = "";
+    //Final
+    ArrayList<String> mensajes = new ArrayList();
 }
