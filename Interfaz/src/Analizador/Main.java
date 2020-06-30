@@ -1137,6 +1137,8 @@ public class Main extends javax.swing.JFrame {
                             segunda = nodo.getHijos().get(0).getVal().substring(d + 2, nodo.getHijos().get(0).getVal().length());
                         }
                         primera = nodo.getHijos().get(0).getVal().substring(0, d);
+                    } else {
+                        primera = nodo.getHijos().get(0).getVal();
                     }
                     boolean existe_p = false;
                     boolean existe_s = false;
@@ -1450,7 +1452,7 @@ public class Main extends javax.swing.JFrame {
         boolean isFunc = false;
         ArrayList<String> param = new ArrayList();
         for (int i = 0; i < this.exp_intermedio.size(); i++) {
-            
+
             if (this.exp_intermedio.get(i).startsWith("1f_")) {
                 isFunc = true;
                 func_name = this.exp_intermedio.get(i).substring(3, this.exp_intermedio.get(i).length());
@@ -1972,6 +1974,7 @@ public class Main extends javax.swing.JFrame {
                     } else {
                         code += "_" + cuad.getArgumento1() + ":\n";
                     }
+                    this.ambito_final = cuad.getArgumento1();
                     break;
                 case "Print":
                     int valor = 0;
@@ -2111,7 +2114,12 @@ public class Main extends javax.swing.JFrame {
                         if (cuad.getArgumento2().matches(numero)) {
                             code += "       li $t" + t2 + ", " + cuad.getArgumento2() + "\n";
                         } else {
-                            code += "       lw $t" + t2 + ", _" + cuad.getArgumento2() + "\n";
+                            if (isLocal(cuad.getArgumento2())) {
+                                code += "       local $t" + t2 + ", _" + cuad.getArgumento2() + "\n";//*******
+                            } else {
+                                code += "       lw $t" + t2 + ", _" + cuad.getArgumento2() + "\n";
+                            }
+
                         }
                     } else if (cuad.getArgumento2().contains("#t")) {
                         boolean chosen = false;
@@ -2128,7 +2136,11 @@ public class Main extends javax.swing.JFrame {
                         if (cuad.getArgumento1().matches(numero)) {
                             code += "       li $t" + t1 + ", " + cuad.getArgumento1() + "\n";
                         } else {
-                            code += "       lw $t" + t1 + ", _" + cuad.getArgumento1() + "\n";
+                            if (isLocal(cuad.getArgumento1())) {
+                                code += "       local $t" + t1 + ", _" + cuad.getArgumento1() + "\n";//*********
+                            } else {
+                                code += "       lw $t" + t1 + ", _" + cuad.getArgumento1() + "\n";
+                            }
                         }
 
                     } else {
@@ -2149,12 +2161,20 @@ public class Main extends javax.swing.JFrame {
                         if (cuad.getArgumento1().matches(numero)) {
                             code += "       li $t" + t1 + ", " + cuad.getArgumento1() + "\n";
                         } else {
-                            code += "       lw $t" + t1 + ", _" + cuad.getArgumento1() + "\n";
+                            if(isLocal(cuad.getArgumento1())){
+                                code += "       local $t" + t1 + ", _" + cuad.getArgumento1() + "\n";//*******
+                            }else{
+                                code += "       lw $t" + t1 + ", _" + cuad.getArgumento1() + "\n";
+                            }
                         }
                         if (cuad.getArgumento2().matches(numero)) {
                             code += "       li $t" + t2 + ", " + cuad.getArgumento2() + "\n";
                         } else {
-                            code += "       lw $t" + t2 + ", _" + cuad.getArgumento2() + "\n";
+                            if(isLocal(cuad.getArgumento2())){
+                                code += "       local $t" + t2 + ", _" + cuad.getArgumento2() + "\n";//*******
+                            }else{
+                                code += "       lw $t" + t2 + ", _" + cuad.getArgumento2() + "\n";
+                            }                            
                         }
                     }
                     int t3 = 0;
@@ -2198,48 +2218,135 @@ public class Main extends javax.swing.JFrame {
                         }
                     }
                     if (did) {
-                        code += "       sw $t" + asig + ", _" + cuad.getResultado() + "\n";
+                        if (isLocal(cuad.getResultado())) {
+                           code += "       swlocal $t" + asig + ", _" + cuad.getResultado() + "\n"; 
+                        }else{
+                            code += "       sw $t" + asig + ", _" + cuad.getResultado() + "\n";
+                        }
                         temporales.get(asig).setVivo(false);
                         temporales.get(asig).setActivado("");
                     } else if (cuad.getArgumento1().matches(num)) {
                         code += "       li $t" + ntemp + ", " + cuad.getArgumento1() + "\n";
-                        code += "       sw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                        if (isLocal(cuad.getResultado())) {
+                            code += "       localsw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                        } else {
+                            code += "       sw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                        }
+                        
                     } else {
-                        code += "       lw $t" + ntemp + ", " + cuad.getArgumento1() + "\n";
-                        code += "       sw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                        if(isLocal(cuad.getArgumento1())){
+                            code += "       local $t" + ntemp + ", " + cuad.getArgumento1() + "\n";
+                        }else{
+                            code += "       lw $t" + ntemp + ", " + cuad.getArgumento1() + "\n";
+                        }
+                        
+                        if (isLocal(cuad.getResultado())) {
+                            code += "       localsw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                        } else {
+                            code += "       sw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                        }                        
                     }
                     break;
                 default:
                     if (cuad.getOperador().contains("IF")) {
                         String op = cuad.getOperador().substring(2, cuad.getOperador().length());
+                        int t_izq = 0;
+                        int t_der = 0;
+                        for (int i = 0; i < 10; i++) {
+                            if (!temporales.get(i).isVivo()) {
+                                t_izq = i;
+                                temporales.get(i).setVivo(true);
+                                break;
+                            }
+                        }
+                        for (int i = 0; i < 10; i++) {
+                            if (!temporales.get(i).isVivo()) {
+                                t_der = i;
+                                temporales.get(i).setVivo(true);
+                                break;
+                            }
+                        }
+                        if (cuad.getArgumento1().matches("[0-9]+")) {
+                            code += "       li $t" + t_izq + ", " + cuad.getArgumento1() + "\n";
+                        } else {
+                            if (isLocal(cuad.getArgumento1())) {
+                                code += "       local $t" + t_izq + ", _" + cuad.getArgumento1() + "\n"; 
+                            } else {
+                                code += "       lw $t" + t_izq + ", _" + cuad.getArgumento1() + "\n";
+                            }                            
+                        }
+                        if (cuad.getArgumento2().matches("[0-9]+")) {
+                            code += "       li $t" + t_der + ", " + cuad.getArgumento2() + "\n";
+                        } else {
+                            if (isLocal(cuad.getArgumento2())) {
+                                code += "       local $t" + t_der + ", _" + cuad.getArgumento2() + "\n";
+                            } else {
+                                code += "       lw $t" + t_der + ", _" + cuad.getArgumento2() + "\n";
+                            }                            
+                        }
                         switch (op) {
                             case ">":
-                                code += "       mayor\n";
+                                code += "       bgt $t" + t_izq + ", $t" + t_der + ", _" + cuad.getResultado() + "\n";
                                 break;
                             case "<":
-                                code += "       menor\n";
+                                code += "       blt $t" + t_izq + ", $t" + t_der + ", _" + cuad.getResultado() + "\n";
                                 break;
                             case ">=":
-                                code += "       mayor igual\n";
+                                code += "       bge $t" + t_izq + ", $t" + t_der + ", _" + cuad.getResultado() + "\n";
                                 break;
                             case "<=":
-                                code += "       menor igual\n";
+                                code += "       ble $t" + t_izq + ", $t" + t_der + ", _" + cuad.getResultado() + "\n";
                                 break;
                             case "==":
-                                code += "       igual\n";
+                                code += "       beq $t" + t_izq + ", $t" + t_der + ", _" + cuad.getResultado() + "\n";
                                 break;
                             case "!=":
-                                code += "       desigual\n";
+                                code += "       bne $t" + t_izq + ", $t" + t_der + ", _" + cuad.getResultado() + "\n";
                                 break;
                             default:
                                 code += "       nada\n";
                         }
+                        temporales.get(t_izq).setVivo(false);
+                        temporales.get(t_der).setVivo(false);
+
                     }
             }
         }
         code += "       li $v0,10\n"
                 + "       syscall";
         this.ta_codigo_final.append(code);
+        guardar_codigoF();
+    }
+
+    public boolean isLocal(String variable) {
+        boolean ret = false;
+        for (int i = 0; i < this.tabla.size(); i++) {
+            if (this.tabla.get(i).getId().equals(variable) && this.tabla.get(i).getAmbito().equals(this.ambito_final)) {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    public void guardar_codigoF() {
+        FileWriter fichero2 = null;
+        PrintWriter pw = null;
+        try {
+            fichero2 = new FileWriter("./MIPS.asm");
+            pw = new PrintWriter(fichero2);
+            pw.print(this.ta_codigo_final.getText());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (null != fichero2) {
+                    fichero2.close();
+                }
+            } catch (Exception e2) {
+                JOptionPane.showMessageDialog(this, "Ocurrio un error");
+                //e2.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -2327,5 +2434,6 @@ public class Main extends javax.swing.JFrame {
     String int_asig_value = "";
     String int_print_value = "";
     //Final
+    String ambito_final = "";
     ArrayList<String> mensajes = new ArrayList();
 }
