@@ -424,12 +424,12 @@ public class Main extends javax.swing.JFrame {
                             //System.out.println("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");
                             this.errores_semanticos.add("Error Semántico: La variable '" + id + "' ha sido declarada más de una vez");
                         } else {
-                            this.tabla.add(new Variable(tipo, id, this.ambito_actual, this.offset));
                             if (tipo.equals("char")) {
                                 this.offset += 1;
                             } else {
                                 this.offset += 4;
                             }
+                            this.tabla.add(new Variable(tipo, id, this.ambito_actual, this.offset));
                         }
                         if (tipo.contains("*")) {
                             tipo = tipo.substring(0, tipo.length() - 1);
@@ -454,6 +454,9 @@ public class Main extends javax.swing.JFrame {
                     } else if (hijo.getVal().equals("ID")) {
                         id_f += hijo.getHijos().get(0).getVal();
                         this.ambito_actual = id_f;
+                        if (!id_f.equals("main")) {
+                            this.offset = 8;
+                        }
                     } else if (hijo.getVal().equals("p") || hijo.getVal().equals("#")) {
                         if (!"".equals(tipo_f)) {
                             ArrayList<Variable> v = parametros(hijo, new ArrayList<>());
@@ -775,13 +778,17 @@ public class Main extends javax.swing.JFrame {
                         tipo_scan += "*";
                     }
                     if (verificar_variable(id)) {
-                        System.out.println("TIPO DE " + id + " " + tipo_var(id));
-                        System.out.println("Tipo DE scanf" + tipo_scan);
                         if (!tipo_scan.equals(tipo_var(id))) {
                             this.errores_semanticos.add("Los tipos en el scanf de la funcion " + this.ambito_actual + " no concuerdan");
                         }
                     } else {
-                        this.errores_semanticos.add("La variable " + id + " en el Scanf en la funcion " + this.ambito_actual + " no existe");
+                        if (verificar_variable_global(id)) {
+                            if (!tipo_scan.equals(tipo_var(id))) {
+                                this.errores_semanticos.add("Los tipos en el scanf de la funcion " + this.ambito_actual + " no concuerdan");
+                            }
+                        } else {
+                            this.errores_semanticos.add("La variable " + id + " en el Scanf en la funcion " + this.ambito_actual + " no existe");
+                        }
                     }
                 } else {
                     this.errores_semanticos.add("Scanf en la funcion " + this.ambito_actual + " debe ser %d o %c");
@@ -811,12 +818,12 @@ public class Main extends javax.swing.JFrame {
                     if (!"#".equals(hijo.getHijos().get(1).getVal())) {
                         v.setTipo(v.getTipo() + "*");
                     }
-                    v.setOffset(this.offset);
                     if (v.getTipo().equals("char")) {
                         this.offset += 1;
                     } else {
                         this.offset += 4;
                     }
+                    v.setOffset(this.offset);
                     arr.add(v);
                 } else if (hijo.getVal().equals("ID")) {
                     arr.get(arr.size() - 1).setId(hijo.getHijos().get(0).getVal());
@@ -1971,10 +1978,30 @@ public class Main extends javax.swing.JFrame {
                 case "Func":
                     if (cuad.getArgumento1().equals("main")) {
                         code += "main:\n";
+                        code += "       move $fp, $sp\n";
                     } else {
                         code += "_" + cuad.getArgumento1() + ":\n";
                     }
                     this.ambito_final = cuad.getArgumento1();
+                    break;
+                case "Scanf":
+                    if (cuad.getArgumento1().equals("%d")) {
+                        if (isLocal(cuad.getArgumento2())) {
+                            if (isParam(cuad.getArgumento2(), this.ambito_final)) {
+
+                            } else {
+                                code += "       li $v0, 5\n"
+                                        + "       syscall\n"
+                                        + "       sw $v0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
+                            }
+                        } else {
+                            code += "       li $v0, 5\n"
+                                    + "       syscall\n"
+                                    + "       sw $v0, _" + cuad.getArgumento2() + "\n";
+                        }
+                    } else {
+                        //codigo leer chars
+                    }
                     break;
                 case "Print":
                     int valor = 0;
@@ -2004,9 +2031,22 @@ public class Main extends javax.swing.JFrame {
                                             + "       li $a0, " + cuad.getArgumento2() + "\n"
                                             + "       syscall\n";
                                 } else {
-                                    code += "       li $v0, 1\n"
-                                            + "       lw $a0, _" + cuad.getArgumento2() + "\n"
-                                            + "       syscall\n";
+                                    if (isLocal(cuad.getArgumento2())) {
+                                        if (isParam(cuad.getArgumento2(), this.ambito_final)) {
+                                            code += "       li $v0, 1\n"
+                                                    + "       param print $a0, _" + cuad.getArgumento2() + "\n"//********
+                                                    + "       syscall\n";
+                                        } else {
+                                            code += "       li $v0, 1\n"
+                                                    + "       lw $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
+                                                    + "       syscall\n";
+                                        }
+
+                                    } else {
+                                        code += "       li $v0, 1\n"
+                                                + "       lw $a0, _" + cuad.getArgumento2() + "\n"
+                                                + "       syscall\n";
+                                    }
                                 }
                                 if (!segunda.isEmpty()) {
                                     int msg = 0;
@@ -2037,9 +2077,21 @@ public class Main extends javax.swing.JFrame {
                                             + "       li $a0, " + cuad.getArgumento2() + "\n"
                                             + "       syscall\n";
                                 } else {
-                                    code += "       li $v0, 1\n"
-                                            + "       lw $a0, _" + cuad.getArgumento2() + "\n"
-                                            + "       syscall\n";
+                                    if (isLocal(cuad.getArgumento2())) {
+                                        if (isParam(cuad.getArgumento2(), this.ambito_final)) {
+                                            code += "       li $v0, 1\n"
+                                                    + "       lw $a0, _" + cuad.getArgumento2() + "\n"//******
+                                                    + "       syscall\n";
+                                        } else {
+                                            code += "       li $v0, 1\n"
+                                                    + "       lw $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
+                                                    + "       syscall\n";
+                                        }
+                                    } else {
+                                        code += "       li $v0, 1\n"
+                                                + "       lw $a0, _" + cuad.getArgumento2() + "\n"
+                                                + "       syscall\n";
+                                    }
                                 }
                             } else {
                                 int msg = 0;
@@ -2056,9 +2108,21 @@ public class Main extends javax.swing.JFrame {
                                             + "       li $a0, " + cuad.getArgumento2() + "\n"
                                             + "       syscall\n";
                                 } else {
-                                    code += "       li $v0, 1\n"
-                                            + "       lw $a0, _" + cuad.getArgumento2() + "\n"
-                                            + "       syscall\n";
+                                    if (isLocal(cuad.getArgumento2())) {
+                                        if (isParam(cuad.getArgumento2(), this.ambito_final)) {
+                                            code += "       li $v0, 1\n"
+                                                    + "       lw $a0, _" + cuad.getArgumento2() + "\n"//******
+                                                    + "       syscall\n";
+                                        } else {
+                                            code += "       li $v0, 1\n"
+                                                    + "       lw $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
+                                                    + "       syscall\n";
+                                        }
+                                    } else {
+                                        code += "       li $v0, 1\n"
+                                                + "       lw $a0, _" + cuad.getArgumento2() + "\n"
+                                                + "       syscall\n";
+                                    }
                                 }
                                 int msg2 = 0;
                                 for (int i = 0; i < this.mensajes.size(); i++) {
@@ -2115,7 +2179,11 @@ public class Main extends javax.swing.JFrame {
                             code += "       li $t" + t2 + ", " + cuad.getArgumento2() + "\n";
                         } else {
                             if (isLocal(cuad.getArgumento2())) {
-                                code += "       local $t" + t2 + ", _" + cuad.getArgumento2() + "\n";//*******
+                                if (isParam(cuad.getArgumento2(), this.ambito_final)) {
+                                    code += "       param $t" + t2 + ", _" + cuad.getArgumento2() + "\n";//********
+                                } else {
+                                    code += "       lw $t" + t2 + ", -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
+                                }
                             } else {
                                 code += "       lw $t" + t2 + ", _" + cuad.getArgumento2() + "\n";
                             }
@@ -2137,7 +2205,12 @@ public class Main extends javax.swing.JFrame {
                             code += "       li $t" + t1 + ", " + cuad.getArgumento1() + "\n";
                         } else {
                             if (isLocal(cuad.getArgumento1())) {
-                                code += "       local $t" + t1 + ", _" + cuad.getArgumento1() + "\n";//*********
+                                if (isParam(cuad.getArgumento1(), this.ambito_final)) {
+                                    code += "       param $t" + t1 + ", _" + cuad.getArgumento1() + "\n";//******
+                                } else {
+                                    code += "       lw $t" + t1 + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                }
+
                             } else {
                                 code += "       lw $t" + t1 + ", _" + cuad.getArgumento1() + "\n";
                             }
@@ -2161,20 +2234,28 @@ public class Main extends javax.swing.JFrame {
                         if (cuad.getArgumento1().matches(numero)) {
                             code += "       li $t" + t1 + ", " + cuad.getArgumento1() + "\n";
                         } else {
-                            if(isLocal(cuad.getArgumento1())){
-                                code += "       local $t" + t1 + ", _" + cuad.getArgumento1() + "\n";//*******
-                            }else{
+                            if (isLocal(cuad.getArgumento1())) {
+                                if (isParam(cuad.getArgumento1(), this.ambito_final)) {
+                                    code += "       param $t" + t1 + ", _" + cuad.getArgumento1() + "\n";//*******
+                                } else {
+                                    code += "       lw $t" + t1 + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                }
+                            } else {
                                 code += "       lw $t" + t1 + ", _" + cuad.getArgumento1() + "\n";
                             }
                         }
                         if (cuad.getArgumento2().matches(numero)) {
                             code += "       li $t" + t2 + ", " + cuad.getArgumento2() + "\n";
                         } else {
-                            if(isLocal(cuad.getArgumento2())){
-                                code += "       local $t" + t2 + ", _" + cuad.getArgumento2() + "\n";//*******
-                            }else{
+                            if (isLocal(cuad.getArgumento2())) {
+                                if (isParam(cuad.getArgumento2(), this.ambito_final)) {
+                                    code += "       param $t" + t2 + ", _" + cuad.getArgumento2() + "\n";//*******
+                                } else {
+                                    code += "       lw $t" + t2 + ", -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
+                                }
+                            } else {
                                 code += "       lw $t" + t2 + ", _" + cuad.getArgumento2() + "\n";
-                            }                            
+                            }
                         }
                     }
                     int t3 = 0;
@@ -2219,8 +2300,12 @@ public class Main extends javax.swing.JFrame {
                     }
                     if (did) {
                         if (isLocal(cuad.getResultado())) {
-                           code += "       swlocal $t" + asig + ", _" + cuad.getResultado() + "\n"; 
-                        }else{
+                            if (isParam(cuad.getResultado(), this.ambito_final)) {
+                                code += "       paramsw $t" + asig + ", _" + cuad.getResultado() + "\n";//**************
+                            } else {
+                                code += "       sw $t" + asig + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
+                            }
+                        } else {
                             code += "       sw $t" + asig + ", _" + cuad.getResultado() + "\n";
                         }
                         temporales.get(asig).setVivo(false);
@@ -2228,23 +2313,35 @@ public class Main extends javax.swing.JFrame {
                     } else if (cuad.getArgumento1().matches(num)) {
                         code += "       li $t" + ntemp + ", " + cuad.getArgumento1() + "\n";
                         if (isLocal(cuad.getResultado())) {
-                            code += "       localsw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                            if (isParam(cuad.getResultado(), this.ambito_final)) {
+                                code += "       paramsw $t" + ntemp + ", _" + cuad.getResultado() + "\n";//********
+                            } else {
+                                code += "       sw $t" + ntemp + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
+                            }
                         } else {
                             code += "       sw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
                         }
-                        
+
                     } else {
-                        if(isLocal(cuad.getArgumento1())){
-                            code += "       local $t" + ntemp + ", " + cuad.getArgumento1() + "\n";
-                        }else{
-                            code += "       lw $t" + ntemp + ", " + cuad.getArgumento1() + "\n";
+                        if (isLocal(cuad.getArgumento1())) {
+                            if (isParam(cuad.getArgumento1(), this.ambito_final)) {
+                                code += "       param $t" + ntemp + ", " + cuad.getArgumento1() + "\n";//*********
+                            } else {
+                                code += "       lw $t" + ntemp + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                            }
+                        } else {
+                            code += "       lw $t" + ntemp + ", _" + cuad.getArgumento1() + "\n";
                         }
-                        
+
                         if (isLocal(cuad.getResultado())) {
-                            code += "       localsw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                            if (isParam(cuad.getResultado(), this.ambito_final)) {
+                                code += "       paramsw $t" + ntemp + ", _" + cuad.getResultado() + "\n";//*******
+                            } else {
+                                code += "       sw $t" + ntemp + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
+                            }
                         } else {
                             code += "       sw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
-                        }                        
+                        }
                     }
                     break;
                 default:
@@ -2270,19 +2367,27 @@ public class Main extends javax.swing.JFrame {
                             code += "       li $t" + t_izq + ", " + cuad.getArgumento1() + "\n";
                         } else {
                             if (isLocal(cuad.getArgumento1())) {
-                                code += "       local $t" + t_izq + ", _" + cuad.getArgumento1() + "\n"; 
+                                if (isParam(cuad.getArgumento1(), this.ambito_final)) {
+                                    code += "       paramlw $t" + t_izq + ", _" + cuad.getArgumento1() + "\n";
+                                } else {
+                                    code += "       lw $t" + t_izq + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                }
                             } else {
                                 code += "       lw $t" + t_izq + ", _" + cuad.getArgumento1() + "\n";
-                            }                            
+                            }
                         }
                         if (cuad.getArgumento2().matches("[0-9]+")) {
                             code += "       li $t" + t_der + ", " + cuad.getArgumento2() + "\n";
                         } else {
                             if (isLocal(cuad.getArgumento2())) {
-                                code += "       local $t" + t_der + ", _" + cuad.getArgumento2() + "\n";
+                                if (isParam(cuad.getArgumento2(), this.ambito_final)) {
+                                    code += "       paramlw $t" + t_der + ", _" + cuad.getArgumento2() + "\n";
+                                } else {
+                                    code += "       lw $t" + t_der + ", -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
+                                }
                             } else {
                                 code += "       lw $t" + t_der + ", _" + cuad.getArgumento2() + "\n";
-                            }                            
+                            }
                         }
                         switch (op) {
                             case ">":
@@ -2326,6 +2431,32 @@ public class Main extends javax.swing.JFrame {
             }
         }
         return ret;
+    }
+
+    public boolean isParam(String variable, String ambito) {
+        boolean res = false;
+        ArrayList<Variable> params = new ArrayList();
+        for (int i = 0; i < this.funciones.size(); i++) {
+            if (this.funciones.get(i).getId().equals(ambito)) {
+                params = this.funciones.get(i).getParams();
+            }
+        }
+        for (int i = 0; i < params.size(); i++) {
+            if (params.get(i).getId().equals(variable)) {
+                res = true;
+            }
+        }
+        return res;
+    }
+
+    public int getOffsetF(String variable) {
+        int off = 0;
+        for (int i = 0; i < this.tabla.size(); i++) {
+            if (variable.equals(this.tabla.get(i).getId()) && this.ambito_final.equals(this.tabla.get(i).getAmbito())) {
+                off = this.tabla.get(i).getOffset();
+            }
+        }
+        return off;
     }
 
     public void guardar_codigoF() {
