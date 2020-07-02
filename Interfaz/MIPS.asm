@@ -1,42 +1,40 @@
 .data
-_a:      .word 0
-_b:      .word 0
-_c:      .word 0
-_d:      .word 0
-_e:      .word 0
-_f:      .word 0
-_g:      .word 0
-_i:      .word 0
-_j:      .word 0
-_msg1:     .asciiz "Ingrese un numero: \n"
-_msg2:     .asciiz "La suma es = "
+_msg1:     .asciiz "\nHola "
+_msg2:     .asciiz " asd"
    .text
    .globl main
 main:
        move $fp, $sp
-       li $t0, 5
-       sw $t0, _b
+       li $t0, 2
+       sw $t0, -4($fp)
+       li $t0, 4
+       sw $t0, -8($fp)
+       li $t0, 6
+       sw $t0, -12($fp)
+       li $t0, '#'
+       sb $t0, -17($fp)
+       li $v0, 12
+       syscall
+       sb $v0, -18($fp)
+       lw $t0, -4($fp)
+       lw $t1, -8($fp)
+       blt $t0, $t1, _etiq2
+       b _etiq3
+_etiq3:
+       lw $t0, -12($fp)
+       lw $t1, -8($fp)
+       bgt $t0, $t1, _etiq2
+       b _etiq1
+_etiq2:
        li $v0, 4
        la $a0, _msg1
        syscall
-       li $v0, 5
+       li $v0, 11
+       lb $a0, -18($fp)
        syscall
-       sw $v0, _a
-       li $v0, 4
-       la $a0, _msg1
-       syscall
-       li $v0, 5
-       syscall
-       sw $v0, -4($fp)
-       lw $t0, _a
-       lw $t1, -4($fp)
-       add $t2, $t0, $t1
-       sw $t2, _c
        li $v0, 4
        la $a0, _msg2
        syscall
-       li $v0, 1
-       lw $a0, _c
-       syscall
+_etiq1:
        li $v0,10
        syscall

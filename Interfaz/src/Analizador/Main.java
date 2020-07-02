@@ -1136,8 +1136,14 @@ public class Main extends javax.swing.JFrame {
                     }
                     String primera = "";
                     String segunda = "";
-                    if (nodo.getHijos().get(0).getVal().contains("%d")) {
-                        int d = nodo.getHijos().get(0).getVal().indexOf("%d");
+                    if (nodo.getHijos().get(0).getVal().contains("%d") || nodo.getHijos().get(0).getVal().contains("%c")) {
+                        int d = 0;
+                        if (nodo.getHijos().get(0).getVal().contains("%d")) {
+                            d = nodo.getHijos().get(0).getVal().indexOf("%d");
+                        } else {
+                            d = nodo.getHijos().get(0).getVal().indexOf("%c");
+                        }
+
                         if (d + 2 > nodo.getHijos().get(0).getVal().length()) {
                             segunda = "";
                         } else {
@@ -1988,7 +1994,7 @@ public class Main extends javax.swing.JFrame {
                     if (cuad.getArgumento1().equals("%d")) {
                         if (isLocal(cuad.getArgumento2())) {
                             if (isParam(cuad.getArgumento2(), this.ambito_final)) {
-
+                                //***********************
                             } else {
                                 code += "       li $v0, 5\n"
                                         + "       syscall\n"
@@ -2000,7 +2006,19 @@ public class Main extends javax.swing.JFrame {
                                     + "       sw $v0, _" + cuad.getArgumento2() + "\n";
                         }
                     } else {
-                        //codigo leer chars
+                        if (isLocal(cuad.getArgumento2())) {
+                            if (isParam(cuad.getArgumento2(), this.ambito_final)) {
+                                //************************
+                            } else {
+                                code += "       li $v0, 12\n"
+                                        + "       syscall\n"
+                                        + "       sb $v0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
+                            }
+                        } else {
+                            code += "       li $v0, 12\n"
+                                    + "       syscall\n"
+                                    + "       sb $v0, _" + cuad.getArgumento2() + "\n";
+                        }
                     }
                     break;
                 case "Print":
@@ -2010,24 +2028,30 @@ public class Main extends javax.swing.JFrame {
                             valor = i + 1;
                         }
                     }
-
                     if (!cuad.getArgumento2().isEmpty()) {//debemos verificar si es numero
-                        if (cuad.getArgumento1().contains("%d")) {
+                        if (cuad.getArgumento1().contains("%d") || cuad.getArgumento1().contains("%c")) {
                             int d = 0;
                             String primera = "";
                             String segunda = "";
                             if (cuad.getArgumento1().contains("%d")) {
                                 d = cuad.getArgumento1().indexOf("%d");
-                                if (d + 2 > cuad.getArgumento1().length()) {
-                                    segunda = "";
-                                } else {
-                                    segunda = cuad.getArgumento1().substring(d + 2, cuad.getArgumento1().length());
-                                }
-                                primera = cuad.getArgumento1().substring(0, d);
+                            } else {
+                                d = cuad.getArgumento1().indexOf("%c");
                             }
+
+                            if (d + 2 > cuad.getArgumento1().length()) {
+                                segunda = "";
+                            } else {
+                                segunda = cuad.getArgumento1().substring(d + 2, cuad.getArgumento1().length());
+                            }
+                            primera = cuad.getArgumento1().substring(0, d);
                             if (d == 0) {
                                 if (cuad.getArgumento2().matches("[0-9]+")) {
                                     code += "       li $v0, 1\n"
+                                            + "       li $a0, " + cuad.getArgumento2() + "\n"
+                                            + "       syscall\n";
+                                } else if (cuad.getArgumento2().contains("'")) {
+                                    code += "       li $v0, 11\n"
                                             + "       li $a0, " + cuad.getArgumento2() + "\n"
                                             + "       syscall\n";
                                 } else {
@@ -2037,15 +2061,26 @@ public class Main extends javax.swing.JFrame {
                                                     + "       param print $a0, _" + cuad.getArgumento2() + "\n"//********
                                                     + "       syscall\n";
                                         } else {
+                                            if (isCharF(cuad.getArgumento2())) {
+                                                code += "       li $v0, 11\n"
+                                                        + "       lb $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
+                                                        + "       syscall\n";
+                                            } else {
+                                                code += "       li $v0, 1\n"
+                                                        + "       lw $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
+                                                        + "       syscall\n";
+                                            }
+                                        }
+                                    } else {
+                                        if (isCharF(cuad.getArgumento2())) {
+                                            code += "       li $v0, 11\n"
+                                                    + "       lb $a0, _" + cuad.getArgumento2() + "\n"
+                                                    + "       syscall\n";
+                                        } else {
                                             code += "       li $v0, 1\n"
-                                                    + "       lw $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
+                                                    + "       lw $a0, _" + cuad.getArgumento2() + "\n"
                                                     + "       syscall\n";
                                         }
-
-                                    } else {
-                                        code += "       li $v0, 1\n"
-                                                + "       lw $a0, _" + cuad.getArgumento2() + "\n"
-                                                + "       syscall\n";
                                     }
                                 }
                                 if (!segunda.isEmpty()) {
@@ -2083,14 +2118,26 @@ public class Main extends javax.swing.JFrame {
                                                     + "       lw $a0, _" + cuad.getArgumento2() + "\n"//******
                                                     + "       syscall\n";
                                         } else {
-                                            code += "       li $v0, 1\n"
-                                                    + "       lw $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
-                                                    + "       syscall\n";
+                                            if (isCharF(cuad.getArgumento2())) {
+                                                code += "       li $v0, 11\n"
+                                                        + "       lb $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
+                                                        + "       syscall\n";
+                                            } else {
+                                                code += "       li $v0, 1\n"
+                                                        + "       lw $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
+                                                        + "       syscall\n";
+                                            }
                                         }
                                     } else {
-                                        code += "       li $v0, 1\n"
-                                                + "       lw $a0, _" + cuad.getArgumento2() + "\n"
-                                                + "       syscall\n";
+                                        if (isCharF(cuad.getArgumento2())) {
+                                            code += "       li $v0, 11\n"
+                                                    + "       lb $a0, _" + cuad.getArgumento2() + "\n"
+                                                    + "       syscall\n";
+                                        } else {
+                                            code += "       li $v0, 1\n"
+                                                    + "       lw $a0, _" + cuad.getArgumento2() + "\n"
+                                                    + "       syscall\n";
+                                        }
                                     }
                                 }
                             } else {
@@ -2114,14 +2161,26 @@ public class Main extends javax.swing.JFrame {
                                                     + "       lw $a0, _" + cuad.getArgumento2() + "\n"//******
                                                     + "       syscall\n";
                                         } else {
-                                            code += "       li $v0, 1\n"
-                                                    + "       lw $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
-                                                    + "       syscall\n";
+                                            if (isCharF(cuad.getArgumento2())) {
+                                                code += "       li $v0, 11\n"
+                                                        + "       lb $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
+                                                        + "       syscall\n";
+                                            } else {
+                                                code += "       li $v0, 1\n"
+                                                        + "       lw $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
+                                                        + "       syscall\n";
+                                            }
                                         }
                                     } else {
-                                        code += "       li $v0, 1\n"
-                                                + "       lw $a0, _" + cuad.getArgumento2() + "\n"
-                                                + "       syscall\n";
+                                        if (isCharF(cuad.getArgumento2())) {
+                                            code += "       li $v0, 11\n"
+                                                    + "       lb $a0, _" + cuad.getArgumento2() + "\n"
+                                                    + "       syscall\n";
+                                        } else {
+                                            code += "       li $v0, 1\n"
+                                                    + "       lw $a0, _" + cuad.getArgumento2() + "\n"
+                                                    + "       syscall\n";
+                                        }
                                     }
                                 }
                                 int msg2 = 0;
@@ -2303,10 +2362,18 @@ public class Main extends javax.swing.JFrame {
                             if (isParam(cuad.getResultado(), this.ambito_final)) {
                                 code += "       paramsw $t" + asig + ", _" + cuad.getResultado() + "\n";//**************
                             } else {
-                                code += "       sw $t" + asig + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
+                                if (isCharF(cuad.getResultado())) {
+                                    code += "       sb $t" + asig + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
+                                } else {
+                                    code += "       sw $t" + asig + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
+                                }
                             }
                         } else {
-                            code += "       sw $t" + asig + ", _" + cuad.getResultado() + "\n";
+                            if (isCharF(cuad.getResultado())) {
+                                code += "       sb $t" + asig + ", _" + cuad.getResultado() + "\n";
+                            } else {
+                                code += "       sw $t" + asig + ", _" + cuad.getResultado() + "\n";
+                            }
                         }
                         temporales.get(asig).setVivo(false);
                         temporales.get(asig).setActivado("");
@@ -2321,26 +2388,52 @@ public class Main extends javax.swing.JFrame {
                         } else {
                             code += "       sw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
                         }
-
+                    } else if (cuad.getArgumento1().contains("'")) {
+                        code += "       li $t" + ntemp + ", " + cuad.getArgumento1() + "\n";
+                        if (isLocal(cuad.getResultado())) {
+                            if (isParam(cuad.getResultado(), this.ambito_final)) {
+                                code += "       paramsw $t" + ntemp + ", _" + cuad.getResultado() + "\n";//********
+                            } else {
+                                code += "       sb $t" + ntemp + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
+                            }
+                        } else {
+                            code += "       sb $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                        }
                     } else {
                         if (isLocal(cuad.getArgumento1())) {
                             if (isParam(cuad.getArgumento1(), this.ambito_final)) {
                                 code += "       param $t" + ntemp + ", " + cuad.getArgumento1() + "\n";//*********
                             } else {
-                                code += "       lw $t" + ntemp + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                if (isCharF(cuad.getArgumento1())) {
+                                    code += "       lb $t" + ntemp + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                } else {
+                                    code += "       lw $t" + ntemp + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                }
                             }
                         } else {
-                            code += "       lw $t" + ntemp + ", _" + cuad.getArgumento1() + "\n";
+                            if (isCharF(cuad.getArgumento1())) {
+                                code += "       lb $t" + ntemp + ", _" + cuad.getArgumento1() + "\n";
+                            } else {
+                                code += "       lw $t" + ntemp + ", _" + cuad.getArgumento1() + "\n";
+                            }
                         }
 
                         if (isLocal(cuad.getResultado())) {
                             if (isParam(cuad.getResultado(), this.ambito_final)) {
                                 code += "       paramsw $t" + ntemp + ", _" + cuad.getResultado() + "\n";//*******
                             } else {
-                                code += "       sw $t" + ntemp + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
+                                if (isCharF(cuad.getResultado())) {
+                                    code += "       sb $t" + ntemp + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
+                                } else {
+                                    code += "       sw $t" + ntemp + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
+                                }
                             }
                         } else {
-                            code += "       sw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                            if (isCharF(cuad.getResultado())) {
+                                code += "       sb $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                            } else {
+                                code += "       sw $t" + ntemp + ", _" + cuad.getResultado() + "\n";
+                            }
                         }
                     }
                     break;
@@ -2457,6 +2550,30 @@ public class Main extends javax.swing.JFrame {
             }
         }
         return off;
+    }
+
+    public boolean isCharF(String variable) {
+        int j = 0;
+        boolean res = false;
+        for (int i = 0; i < this.tabla.size(); i++) {
+            if (this.tabla.get(i).getId().equals(variable) || this.tabla.get(i).getAmbito().equals(this.ambito_actual)) {
+                if (this.tabla.get(i).getTipo().equals("char")) {
+                    res = true;
+                    j++;
+                }
+            }
+        }
+        if (j == 0) {
+            for (int i = 0; i < this.tabla.size(); i++) {
+                if (this.tabla.get(i).getId().equals(variable) || this.tabla.get(i).getAmbito().equals("1Global")) {
+                    if (this.tabla.get(i).getTipo().equals("char")) {
+                        res = true;
+                        j++;
+                    }
+                }
+            }
+        }
+        return res;
     }
 
     public void guardar_codigoF() {
