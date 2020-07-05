@@ -1486,7 +1486,9 @@ public class Main extends javax.swing.JFrame {
                             this.cuadruplos.add(new Cuadruplo("param", temporal2, "", ""));
                             this.cuadruplos.add(new Cuadruplo("call", func_name, "", ""));
                             String nuevoTemp = generarTemp();
-                            this.cuadruplos.add(new Cuadruplo("=", "RET", "", nuevoTemp));
+                            if(!tipoFunc(func_name).contains("void")){
+                                this.cuadruplos.add(new Cuadruplo("=", "RET", "", nuevoTemp));
+                            }                            
                             s.push(nuevoTemp);
                             isFunc = false;
                             func_name = "";
@@ -1708,6 +1710,16 @@ public class Main extends javax.swing.JFrame {
             this.int_print_flag = false;
             this.int_print_value = "";
         }
+    }
+    
+    public String tipoFunc(String f){
+        String ret = "";
+        for (int i = 0; i < this.funciones.size(); i++) {
+            if(f.equals(this.funciones.get(i).getId())){
+                ret = this.funciones.get(i).getTipo();
+            }
+        }
+        return ret;
     }
 
     public String parametro_func(ArrayList<String> array) {
@@ -1989,6 +2001,7 @@ public class Main extends javax.swing.JFrame {
                     parametros.clear();
                     if (cuad.getArgumento1().equals("main")) {
                         code += "main:\n";
+                        //aqui va ese codigo :v
                         code += "       move $fp, $sp\n";
                     } else {
                         code += "_" + cuad.getArgumento1() + ":\n";
