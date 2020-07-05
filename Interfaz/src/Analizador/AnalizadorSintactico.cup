@@ -176,6 +176,21 @@ RETURN:r exp:e
     rt.agregarHijo(e);
     tn.agregarHijo(rt);
     RESULT = tn;
+:} |
+funccall:f SEMICOLON statement:st
+{:
+    token++;
+    TreeNode tn = new TreeNode("Statement", null, token);
+    token++;
+    TreeNode e = new TreeNode("Exp", null, token);
+    e.agregarHijo(f);
+    tn.agregarHijo(e);
+
+    //tn.agregarHijo(st);
+    for(TreeNode h : st.getHijos()){
+        tn.agregarHijo(h);
+    }
+    RESULT = tn;
 :}
 | error statement:st 
 {:

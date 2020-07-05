@@ -1050,6 +1050,7 @@ public class Main extends javax.swing.JFrame {
                     nodo.getHijos().forEach((hijo) -> {
                         codigo_intermedio(hijo);
                     });
+                    this.cuadruplos.add(new Cuadruplo("END", "", "", ""));
                     break;
                 case "Statement":
                     nodo.setSiguiente(nuevaEtiqueta());
@@ -1962,6 +1963,8 @@ public class Main extends javax.swing.JFrame {
     //Codigo final
     public void codigo_final() {
         ArrayList<Temporal> temporales = new ArrayList();
+        ArrayList<Temporal> parametros = new ArrayList();
+        int arg = 0;
         for (int i = 0; i < 10; i++) {
             temporales.add(new Temporal(i, "", false));
         }
@@ -1982,19 +1985,134 @@ public class Main extends javax.swing.JFrame {
         for (Cuadruplo cuad : this.cuadruplos) {
             switch (cuad.getOperador()) {
                 case "Func":
+                    this.ambito_final = cuad.getArgumento1();
+                    parametros.clear();
                     if (cuad.getArgumento1().equals("main")) {
                         code += "main:\n";
                         code += "       move $fp, $sp\n";
                     } else {
                         code += "_" + cuad.getArgumento1() + ":\n";
+                        code += "       sw $fp, -4($sp)\n"
+                                + "       sw $ra, -8($sp)\n";
+                        int params = contParamF();
+                        int finalP = 0;
+                        int cont = 0;
+                        for (int i = 0; i < this.tabla.size(); i++) { //Imprimir parametros
+                            if (this.tabla.get(i).getAmbito().equals(this.ambito_final)) {
+                                if (cont < params) {
+                                    // if de < $a4
+                                    code += "       sw $s" + cont + ", -" + this.tabla.get(i).getOffset() + "($sp)\n";
+                                    parametros.add(new Temporal(cont, this.tabla.get(i).getId(), true));
+                                    cont++;
+                                }
+                                finalP = this.tabla.get(i).getOffset();
+                            }
+                        }
+                        code += "       move $fp, $sp\n"
+                                + "       sub $sp, $sp, " + finalP + "\n";
+                        for (int i = 0; i < params; i++) {
+                            code += "       move $s" + i + ", $a" + i + "\n";
+                        }
                     }
-                    this.ambito_final = cuad.getArgumento1();
+                    break;
+                case "RET":
+                    if (!this.ambito_final.equals("main")) {
+                        if (cuad.getArgumento1().contains("'") || cuad.getArgumento1().matches("[0-9]+")) {
+                            code += "       li $v0, " + cuad.getArgumento1() + "\n";
+                        } else if (cuad.getArgumento1().contains("#t")) {
+                            int tempRet = 0;
+                            for (int i = 0; i < temporales.size(); i++) {
+                                if (temporales.get(i).isVivo() && temporales.get(i).getActivado().equals(cuad.getArgumento1())) {
+                                    tempRet = i;
+                                }
+                            }
+                            temporales.get(tempRet).setVivo(false);
+                            temporales.get(tempRet).setActivado("");
+                            code += "       move $v0, $t" + tempRet + "\n";
+                        } else {
+                            if (isLocal(cuad.getArgumento1())) {
+                                if (isParam(cuad.getArgumento1(), this.ambito_final)) {
+                                    code += "       move $v0, $s" + whatParam(parametros, cuad.getArgumento1()) + "\n";
+                                } else {
+                                    if (isCharF(cuad.getArgumento1())) {
+                                        code += "       lb $v0, -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                    } else {
+                                        code += "       lw $v0, -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                    }
+                                }
+                            } else {
+                                code += "       lw $v0, _" + cuad.getArgumento1() + "\n";
+                            }
+                        }
+                        code += "       b _fin_" + this.ambito_final + "\n";
+                    }
+                    break;
+                case "param":
+                    if (cuad.getArgumento1().contains("'") || cuad.getArgumento1().matches("[0-9]+")) {
+                        code += "       li $a" + arg + ", " + cuad.getArgumento1() + "\n";
+                    } else if (cuad.getArgumento1().contains("#t")) {
+                        int rt = 0;
+                        for (int i = 0; i < temporales.size(); i++) {
+                            if (temporales.get(i).isVivo() && temporales.get(i).getActivado().equals(cuad.getArgumento1())) {
+                                rt = i;
+                            }
+                        }
+                        code += "       move $a" + arg + ", $t" + rt + "\n";
+                        temporales.get(rt).setVivo(false);
+                        temporales.get(rt).setActivado("");
+                    } else {
+                        if (isLocal(cuad.getArgumento1())) {
+                            int par = whatParam(parametros, cuad.getArgumento1());
+                            if (isParam(cuad.getArgumento1(), this.ambito_final)) {
+                                code += "       lw $a" + arg + ", $s" + par + "\n";
+                            } else {
+                                if (isCharF(cuad.getArgumento1())) {
+                                    code += "       lb $a" + arg + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                } else {
+                                    code += "       lw $a" + arg + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                }
+                            }
+                        } else {
+                            code += "       lw $a" + arg + ", _" + cuad.getArgumento1() + "\n";
+                        }
+                    }
+                    arg++;
+                    break;
+                case "call":
+                    code += "       jal _" + cuad.getArgumento1() + "\n";
+                    arg = 0;
+                    break;
+                case "END":
+                    if (this.ambito_final.equals("main")) {
+                        code += "       li $v0,10\n"
+                                + "       syscall\n";
+                    } else {
+                        code += "_fin_" + this.ambito_final + ":\n"
+                                + "       move $sp, $fp\n"
+                                + "       lw $fp, -4($sp)\n"
+                                + "       lw $ra, -8($sp)\n";
+                        int contE = 0;
+                        int paramsE = contParamF();
+                        for (int i = 0; i < this.tabla.size(); i++) { //Imprimir parametros
+                            if (this.tabla.get(i).getAmbito().equals(this.ambito_final)) {
+                                if (contE < paramsE) {
+                                    // if de < $a4
+                                    code += "       lw $s" + contE + ", -" + this.tabla.get(i).getOffset() + "($sp)\n";
+                                    contE++;
+                                }
+                            }
+                        }
+                        code += "       jr $ra\n";
+                    }
                     break;
                 case "Scanf":
                     if (cuad.getArgumento1().equals("%d")) {
                         if (isLocal(cuad.getArgumento2())) {
                             if (isParam(cuad.getArgumento2(), this.ambito_final)) {
-                                //***********************
+                                int par = whatParam(parametros, cuad.getArgumento2());
+                                code += "       li $v0, 5\n"
+                                        + "       syscall\n"
+                                        + "       move $s" + par + ", $v0\n";
                             } else {
                                 code += "       li $v0, 5\n"
                                         + "       syscall\n"
@@ -2008,7 +2126,10 @@ public class Main extends javax.swing.JFrame {
                     } else {
                         if (isLocal(cuad.getArgumento2())) {
                             if (isParam(cuad.getArgumento2(), this.ambito_final)) {
-                                //************************
+                                int par = whatParam(parametros, cuad.getArgumento2());
+                                code += "       li $v0, 12\n"
+                                        + "       syscall\n"
+                                        + "       move $s" + par + ", $v0\n";
                             } else {
                                 code += "       li $v0, 12\n"
                                         + "       syscall\n"
@@ -2057,8 +2178,9 @@ public class Main extends javax.swing.JFrame {
                                 } else {
                                     if (isLocal(cuad.getArgumento2())) {
                                         if (isParam(cuad.getArgumento2(), this.ambito_final)) {
+                                            int par = whatParam(parametros, cuad.getArgumento2());
                                             code += "       li $v0, 1\n"
-                                                    + "       param print $a0, _" + cuad.getArgumento2() + "\n"//********
+                                                    + "       move $a0, $s" + par + "\n"
                                                     + "       syscall\n";
                                         } else {
                                             if (isCharF(cuad.getArgumento2())) {
@@ -2114,8 +2236,9 @@ public class Main extends javax.swing.JFrame {
                                 } else {
                                     if (isLocal(cuad.getArgumento2())) {
                                         if (isParam(cuad.getArgumento2(), this.ambito_final)) {
+                                            int par = whatParam(parametros, cuad.getArgumento2());
                                             code += "       li $v0, 1\n"
-                                                    + "       lw $a0, _" + cuad.getArgumento2() + "\n"//******
+                                                    + "       move $a0, $s" + par + "\n"
                                                     + "       syscall\n";
                                         } else {
                                             if (isCharF(cuad.getArgumento2())) {
@@ -2157,8 +2280,9 @@ public class Main extends javax.swing.JFrame {
                                 } else {
                                     if (isLocal(cuad.getArgumento2())) {
                                         if (isParam(cuad.getArgumento2(), this.ambito_final)) {
+                                            int par = whatParam(parametros, cuad.getArgumento2());
                                             code += "       li $v0, 1\n"
-                                                    + "       lw $a0, _" + cuad.getArgumento2() + "\n"//******
+                                                    + "       move $a0, $s" + par + "\n"//******
                                                     + "       syscall\n";
                                         } else {
                                             if (isCharF(cuad.getArgumento2())) {
@@ -2239,7 +2363,8 @@ public class Main extends javax.swing.JFrame {
                         } else {
                             if (isLocal(cuad.getArgumento2())) {
                                 if (isParam(cuad.getArgumento2(), this.ambito_final)) {
-                                    code += "       param $t" + t2 + ", _" + cuad.getArgumento2() + "\n";//********
+                                    int par = whatParam(parametros, cuad.getArgumento2());
+                                    code += "       move $t" + t2 + ", $s" + par + "\n";
                                 } else {
                                     code += "       lw $t" + t2 + ", -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
                                 }
@@ -2265,7 +2390,8 @@ public class Main extends javax.swing.JFrame {
                         } else {
                             if (isLocal(cuad.getArgumento1())) {
                                 if (isParam(cuad.getArgumento1(), this.ambito_final)) {
-                                    code += "       param $t" + t1 + ", _" + cuad.getArgumento1() + "\n";//******
+                                    int par = whatParam(parametros, cuad.getArgumento1());
+                                    code += "       move $t" + t1 + ", $s" + par + "\n";
                                 } else {
                                     code += "       lw $t" + t1 + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
                                 }
@@ -2295,7 +2421,8 @@ public class Main extends javax.swing.JFrame {
                         } else {
                             if (isLocal(cuad.getArgumento1())) {
                                 if (isParam(cuad.getArgumento1(), this.ambito_final)) {
-                                    code += "       param $t" + t1 + ", _" + cuad.getArgumento1() + "\n";//*******
+                                    int par = whatParam(parametros, cuad.getArgumento1());
+                                    code += "       move $t" + t1 + ", $s" + par + "\n";
                                 } else {
                                     code += "       lw $t" + t1 + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
                                 }
@@ -2308,7 +2435,8 @@ public class Main extends javax.swing.JFrame {
                         } else {
                             if (isLocal(cuad.getArgumento2())) {
                                 if (isParam(cuad.getArgumento2(), this.ambito_final)) {
-                                    code += "       param $t" + t2 + ", _" + cuad.getArgumento2() + "\n";//*******
+                                    int par = whatParam(parametros, cuad.getArgumento2());
+                                    code += "       move $t" + t2 + ", $s" + par + "\n";
                                 } else {
                                     code += "       lw $t" + t2 + ", -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
                                 }
@@ -2346,7 +2474,7 @@ public class Main extends javax.swing.JFrame {
                     int asig = 0;
                     int ntemp = 0;
                     for (int i = 0; i < 10; i++) {
-                        if (temporales.get(i).isVivo()) {
+                        if (temporales.get(i).isVivo() && temporales.get(i).getActivado().equals(cuad.getArgumento1())) {
                             asig = i;
                             did = true;
                         }
@@ -2360,7 +2488,8 @@ public class Main extends javax.swing.JFrame {
                     if (did) {
                         if (isLocal(cuad.getResultado())) {
                             if (isParam(cuad.getResultado(), this.ambito_final)) {
-                                code += "       paramsw $t" + asig + ", _" + cuad.getResultado() + "\n";//**************
+                                int par = whatParam(parametros, cuad.getResultado());
+                                code += "       move $s" + par + ", $t" + asig + "\n";
                             } else {
                                 if (isCharF(cuad.getResultado())) {
                                     code += "       sb $t" + asig + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
@@ -2381,7 +2510,8 @@ public class Main extends javax.swing.JFrame {
                         code += "       li $t" + ntemp + ", " + cuad.getArgumento1() + "\n";
                         if (isLocal(cuad.getResultado())) {
                             if (isParam(cuad.getResultado(), this.ambito_final)) {
-                                code += "       paramsw $t" + ntemp + ", _" + cuad.getResultado() + "\n";//********
+                                int par = whatParam(parametros, cuad.getResultado());
+                                code += "       move $s" + par + ", $t" + ntemp + "\n";
                             } else {
                                 code += "       sw $t" + ntemp + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
                             }
@@ -2392,17 +2522,23 @@ public class Main extends javax.swing.JFrame {
                         code += "       li $t" + ntemp + ", " + cuad.getArgumento1() + "\n";
                         if (isLocal(cuad.getResultado())) {
                             if (isParam(cuad.getResultado(), this.ambito_final)) {
-                                code += "       paramsw $t" + ntemp + ", _" + cuad.getResultado() + "\n";//********
+                                int par = whatParam(parametros, cuad.getResultado());
+                                code += "       move $s" + par + ", $t" + ntemp + "\n";
                             } else {
                                 code += "       sb $t" + ntemp + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
                             }
                         } else {
                             code += "       sb $t" + ntemp + ", _" + cuad.getResultado() + "\n";
                         }
+                    }else if(cuad.getArgumento1().equals("RET")){
+                        code += "       move $t" + ntemp + ", $v0\n";
+                        temporales.get(ntemp).setVivo(true);
+                        temporales.get(ntemp).setActivado(cuad.getResultado());
                     } else {
                         if (isLocal(cuad.getArgumento1())) {
                             if (isParam(cuad.getArgumento1(), this.ambito_final)) {
-                                code += "       param $t" + ntemp + ", " + cuad.getArgumento1() + "\n";//*********
+                                int par = whatParam(parametros, cuad.getArgumento1());
+                                code += "       move $t" + ntemp + ", $s" + par + "\n";
                             } else {
                                 if (isCharF(cuad.getArgumento1())) {
                                     code += "       lb $t" + ntemp + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
@@ -2420,7 +2556,8 @@ public class Main extends javax.swing.JFrame {
 
                         if (isLocal(cuad.getResultado())) {
                             if (isParam(cuad.getResultado(), this.ambito_final)) {
-                                code += "       paramsw $t" + ntemp + ", _" + cuad.getResultado() + "\n";//*******
+                                int par = whatParam(parametros, cuad.getResultado());
+                                code += "       move $s" + par + ", $t" + ntemp + "\n";
                             } else {
                                 if (isCharF(cuad.getResultado())) {
                                     code += "       sb $t" + ntemp + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
@@ -2461,7 +2598,8 @@ public class Main extends javax.swing.JFrame {
                         } else {
                             if (isLocal(cuad.getArgumento1())) {
                                 if (isParam(cuad.getArgumento1(), this.ambito_final)) {
-                                    code += "       paramlw $t" + t_izq + ", _" + cuad.getArgumento1() + "\n";
+                                    int par = whatParam(parametros, cuad.getArgumento1());
+                                    code += "       move $t" + t_izq + ", $s" + par + "\n";
                                 } else {
                                     code += "       lw $t" + t_izq + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
                                 }
@@ -2474,7 +2612,8 @@ public class Main extends javax.swing.JFrame {
                         } else {
                             if (isLocal(cuad.getArgumento2())) {
                                 if (isParam(cuad.getArgumento2(), this.ambito_final)) {
-                                    code += "       paramlw $t" + t_der + ", _" + cuad.getArgumento2() + "\n";
+                                    int par = whatParam(parametros, cuad.getArgumento2());
+                                    code += "       move $t" + t_der + ", $s" + par + "\n";
                                 } else {
                                     code += "       lw $t" + t_der + ", -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
                                 }
@@ -2510,8 +2649,6 @@ public class Main extends javax.swing.JFrame {
                     }
             }
         }
-        code += "       li $v0,10\n"
-                + "       syscall";
         this.ta_codigo_final.append(code);
         guardar_codigoF();
     }
@@ -2521,6 +2658,16 @@ public class Main extends javax.swing.JFrame {
         for (int i = 0; i < this.tabla.size(); i++) {
             if (this.tabla.get(i).getId().equals(variable) && this.tabla.get(i).getAmbito().equals(this.ambito_final)) {
                 ret = true;
+            }
+        }
+        return ret;
+    }
+
+    public int contParamF() {
+        int ret = 0;
+        for (int i = 0; i < this.funciones.size(); i++) {
+            if (this.funciones.get(i).getId().equals(this.ambito_final)) {
+                ret = this.funciones.get(i).getParams().size();
             }
         }
         return ret;
@@ -2574,6 +2721,16 @@ public class Main extends javax.swing.JFrame {
             }
         }
         return res;
+    }
+
+    public int whatParam(ArrayList<Temporal> arr, String valor) {
+        int ret = 0;
+        for (int i = 0; i < arr.size(); i++) {
+            if (arr.get(i).getActivado().equals(valor)) {
+                ret = i;
+            }
+        }
+        return ret;
     }
 
     public void guardar_codigoF() {
