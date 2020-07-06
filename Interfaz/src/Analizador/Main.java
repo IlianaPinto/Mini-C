@@ -281,14 +281,14 @@ public class Main extends javax.swing.JFrame {
             switch (m) {
                 case 0:
                     System.out.println("No existe main");//*******
-                    this.errores_semanticos.add("No existe main.");
+                    this.errores_semanticos.add("Error Semántico: No existe main.");
                     break;
                 case 1:
                     System.out.println("Bien");//*******
                     break;
                 default:
                     System.out.println("Hay más de 1 main");//*******
-                    this.errores_semanticos.add("Hay más de 1 main.");
+                    this.errores_semanticos.add("Error Semántico: Hay más de 1 main.");
                     break;
             }
 
@@ -499,7 +499,7 @@ public class Main extends javax.swing.JFrame {
 
                             } else {
                                 //System.out.println("La funcion " + id_f + " fue declarada más de una vez.");
-                                this.errores_semanticos.add("La funcion " + id_f + " fue declarada más de una vez.");
+                                this.errores_semanticos.add("Error Semántico: La funcion " + id_f + " fue declarada más de una vez.");
                             }
 
                             tipo_f = "";
@@ -530,7 +530,7 @@ public class Main extends javax.swing.JFrame {
                                 this.decfunciones.add(func);
                             } else {
                                 //System.out.println("La funcion " + id_f + " fue definida más de una vez.");
-                                this.errores_semanticos.add("La funcion " + id_f + " fue definida más de una vez.");
+                                this.errores_semanticos.add("Error Semántico: La funcion " + id_f + " fue definida más de una vez.");
                             }
 
                             tipo_f = "";
@@ -549,7 +549,7 @@ public class Main extends javax.swing.JFrame {
                 for (int i = 0; i < this.variables.size(); i++) {
                     if (!verificar_variables_exp(this.variables.get(i))) {
                         //System.out.println("La variable " + variables.get(i) + " No existe o no está en la funcion " + this.ambito_actual);
-                        this.errores_semanticos.add("La variable " + variables.get(i) + " No existe o no está en la funcion " + this.ambito_actual);
+                        this.errores_semanticos.add("Error Semántico: La variable " + variables.get(i) + " No existe o no está en la funcion " + this.ambito_actual);
                         ambitos = false;
                     }
                 }
@@ -577,7 +577,7 @@ public class Main extends javax.swing.JFrame {
                     }
                 }
                 if (type) {
-                    this.errores_semanticos.add("Expresión en la función " + this.ambito_actual + " combina aritmeticas y booleanas");
+                    this.errores_semanticos.add("Error Semántico: Expresión en la función " + this.ambito_actual + " combina aritmeticas y booleanas");
                 } else {
                     if (rel) {
                         nodo.setVal("ExpBool");
@@ -608,7 +608,7 @@ public class Main extends javax.swing.JFrame {
                                         tipos.add(vai);
                                     } else {
                                         //System.out.println("Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
-                                        this.errores_semanticos.add("Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
+                                        this.errores_semanticos.add("Error Semántico: Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
                                     }
                                 } else if (ampersant) {
                                     if (!this.tabla.get(j).getTipo().contains("*")) {
@@ -617,7 +617,7 @@ public class Main extends javax.swing.JFrame {
                                         tipos.add(vai);
                                     } else {
                                         //System.out.println("Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
-                                        this.errores_semanticos.add("Está intentando usar & en una variable es pointer " + this.tabla.get(j).getId());
+                                        this.errores_semanticos.add("Error Semántico: Está intentando usar & en una variable que es pointer " + this.tabla.get(j).getId());
                                     }
                                 } else {
                                     tipos.add(this.tabla.get(j));
@@ -636,7 +636,7 @@ public class Main extends javax.swing.JFrame {
                                             tipos.add(vai);
                                         } else {
                                             //System.out.println("Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
-                                            this.errores_semanticos.add("Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
+                                            this.errores_semanticos.add("Error Semántico: Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
                                         }
                                     } else if (ampersant) {
                                         if (!this.tabla.get(j).getTipo().contains("*")) {
@@ -645,7 +645,7 @@ public class Main extends javax.swing.JFrame {
                                             tipos.add(vai);
                                         } else {
                                             //System.out.println("Está intentando usar * en una variable que no es pointer " + this.tabla.get(j).getId());
-                                            this.errores_semanticos.add("Está intentando usar & en una variable es pointer " + this.tabla.get(j).getId());
+                                            this.errores_semanticos.add("Error Semántico: Está intentando usar & en una variable es pointer " + this.tabla.get(j).getId());
                                         }
                                     } else {
                                         tipos.add(this.tabla.get(j));
@@ -689,27 +689,27 @@ public class Main extends javax.swing.JFrame {
                         }
                     }
                     if (tipo_1.contains("char") && !this.operadores.isEmpty()) {
-                        this.errores_semanticos.add("No se pueden operar caracteres, funcion " + this.ambito_actual);
+                        this.errores_semanticos.add("Error Semántico: No se pueden operar caracteres, funcion " + this.ambito_actual);
                     }
                     if (tipo_1.contains("*") && !this.operadores.isEmpty()) {
-                        this.errores_semanticos.add("No se pueden operar punteros, funcion " + this.ambito_actual);
+                        this.errores_semanticos.add("Error Semántico: No se pueden operar punteros, funcion " + this.ambito_actual);
                     }
                     if (this.return_flag) {
                         if (!tipo_1.equals(this.tipo_actual)) {
                             //System.out.println("El tipo del return en la funcion " + this.ambito_actual + " no corresponde.");
-                            this.errores_semanticos.add("El tipo del return en la funcion " + this.ambito_actual + " no corresponde.");
+                            this.errores_semanticos.add("Error Semántico: El tipo del return en la funcion " + this.ambito_actual + " no corresponde.");
                         }
                         this.return_flag = false;
                     }
                     if (this.printf_flag) {
                         if (!tipo_1.equals(this.printf_tipo)) {
-                            this.errores_semanticos.add("El tipo del printf en la funcion " + this.ambito_actual + " no corresponde.");
+                            this.errores_semanticos.add("Error Semántico: El tipo del printf en la funcion " + this.ambito_actual + " no corresponde.");
                         }
                         this.printf_flag = false;
                     }
                     if (this.asig_flag) {
                         if (!tipo_1.equals(this.asig_tipo)) {
-                            this.errores_semanticos.add("El tipo de la asignacion en la funcion " + this.ambito_actual + " no corresponde.");
+                            this.errores_semanticos.add("Error Semántico: El tipo de la asignacion en la funcion " + this.ambito_actual + " no corresponde.");
                         }
                         this.asig_flag = false;
                     }
@@ -764,11 +764,11 @@ public class Main extends javax.swing.JFrame {
                     }
                 }
                 if (cont > 1) {
-                    this.errores_semanticos.add("Printf en la funcion " + this.ambito_actual + " espera más parametros de los que requiere.");
+                    this.errores_semanticos.add("Error Semántico: Printf en la funcion " + this.ambito_actual + " espera más parametros de los que requiere.");
                 } else if (cont == 0 && !nodo.getHijos().get(1).getVal().equals("#")) {
-                    this.errores_semanticos.add("Printf en la funcion " + this.ambito_actual + " contiene más parámetros de lo esperado.");
+                    this.errores_semanticos.add("Error Semántico: Printf en la funcion " + this.ambito_actual + " contiene más parámetros de lo esperado.");
                 } else if (cont == 1 && nodo.getHijos().get(1).getVal().equals("#")) {
-                    this.errores_semanticos.add("Printf en la funcion " + this.ambito_actual + " no contiene el parámetro esperado.");
+                    this.errores_semanticos.add("Error Semántico: Printf en la funcion " + this.ambito_actual + " no contiene el parámetro esperado.");
                 } else if (cont == 0 && nodo.getHijos().get(1).getVal().equals("#")) {
 
                 } else {
@@ -791,24 +791,24 @@ public class Main extends javax.swing.JFrame {
                     }
                     if (verificar_variable(id)) {
                         if (!tipo_scan.equals(tipo_var(id))) {
-                            this.errores_semanticos.add("Los tipos en el scanf de la funcion " + this.ambito_actual + " no concuerdan");
+                            this.errores_semanticos.add("Error Semántico: Los tipos en el scanf de la funcion " + this.ambito_actual + " no concuerdan");
                         }
                     } else {
                         if (verificar_variable_global(id)) {
                             if (!tipo_scan.equals(tipo_var(id))) {
-                                this.errores_semanticos.add("Los tipos en el scanf de la funcion " + this.ambito_actual + " no concuerdan");
+                                this.errores_semanticos.add("Error Semántico: Los tipos en el scanf de la funcion " + this.ambito_actual + " no concuerdan");
                             }
                         } else {
-                            this.errores_semanticos.add("La variable " + id + " en el Scanf en la funcion " + this.ambito_actual + " no existe");
+                            this.errores_semanticos.add("Error Semántico: La variable " + id + " en el Scanf en la funcion " + this.ambito_actual + " no existe");
                         }
                     }
                 } else {
-                    this.errores_semanticos.add("Scanf en la funcion " + this.ambito_actual + " debe ser %d o %c");
+                    this.errores_semanticos.add("Error Semántico: Scanf en la funcion " + this.ambito_actual + " debe ser %d o %c");
                 }
             } else if (nodo.getVal().equals("Asig")) {
                 String variable = nodo.getHijos().get(0).getHijos().get(0).getVal();
                 if (!verificar_variables_exp(variable)) {
-                    this.errores_semanticos.add("La variable " + variable + " No existe o no está en la funcion " + this.ambito_actual);
+                    this.errores_semanticos.add("Error Semántico: La variable " + variable + " No existe o no está en la funcion " + this.ambito_actual);
                 } else {
                     this.asig_flag = true;
                     this.asig_tipo = tipo_var(variable);
@@ -921,7 +921,7 @@ public class Main extends javax.swing.JFrame {
                 }
                 if (!exist) {
                     //System.out.println("La funcion " + f + " no existe");
-                    this.errores_semanticos.add("La funcion " + f + " no existe");
+                    this.errores_semanticos.add("Error Semántico: La funcion " + f + " no existe");
                 }
                 this.funccall.clear();
                 this.funccall.add(new ArrayList());//cambie esto
@@ -953,7 +953,7 @@ public class Main extends javax.swing.JFrame {
                     } else {
                         argumentos.add("#");
                         //System.out.println("La expresión " + i + " No sirve");
-                        this.errores_semanticos.add("La expresión " + i + " No sirve");
+                        this.errores_semanticos.add("Error Semántico: La expresión " + i + " No funciona");
                     }
                 }
                 Funcion func = new Funcion("", "");
@@ -974,7 +974,7 @@ public class Main extends javax.swing.JFrame {
                 }
                 if (!correct && exist) {
                     //System.out.println("Los parametros al llamado a al función " + f + " son incorrectos.");
-                    this.errores_semanticos.add("Los parametros al llamado a al función " + f + " son incorrectos.");
+                    this.errores_semanticos.add("Error Semántico: Los parametros al llamado a al función " + f + " son incorrectos.");
                 }
 
             } else {

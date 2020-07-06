@@ -1,60 +1,51 @@
 .data
-_msg1:     .asciiz "i: "
-_msg2:     .asciiz "El número es par"
-_msg3:     .asciiz "El número es impar"
+_a:      .word 0
+_b:      .word 0
+_c:      .word 0
+_msg1:     .asciiz " "
+_msg2:     .asciiz "aaaa: "
+_msg3:     .asciiz "\n"
    .text
    .globl main
-_impar:
+_acceso:
        sw $fp, -4($sp)
        sw $ra, -8($sp)
        sw $s0, -12($sp)
        move $fp, $sp
-       sub $sp, $sp, 12
+       sub $sp, $sp, 20
        move $s0, $a0
+       li $t0, 5
+       sw $t0, -16($fp)
        move $t0, $s0
-       li $t1, 0
-       beq $t0, $t1, _etiq2
-       b _etiq1
-_etiq2:
-       li $v0, 0
-       b _fin_impar
-_etiq1:
-_fin_impar:
+       lw $t1, -16($fp)
+       add $t2, $t0, $t1
+       sw $t2, -20($fp)
+       li $v0, 1
+       lw $a0, -20($fp)
+       syscall
+       li $v0, 4
+       la $a0, _msg1
+       syscall
+_fin_acceso:
        move $sp, $fp
        lw $fp, -4($sp)
        lw $ra, -8($sp)
        lw $s0, -12($sp)
        jr $ra
-_par:
+_acceso2:
        sw $fp, -4($sp)
        sw $ra, -8($sp)
        sw $s0, -12($sp)
        move $fp, $sp
        sub $sp, $sp, 12
        move $s0, $a0
-       move $t0, $s0
-       li $t1, 0
-       beq $t0, $t1, _etiq6
-       b _etiq7
-_etiq6:
        li $v0, 1
-       b _fin_par
-       b _etiq5
-_etiq7:
-       move $t0, $s0
-       li $t1, 1
-       sub $t2, $t0, $t1
-       move $a0, $t2
-       sw $t0,-4($sp)
-       sub $sp, $sp, 4
-       jal _impar
-       lw $t0,0($sp)
-       add $sp,$sp,4
-       move $t0, $v0
-       move $v0, $t0
-       b _fin_par
-_etiq5:
-_fin_par:
+       move $a0, $s0
+       syscall
+       li $v0, 4
+       la $a0, _msg1
+       syscall
+_fin_acceso2:
        move $sp, $fp
        lw $fp, -4($sp)
        lw $ra, -8($sp)
@@ -62,31 +53,26 @@ _fin_par:
        jr $ra
 main:
        move $fp, $sp
-       li $t0, 30
-       sw $t0, -4($fp)
-       lw $a0, -4($fp)
-       jal _par
-       move $t0, $v0
-       sw $t0, -8($fp)
-       li $v0, 4
-       la $a0, _msg1
-       syscall
-       li $v0, 1
-       lw $a0, -8($fp)
-       syscall
-       lw $t0, -8($fp)
-       li $t1, 1
-       beq $t0, $t1, _etiq12
-       b _etiq13
-_etiq12:
+       li $t0, 1
+       sw $t0, _a
+       li $t0, 2
+       li $t1, 2
+       add $t2, $t0, $t1
+       sw $t2, _b
+       li $t0, 5
+       sw $t0, _c
+       lw $a0, _a
+       jal _acceso
        li $v0, 4
        la $a0, _msg2
        syscall
-       b _etiq11
-_etiq13:
+       li $v0, 1
+       lw $a0, _c
+       syscall
        li $v0, 4
        la $a0, _msg3
        syscall
-_etiq11:
+       lw $a0, _b
+       jal _acceso2
        li $v0,10
        syscall
