@@ -219,6 +219,7 @@ public class Main extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
 
+        ta_codigo_final.setEditable(false);
         ta_codigo_final.setColumns(20);
         ta_codigo_final.setRows(5);
         jScrollPane4.setViewportView(ta_codigo_final);
@@ -2092,11 +2093,35 @@ public class Main extends javax.swing.JFrame {
                                     if (isCharF(cuad.getArgumento1())) {
                                         code += "       lb $v0, -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
                                     } else {
-                                        code += "       lw $v0, -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                        if (isPointerF(cuad.getArgumento1())) {
+                                            int tempRet = 0;
+                                            for (int i = 0; i < temporales.size(); i++) {
+                                                if (!temporales.get(i).isVivo()) {
+                                                    tempRet = i;
+                                                    break;
+                                                }
+                                            }
+                                            code += "       lw $t" + tempRet + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                            code += "       lw $v0, 0($t" + tempRet + ")\n";
+                                        } else {
+                                            code += "       lw $v0, -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                        }
                                     }
                                 }
                             } else {
-                                code += "       lw $v0, _" + cuad.getArgumento1() + "\n";
+                                int tempRet = 0;
+                                for (int i = 0; i < temporales.size(); i++) {
+                                    if (!temporales.get(i).isVivo()) {
+                                        tempRet = i;
+                                        break;
+                                    }
+                                }
+                                if(isPointerF(cuad.getArgumento1())){
+                                    code += "       lw $t" + tempRet + ", _" + cuad.getArgumento1() + "\n";
+                                    code += "       lw $v0, 0($t" + tempRet + ")\n";
+                                }else{
+                                    code += "       lw $t" + tempRet + ", _" + cuad.getArgumento1() + "\n";                                
+                                }                                
                             }
                         }
                         code += "       b _fin_" + this.ambito_final + "\n";
@@ -2930,20 +2955,20 @@ public class Main extends javax.swing.JFrame {
                                     int par = whatParam(parametros, cuad.getArgumento1());
                                     code += "       move $t" + t_izq + ", $s" + par + "\n";
                                 } else {
-                                    if(isPointerF(cuad.getArgumento1())){
+                                    if (isPointerF(cuad.getArgumento1())) {
                                         code += "       lw $t" + t_izq + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
                                         code += "       lw $t" + t_izq + ", 0($t" + t_izq + ")\n";
-                                    }else{
+                                    } else {
                                         code += "       lw $t" + t_izq + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
-                                    }                                    
+                                    }
                                 }
                             } else {
-                                if(isPointerF(code)){
+                                if (isPointerF(code)) {
                                     code += "       lw $t" + t_izq + ", _" + cuad.getArgumento1() + "\n";
                                     code += "       lw $t" + t_izq + ", 0($f" + t_izq + ")\n";
-                                }else{
+                                } else {
                                     code += "       lw $t" + t_izq + ", _" + cuad.getArgumento1() + "\n";
-                                }                                
+                                }
                             }
                         }
                         if (cuad.getArgumento2().matches("[0-9]+")) {
@@ -2960,7 +2985,7 @@ public class Main extends javax.swing.JFrame {
                                     } else {
                                         code += "       lw $t" + t_der + ", -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
                                     }
-                                    
+
                                 }
                             } else {
                                 if (isPointerF(cuad.getArgumento2())) {
@@ -2968,7 +2993,7 @@ public class Main extends javax.swing.JFrame {
                                     code += "       lw $t" + t_der + ", 0($t" + t_der + ")\n";
                                 } else {
                                     code += "       lw $t" + t_der + ", _" + cuad.getArgumento2() + "\n";
-                                }                                
+                                }
                             }
                         }
                         switch (op) {
@@ -3088,7 +3113,7 @@ public class Main extends javax.swing.JFrame {
         int j = 0;
         boolean res = false;
         for (int i = 0; i < this.tabla.size(); i++) {
-            if (this.tabla.get(i).getId().equals(variable) && this.tabla.get(i).getAmbito().equals(this.ambito_actual)) {
+            if (this.tabla.get(i).getId().equals(variable) && this.tabla.get(i).getAmbito().equals(this.ambito_final)) {
                 if (this.tabla.get(i).getTipo().contains("*")) {
                     res = true;
                     j++;
