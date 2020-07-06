@@ -13,11 +13,19 @@ public class Temporal {
     public int t;
     public String activado;
     public boolean vivo;
+    public String tipo;
 
     public Temporal(int t, String activado, boolean vivo) {
         this.t = t;
         this.activado = activado;
         this.vivo = vivo;
+    }    
+    
+    public Temporal(int t, String activado, boolean vivo, String tipo) {
+        this.t = t;
+        this.activado = activado;
+        this.vivo = vivo;
+        this.tipo = tipo;
     }    
 
     public int getT() {
@@ -42,6 +50,14 @@ public class Temporal {
 
     public void setVivo(boolean vivo) {
         this.vivo = vivo;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
     
     
