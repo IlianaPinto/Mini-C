@@ -482,7 +482,7 @@ public class Main extends javax.swing.JFrame {
                             }
 
                             if (verificar) {
-                                System.out.println("Hay parametros que se llaman igual");
+                                System.out.println("Error Semantico: Hay parametros que se llaman igual en la funcion " + this.ambito_actual);
                             } else {
                                 //System.out.println("No hay parametros que se llamen igual");
                             }
@@ -494,7 +494,7 @@ public class Main extends javax.swing.JFrame {
                                         tabla.add(variable);
                                     }
                                 } else {
-                                    this.errores_semanticos.add("La variable " + id1 + " fue definida más de una vez en la función " + ambito1);
+                                    this.errores_semanticos.add("Error Semantico: La variable " + id1 + " fue definida más de una vez en la función " + ambito1);
                                 }
 
                             } else {
@@ -1512,7 +1512,9 @@ public class Main extends javax.swing.JFrame {
                         } else {
                             this.cuadruplos.add(new Cuadruplo("call", func_name, "", ""));
                             String nuevoTemp = generarTemp();
-                            this.cuadruplos.add(new Cuadruplo("=", "RET", "", nuevoTemp));
+                            if (!tipoFunc(func_name).contains("void")) {
+                                this.cuadruplos.add(new Cuadruplo("=", "RET", "", nuevoTemp));
+                            }
                             s.push(nuevoTemp);
                             isFunc = false;
                             func_name = "";
@@ -2407,7 +2409,7 @@ public class Main extends javax.swing.JFrame {
                                                         break;
                                                     }
                                                 }
-                                                code += "       lw $t" + t + ", _" + getOffsetF(cuad.getArgumento2()) + "\n";
+                                                code += "       lw $t" + t + ", _" + cuad.getArgumento2() + "\n";
                                                 code += "       li $v0, 1\n"
                                                         + "       lw $a0, 0($t" + t + ")\n"
                                                         + "       syscall\n";
@@ -2464,7 +2466,6 @@ public class Main extends javax.swing.JFrame {
                                                         + "       move $a0, $s" + par + "\n"
                                                         + "       syscall\n";
                                             }
-
                                         } else {
                                             if (isCharF(cuad.getArgumento2())) {
                                                 code += "       li $v0, 11\n"
@@ -2504,7 +2505,7 @@ public class Main extends javax.swing.JFrame {
                                                         break;
                                                     }
                                                 }
-                                                code += "       lw $t" + t + ", _" + getOffsetF(cuad.getArgumento2()) + "\n";
+                                                code += "       lw $t" + t + ", _" + cuad.getArgumento2() + "\n";
                                                 code += "       li $v0, 1\n"
                                                         + "       lw $a0, 0($t" + t + ")\n"
                                                         + "       syscall\n";
@@ -2567,7 +2568,7 @@ public class Main extends javax.swing.JFrame {
                                                             + "       syscall\n";
                                                 } else {
                                                     code += "       li $v0, 1\n"
-                                                            + "       lw $a0, -" + cuad.getArgumento2() + "($fp)\n"
+                                                            + "       lw $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
                                                             + "       syscall\n";
                                                 }
                                             }
@@ -2586,7 +2587,7 @@ public class Main extends javax.swing.JFrame {
                                                         break;
                                                     }
                                                 }
-                                                code += "       lw $t" + t + ", _" + getOffsetF(cuad.getArgumento2()) + "\n";
+                                                code += "       lw $t" + t + ", _" + cuad.getArgumento2() + "\n";
                                                 code += "       li $v0, 1\n"
                                                         + "       lw $a0, 0($t" + t + ")\n"
                                                         + "       syscall\n";
