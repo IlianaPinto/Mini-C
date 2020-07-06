@@ -2346,6 +2346,7 @@ public class Main extends javax.swing.JFrame {
                                                     for (int i = 0; i < temporales.size(); i++) {
                                                         if (!temporales.get(i).isVivo()) {
                                                             t = i;
+                                                            break;
                                                         }
                                                     }
                                                     code += "       lw $t" + t + ", -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
@@ -2370,6 +2371,7 @@ public class Main extends javax.swing.JFrame {
                                                 for (int i = 0; i < temporales.size(); i++) {
                                                     if (!temporales.get(i).isVivo()) {
                                                         t = i;
+                                                        break;
                                                     }
                                                 }
                                                 code += "       lw $t" + t + ", _" + getOffsetF(cuad.getArgumento2()) + "\n";
@@ -2441,6 +2443,7 @@ public class Main extends javax.swing.JFrame {
                                                     for (int i = 0; i < temporales.size(); i++) {
                                                         if (!temporales.get(i).isVivo()) {
                                                             t = i;
+                                                            break;
                                                         }
                                                     }
                                                     code += "       lw $t" + t + ", -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
@@ -2465,6 +2468,7 @@ public class Main extends javax.swing.JFrame {
                                                 for (int i = 0; i < temporales.size(); i++) {
                                                     if (!temporales.get(i).isVivo()) {
                                                         t = i;
+                                                        break;
                                                     }
                                                 }
                                                 code += "       lw $t" + t + ", _" + getOffsetF(cuad.getArgumento2()) + "\n";
@@ -2521,6 +2525,7 @@ public class Main extends javax.swing.JFrame {
                                                     for (int i = 0; i < temporales.size(); i++) {
                                                         if (!temporales.get(i).isVivo()) {
                                                             t = i;
+                                                            break;
                                                         }
                                                     }
                                                     code += "       lw $t" + t + ", -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
@@ -2545,6 +2550,7 @@ public class Main extends javax.swing.JFrame {
                                                 for (int i = 0; i < temporales.size(); i++) {
                                                     if (!temporales.get(i).isVivo()) {
                                                         t = i;
+                                                        break;
                                                     }
                                                 }
                                                 code += "       lw $t" + t + ", _" + getOffsetF(cuad.getArgumento2()) + "\n";
@@ -2832,7 +2838,7 @@ public class Main extends javax.swing.JFrame {
                                 int par = whatParam(parametros, cuad.getArgumento1());
                                 code += "       move $t" + ntemp + ", $s" + par + "\n";
                             } else {
-                                if (isCharF(cuad.getArgumento1())) {
+                                if (isCharF(cuad.getArgumento1()) && !isPointerF(cuad.getResultado())) {
                                     code += "       lb $t" + ntemp + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
                                 } else {
                                     if (isPointerF(cuad.getResultado()) && !isPointerF(cuad.getArgumento1())) {//////////
@@ -2843,7 +2849,7 @@ public class Main extends javax.swing.JFrame {
                                 }
                             }
                         } else {
-                            if (isCharF(cuad.getArgumento1())) {
+                            if (isCharF(cuad.getArgumento1()) && !isPointerF(cuad.getResultado())) {
                                 code += "       lb $t" + ntemp + ", _" + cuad.getArgumento1() + "\n";
                             } else {
                                 if (isPointerF(cuad.getResultado()) && !isPointerF(cuad.getArgumento1())) {
@@ -2858,7 +2864,7 @@ public class Main extends javax.swing.JFrame {
                                 int par = whatParam(parametros, cuad.getResultado());
                                 code += "       move $s" + par + ", $t" + ntemp + "\n";
                             } else {
-                                if (isCharF(cuad.getResultado())) {
+                                if (isCharF(cuad.getResultado()) && !isPointerF(cuad.getArgumento1())) {
                                     code += "       sb $t" + ntemp + ", -" + getOffsetF(cuad.getResultado()) + "($fp)\n";
                                 } else {
                                     int t = 0;
@@ -2877,7 +2883,7 @@ public class Main extends javax.swing.JFrame {
                                 }
                             }
                         } else {
-                            if (isCharF(cuad.getResultado())) {
+                            if (isCharF(cuad.getResultado()) && !isPointerF(cuad.getArgumento1())) {
                                 code += "       sb $t" + ntemp + ", _" + cuad.getResultado() + "\n";
                             } else {
                                 int t = 0;
@@ -2924,10 +2930,20 @@ public class Main extends javax.swing.JFrame {
                                     int par = whatParam(parametros, cuad.getArgumento1());
                                     code += "       move $t" + t_izq + ", $s" + par + "\n";
                                 } else {
-                                    code += "       lw $t" + t_izq + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                    if(isPointerF(cuad.getArgumento1())){
+                                        code += "       lw $t" + t_izq + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                        code += "       lw $t" + t_izq + ", 0($t" + t_izq + ")\n";
+                                    }else{
+                                        code += "       lw $t" + t_izq + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                    }                                    
                                 }
                             } else {
-                                code += "       lw $t" + t_izq + ", _" + cuad.getArgumento1() + "\n";
+                                if(isPointerF(code)){
+                                    code += "       lw $t" + t_izq + ", _" + cuad.getArgumento1() + "\n";
+                                    code += "       lw $t" + t_izq + ", 0($f" + t_izq + ")\n";
+                                }else{
+                                    code += "       lw $t" + t_izq + ", _" + cuad.getArgumento1() + "\n";
+                                }                                
                             }
                         }
                         if (cuad.getArgumento2().matches("[0-9]+")) {
@@ -2938,10 +2954,21 @@ public class Main extends javax.swing.JFrame {
                                     int par = whatParam(parametros, cuad.getArgumento2());
                                     code += "       move $t" + t_der + ", $s" + par + "\n";
                                 } else {
-                                    code += "       lw $t" + t_der + ", -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
+                                    if (isPointerF(cuad.getArgumento2())) {
+                                        code += "       lw $t" + t_der + ", -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
+                                        code += "       lw $t" + t_der + ", 0($t" + t_der + ")\n";
+                                    } else {
+                                        code += "       lw $t" + t_der + ", -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n";
+                                    }
+                                    
                                 }
                             } else {
-                                code += "       lw $t" + t_der + ", _" + cuad.getArgumento2() + "\n";
+                                if (isPointerF(cuad.getArgumento2())) {
+                                    code += "       lw $t" + t_der + ", _" + cuad.getArgumento2() + "\n";
+                                    code += "       lw $t" + t_der + ", 0($t" + t_der + ")\n";
+                                } else {
+                                    code += "       lw $t" + t_der + ", _" + cuad.getArgumento2() + "\n";
+                                }                                
                             }
                         }
                         switch (op) {
