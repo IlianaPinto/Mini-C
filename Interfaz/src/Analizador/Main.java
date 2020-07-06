@@ -2101,8 +2101,12 @@ public class Main extends javax.swing.JFrame {
                                                     break;
                                                 }
                                             }
-                                            code += "       lw $t" + tempRet + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
-                                            code += "       lw $v0, 0($t" + tempRet + ")\n";
+                                            if (tipoFunc(this.ambito_final).contains("*")) {
+                                                code += "       lw $v0, -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                            } else {
+                                                code += "       lw $t" + tempRet + ", -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
+                                                code += "       lw $v0, 0($t" + tempRet + ")\n";
+                                            }
                                         } else {
                                             code += "       lw $v0, -" + getOffsetF(cuad.getArgumento1()) + "($fp)\n";
                                         }
@@ -2116,12 +2120,16 @@ public class Main extends javax.swing.JFrame {
                                         break;
                                     }
                                 }
-                                if(isPointerF(cuad.getArgumento1())){
-                                    code += "       lw $t" + tempRet + ", _" + cuad.getArgumento1() + "\n";
-                                    code += "       lw $v0, 0($t" + tempRet + ")\n";
-                                }else{
-                                    code += "       lw $t" + tempRet + ", _" + cuad.getArgumento1() + "\n";                                
-                                }                                
+                                if (isPointerF(cuad.getArgumento1())) {
+                                    if (tipoFunc(this.ambito_final).contains("*")) {
+                                        code += "       lw $v0, _" + cuad.getArgumento1() + "\n";
+                                    } else {
+                                        code += "       lw $t" + tempRet + ", _" + cuad.getArgumento1() + "\n";
+                                        code += "       lw $v0, 0($t" + tempRet + ")\n";
+                                    }
+                                } else {
+                                    code += "       lw $v0, _" + cuad.getArgumento1() + "\n";
+                                }
                             }
                         }
                         code += "       b _fin_" + this.ambito_final + "\n";
@@ -2477,7 +2485,7 @@ public class Main extends javax.swing.JFrame {
                                                             + "       syscall\n";
                                                 } else {
                                                     code += "       li $v0, 1\n"
-                                                            + "       lw $a0, -" + cuad.getArgumento2() + "($fp)\n"
+                                                            + "       lw $a0, -" + getOffsetF(cuad.getArgumento2()) + "($fp)\n"
                                                             + "       syscall\n";
                                                 }
                                             }
